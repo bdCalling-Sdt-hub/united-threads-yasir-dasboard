@@ -1,6 +1,8 @@
 "use client";
 import { ConfigProvider, Table, TableProps } from "antd";
 import { IoEyeOutline } from "react-icons/io5";
+import SellProductDetailsModal from "./SellProductDetailsModal";
+import { useState } from "react";
 
 type TDataType = {
   key: number;
@@ -20,41 +22,46 @@ const data: TDataType[] = Array.from({length: 12}).map((_,inx)=>(
 ))
 
 
-const columns: TableProps<TDataType>["columns"] = [
-  {
-    title: "Serial",
-    dataIndex: "key",
-    render: (value) => `#${value}`,
-  },
-  {
-    title: "Product",
-    dataIndex: "product",
-  },
-  {
-    title: " Buyer Email",
-    dataIndex: "buyerEmail",
-  },
-  {
-    title: "Date",
-    dataIndex: "date",
-  },
-  {
-    title: "Amount",
-    dataIndex: "amount",
-  },
-  {
-    title: "Action",
-    dataIndex: "action",
-    render: () => (
-      <div className="ml-4">
-        <IoEyeOutline size={20} />
-      </div>
-    ),
-  },
-];
+
 
 const RecentSellingProductTable = () => {
+  const [open, setOpen] = useState(false);
+
+  const columns: TableProps<TDataType>["columns"] = [
+    {
+      title: "Serial",
+      dataIndex: "key",
+      render: (value) => `#${value}`,
+    },
+    {
+      title: "Product",
+      dataIndex: "product",
+    },
+    {
+      title: " Buyer Email",
+      dataIndex: "buyerEmail",
+    },
+    {
+      title: "Date",
+      dataIndex: "date",
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      render: () => (
+        <div className="ml-4 cursor-pointer">
+          <IoEyeOutline size={20} onClick={()=> setOpen(true)} />
+        </div>
+      ),
+    },
+  ];
+
   return (
+    <>
     <ConfigProvider
       theme={{
         components: {
@@ -78,6 +85,8 @@ const RecentSellingProductTable = () => {
         ></Table>
       </div>
     </ConfigProvider>
+    <SellProductDetailsModal open={open} setOpen={setOpen}></SellProductDetailsModal>
+    </>
   );
 };
 

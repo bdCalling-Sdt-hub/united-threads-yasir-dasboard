@@ -2,7 +2,11 @@ import { Modal } from "antd";
 import userImage from "@/assets/image/user.png";
 import Image from "next/image";
 
-const UserModal = ({ open, setOpen }: any) => {
+type TPropsType = {
+    open: boolean;
+    setOpen: (collapsed: boolean) => void;
+  }
+const UserModal = ({ open, setOpen }: TPropsType) => {
   return (
     <Modal centered footer={null} open={open} onCancel={() => setOpen(false)}>
       <div className=" bg-[#172126] rounded-md py-6 mt-8">

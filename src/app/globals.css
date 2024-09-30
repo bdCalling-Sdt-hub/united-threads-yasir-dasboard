@@ -1,18 +1,15 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap'); */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+* {
+  font-family: "Poppins", sans-serif;
+}
 
 body {
   color: var(--foreground);
   background: "#F8FAFC";
-  /* font-family: Arial, Helvetica, sans-serif; */
-
-}
-
-.font-roboto {
-font-family: var(--font-roboto);
 }
 
 @layer utilities {
@@ -27,24 +24,28 @@ font-family: var(--font-roboto);
 
 .sidebar-menu > .ant-menu-item {
   background-color: #3d3d3d;
-  padding:0.3rem 1rem;
+  padding: 0.3rem 1rem;
   display: flex;
   align-items: center;
-  color: rgb(248,250,252);
+  color: rgb(248, 250, 252);
 }
 
 .ant-menu-item {
-  display: flex !important;
-  align-items: center !important;
+  background-color: #575858 !important;
+}
+.ant-menu-submenu {
+  background-color: #575858 !important;
+  margin-left: 4px;
+  margin-right: 4px;
+ 
+}
+.ant-menu-item-selected{
+  background-color: #fff !important;
 }
 
-.sidebar-menu > .ant-menu-item-selected {
-  background-color: rgb(248,250,252);
-  color: #3d3d3d;
-  font-weight: 500;
-}
 
-.recharts-cartesian-axis-tick > text{
+
+.recharts-cartesian-axis-tick > text {
   fill: #fff;
 }
 
@@ -52,9 +53,41 @@ font-family: var(--font-roboto);
   background-color: #000000 !important;
 }
 .ant-pagination-item-active > a {
-  color: rgb(248,250,252) !important;
+  color: rgb(248, 250, 252) !important;
 }
 .ant-segmented-item {
-  background-color: rgba(35,35,35,.1);
+  background-color: rgba(35, 35, 35, 0.1);
   margin: 0 0.5rem;
 }
+
+.ant-dropdown-trigger .anticon svg {
+  fill: #fff !important;
+}
+
+.ql-toolbar {
+  margin-bottom: 12px !important;
+  display: flex;
+  justify-content: end;
+  border: none !important;
+}
+
+.ql-formats {
+  background-color: white;
+  border-radius: 3px;
+}
+
+.ql-container {
+  background-color: #232323;
+  color: #f8fafc;
+  height: 550px !important;
+  border: none !important;
+  border-radius: 10px;
+  overflow: auto !important;
+}
+
+.ant-menu-sub > .ant-menu-item{
+  padding-left: 25px !important;
+}
+
+
+

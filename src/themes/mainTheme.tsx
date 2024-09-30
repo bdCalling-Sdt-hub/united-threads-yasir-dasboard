@@ -23,15 +23,14 @@ const mainTheme: ThemeConfig = {
       itemBorderRadius: 4,
       itemHoverColor: "rgb(35,35,35)",
       itemHoverBg: "rgb(248,250,252)",
-      subMenuItemBg: "rgb(87,88,88)",
       itemActiveBg: "rgb(248,250,252)",
       itemSelectedBg: "rgb(255,255,255)",
       itemSelectedColor: "rgb(0,0,0)",
     },
     Button: {
-      colorPrimaryBorder: "#232323",
-      colorPrimaryBg: "#232323",
-      colorPrimaryText: "#ffffff",
+      colorBgContainer: "rgb(35,35,35)",
+      colorText: "rgba(255,255,255,0.88)",
+      colorPrimaryHover: "rgb(175,157,157)",
       borderRadius: 8,
     },
     Segmented: {
@@ -53,8 +52,37 @@ const mainTheme: ThemeConfig = {
       colorText: "#232323",
       colorTextHeading: "rgb(248,250,252)",
       headerBg: "#232323",
-      borderColor: "rgb(87,88,88)",
       headerSplitColor: "#232323",
+    },
+    Input: {
+      colorBorder: "rgb(0,0,0)",
+    },
+    Form: {
+      labelFontSize: 18,
+    },
+    Tabs: {
+      colorText: "rgb(248,250,252)",
+      itemSelectedColor: "rgb(0,176,71)",
+    },
+    Select: {
+      colorBorder: "rgb(0,0,0)",
+      colorTextDisabled: "rgb(0,0,0)",
+    },
+    Spin: {
+      colorPrimary: "#232323",
+    },
+    DatePicker: {
+      colorBgElevated: "rgb(35,35,35)",
+      colorBgContainer: "rgb(35,35,35)",
+      colorText: "rgba(255,255,255,0.88)",
+      colorTextDisabled: "rgba(255,253,253,0.7)",
+      colorTextHeading: "rgba(255,255,255,0.88)",
+      colorIconHover: "rgba(247,225,225,0.88)",
+      colorIcon: "rgba(255,255,255,0.8)",
+      colorTextPlaceholder: "rgba(255,255,255,0.8)",
+    },
+    InputNumber: {
+      colorTextDisabled: "rgba(0,0,0,0.8)",
     },
   },
 };

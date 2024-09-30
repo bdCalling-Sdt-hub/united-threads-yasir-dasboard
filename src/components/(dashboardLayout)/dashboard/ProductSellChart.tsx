@@ -1,5 +1,5 @@
 "use client";
-import { Select, Typography } from "antd";
+import { Select } from "antd";
 import {
   AreaChart,
   Area,

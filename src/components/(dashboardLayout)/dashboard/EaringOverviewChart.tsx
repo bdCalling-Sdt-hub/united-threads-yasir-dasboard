@@ -1,5 +1,5 @@
 "use client";
-import { ConfigProvider, Select, Typography } from "antd";
+import {  Select} from "antd";
 import { useState } from "react";
 import {
   BarChart,

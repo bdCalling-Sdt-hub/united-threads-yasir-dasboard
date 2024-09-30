@@ -58,7 +58,7 @@ const [open, setOpen] = useState(false)
       dataIndex: "action",
       render: () => (
         <div className="ml-4 flex gap-x-3">
-          <IoEyeOutline size={20} onClick={()=> setOpen(true)} />
+          <IoEyeOutline className="cursor-pointer" size={20} onClick={()=> setOpen(true)} />
           <Popconfirm
             title="Block the User"
             description="Are you sure to block this user?"
@@ -66,7 +66,7 @@ const [open, setOpen] = useState(false)
             okText="Yes"
             cancelText="No"
           >
-            <LiaUserTimesSolid size={20} color="red" />
+            <LiaUserTimesSolid className="cursor-pointer" size={20} color="red" />
           </Popconfirm>
         </div>
       ),

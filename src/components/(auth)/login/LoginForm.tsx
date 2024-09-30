@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import { setUser } from "@/redux/features/auth/authSlice";
+import { useAppDispatch } from "@/redux/hooks";
+import { login } from "@/services/login";
 import type { FormProps } from "antd";
-import { Button, Checkbox, Form, Input, Flex, ConfigProvider } from "antd";
+import { Button, Checkbox, ConfigProvider, Flex, Form, Input } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type FieldType = {
   email?: string;
@@ -11,44 +15,34 @@ type FieldType = {
   remember?: string;
 };
 
-const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
-  console.log("Failed:", errorInfo);
-};
+//const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
+//  console.log("Failed:", errorInfo);
+//};
 
 const LoginForm = () => {
+  const [error, setError] = useState("");
   const router = useRouter();
-  const [role, setRole] = useState("");
-  const [user, setUser] = useState("");
+  const dispatch = useAppDispatch();
 
-  console.log(user);
-
-  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    console.log("Success:", values);
-    localStorage.setItem("user", values?.email ? values?.email : "");
-    setRole(values?.email?.split("@")[0] || "");
+  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+    try {
+      const res = (await login(values)) as TResponse<any>;
+      if (res.success && res.data.accessToken) {
+        dispatch(
+          setUser({
+            user: null,
+            token: res.data.accessToken,
+          }),
+        );
+        console.log(res.data.accessToken, "access token");
+        router.push("/");
+      } else {
+        setError(res.message as string);
+      }
+    } catch (error: any) {
+      setError(error.message || "Something went wrong");
+    }
   };
-
-  // Listen for changes in the `role` state and perform redirect
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(storedUser);
-      const derivedRole = storedUser.split("@")[0];
-      setRole(derivedRole);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (role) {
-      router.push(
-        role === "admin"
-          ? "/dashboard"
-          : role === "csr"
-          ? "/quote-details"
-          : ""
-      );
-    }
-  }, [role, router]);
 
   return (
     <ConfigProvider
@@ -61,17 +55,17 @@ const LoginForm = () => {
       }}
     >
       <Form
-        name="basic"
+        name='basic'
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-        layout="vertical"
-        className="md:w-[481px]"
+        //onFinishFailed={onFinishFailed}
+        autoComplete='off'
+        layout='vertical'
+        className='md:w-[481px]'
       >
         <Form.Item<FieldType>
-          label="Email"
-          name="email"
+          label='Email'
+          name='email'
           rules={[
             { required: true, message: "Please input your email!" },
             {
@@ -80,34 +74,31 @@ const LoginForm = () => {
             },
           ]}
         >
-          <Input size="large" type="email" placeholder="Example@gmail.com" />
+          <Input size='large' type='email' placeholder='Example@gmail.com' />
         </Form.Item>
 
         <Form.Item<FieldType>
-          name="password"
-          label="Password"
+          name='password'
+          label='Password'
           rules={[{ required: true, message: "Please input your password!" }]}
         >
-          <Input.Password size="large" placeholder="*******" />
+          <Input.Password size='large' placeholder='*******' />
         </Form.Item>
 
-        <Form.Item<FieldType>
-          name="remember"
-          valuePropName="checked"
-          style={{ color: "#F8FAFC" }}
-        >
-          <Flex justify="space-between" align="center">
+        <Form.Item<FieldType> name='remember' valuePropName='checked' style={{ color: "#F8FAFC" }}>
+          <Flex justify='space-between' align='center'>
             <Checkbox style={{ color: "#F8FAFC" }}>Remember me</Checkbox>
             <Link href={"/forgetPassword"} style={{ textDecoration: "" }}>
-              <p className="text-[#8ABA51]">Forgot Password?</p>
+              <p className='text-[#8ABA51]'>Forgot Password?</p>
             </Link>
           </Flex>
         </Form.Item>
 
+        {error && <p className='text-red-500'>{error}</p>}
         <Form.Item style={{ display: "flex", justifyContent: "center" }}>
           <Button
-            htmlType="submit"
-            size="large"
+            htmlType='submit'
+            size='large'
             style={{ backgroundColor: "#232323", color: "#F8FAFC" }}
           >
             Sign in

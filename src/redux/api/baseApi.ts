@@ -36,9 +36,9 @@ const baseQueryWithRefreshToken: BaseQueryFn<FetchArgs, BaseQueryApi, Definition
   //   toast.error(result.error?.data?.message);
   // }
 
+  console.log({ result });
   if (result.error?.status === 401) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh-token`, {
-      method: "POST",
       credentials: "include",
     });
     const data = await res.json();
@@ -53,6 +53,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<FetchArgs, BaseQueryApi, Definition
       result = await baseQuery(args, api, extraOptions);
     } else {
       api.dispatch(logout());
+      window.location.href = "/login";
     }
   }
   return result;

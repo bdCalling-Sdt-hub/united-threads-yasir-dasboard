@@ -22,6 +22,7 @@ export const login = async (data: Record<string, unknown>) => {
 
   if (result.success) {
     cookieStore.set("token", result.data.accessToken);
+    cookieStore.set("refreshToken", result.data.refreshToken);
   }
 
   return result;

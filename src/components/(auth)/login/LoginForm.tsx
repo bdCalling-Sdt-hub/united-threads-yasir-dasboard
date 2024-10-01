@@ -3,6 +3,7 @@
 import { logout, setUser, TUser } from "@/redux/features/auth/authSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { login } from "@/services/login";
+import { TResponse } from "@/types/global";
 import type { FormProps } from "antd";
 import { Button, Checkbox, ConfigProvider, Flex, Form, Input } from "antd";
 import { jwtDecode } from "jwt-decode";
@@ -30,8 +31,9 @@ const LoginForm = () => {
       setError("");
       const res = (await login(values)) as TResponse<any>;
       if (res.success && res?.data?.accessToken) {
-        console.log(res.data);
         const user = jwtDecode(res.data.accessToken) as TUser;
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("token", res.data.accessToken);
 
         dispatch(
           setUser({

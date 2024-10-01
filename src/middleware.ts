@@ -19,6 +19,15 @@ export function middleware(request: NextRequest) {
     try {
       const user = jwtDecode(accessToken) as TUser;
 
+      // find the token expiration date
+      console.log(new Date(user.exp * 1000));
+
+      // check also the token expiration
+      if (user.exp * 1000 < Date.now()) {
+        // Token expired, redirect to login
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
+
       if (!user) {
         // Invalid or no user data in token, redirect to login
         return NextResponse.redirect(new URL("/login", request.url));
@@ -27,22 +36,22 @@ export function middleware(request: NextRequest) {
       // Handle role-based redirection
       if (adminRoutes.includes(request.nextUrl.pathname)) {
         // Check if the user has ADMIN role for the /admin route
-        if (user.role !== "ADMIN") {
+        if (user.role !== "ADMIN" && user.role !== "CSR") {
           return NextResponse.redirect(new URL("/login", request.url));
         }
       }
 
       // You can extend this to handle more routes for different user roles
-      if (authRoutes.includes(request.nextUrl.pathname)) {
-        // If already logged in and accessing /login, redirect based on role
-        if (user.role === "ADMIN") {
-          return NextResponse.redirect(new URL("/admin", request.url));
-        } else if (user.role === "CSR") {
-          return NextResponse.redirect(new URL("/csr", request.url));
-        } else if (user.role === "CUSTOMER") {
-          return NextResponse.redirect(new URL("/customer-dashboard", request.url));
-        }
-      }
+      //if (authRoutes.includes(request.nextUrl.pathname)) {
+      //  // If already logged in and accessing /login, redirect based on role
+      //  if (user.role === "ADMIN") {
+      //    return NextResponse.redirect(new URL("/admin", request.url));
+      //  } else if (user.role === "CSR") {
+      //    return NextResponse.redirect(new URL("/csr", request.url));
+      //  } else if (user.role === "CUSTOMER") {
+      //    return NextResponse.redirect(new URL("/customer-dashboard", request.url));
+      //  }
+      //}
 
       // Continue if no redirection is needed
       return NextResponse.next();

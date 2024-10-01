@@ -47,7 +47,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
                 className='relative aspect-square size-12 rounded-full bg-info flex-item-center'
               >
                 <GoBell size={20} />
-                <span className='absolute top-1.5 right-1.5 size-[18px] bg-warning text-parimaryWhite rounded-full text-sm flex-item-center'>
+                <span className='absolute top-1.5 right-1.5 size-[18px] bg-warning text-primaryWhite rounded-full text-sm flex-item-center'>
                   3
                 </span>
               </div>

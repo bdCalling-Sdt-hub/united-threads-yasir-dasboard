@@ -16,17 +16,14 @@ const config: Config = {
         info: "#F8FAFC",
         success: "#34D399",
         warning: "#F16365",
-        parimaryWhite: "#F8FAFC"
-
+        primaryWhite: "#F8FAFC",
       },
-      fontFamily:{
-        roboto:["var(--font-roboto)"],
-
-      }
+      fontFamily: {
+        roboto: ["var(--font-roboto)"],
+      },
     },
   },
   plugins: [],
   important: true,
-
 };
 export default config;

@@ -5,7 +5,7 @@ type TMeta = {
   totalPage: number;
 };
 
-type TResponse<T> = {
+export type TResponse<T> = {
   statusCode: number;
   success: boolean;
   message?: string;

@@ -19,9 +19,9 @@ const usersApi = baseApi.injectEndpoints({
       providesTags: ["Users"],
     }),
     updateUser: builder.mutation({
-      query: ({ slug, data }) => {
+      query: ({ userId, data }) => {
         return {
-          url: `/user/update-user/${slug}`,
+          url: `/user/update-user/${userId}`,
           method: "PATCH",
           body: data,
         };
@@ -37,6 +37,7 @@ const usersApi = baseApi.injectEndpoints({
       },
       providesTags: ["Users"],
     }),
+
     getProfile: builder.query({
       query: () => ({
         url: "/user/profile",

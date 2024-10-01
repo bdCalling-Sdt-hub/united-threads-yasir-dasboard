@@ -1,20 +1,14 @@
 "use client";
+import { useGetUsersQuery, useUpdateUserMutation } from "@/redux/api/userApi";
+import { TResponse } from "@/types/global";
+import { TUser } from "@/types/userType";
 import { Input, message, Popconfirm, PopconfirmProps, Table, TableProps } from "antd";
+import moment from "moment";
+import { useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { IoEyeOutline } from "react-icons/io5";
 import { LiaUserTimesSolid } from "react-icons/lia";
 import UserModal from "./UserModal";
-import { useEffect, useState } from "react";
-import { useGetUsersQuery } from "@/redux/api/userApi";
-import { TResponse } from "@/types/global";
-import { TUser } from "@/types/userType";
-import moment from "moment";
-import { useSearchParams } from "next/navigation";
-
-const confirm: PopconfirmProps["onConfirm"] = (e) => {
-  console.log(e);
-  message.success("Successfully blocked this user");
-};
 
 const UserMangementContainer = () => {
   const [open, setOpen] = useState(false);
@@ -28,6 +22,25 @@ const UserMangementContainer = () => {
     { label: "searchTerm", value: search },
     { label: "sort", value: "-createdAt" },
   ]);
+
+  const [updateUser] = useUpdateUserMutation();
+
+  const confirm = async (userId: string) => {
+    message.loading("Deleting...", 0.5);
+    const res = await updateUser({ userId, data: { isDelete: true } }).unwrap();
+
+    if (res?.success) {
+      message.success(res?.message);
+    } else {
+      message.error(res?.message);
+    }
+    try {
+    } catch (error: any) {
+      message.error(error.message);
+    } finally {
+      message.destroy();
+    }
+  };
 
   const result = data as TResponse<TUser[]>;
 
@@ -64,9 +77,9 @@ const UserMangementContainer = () => {
             }}
           />
           <Popconfirm
-            title='Block the User'
-            description='Are you sure to block this user?'
-            onConfirm={confirm}
+            title='Delete the User'
+            description='Are you sure to Delete this user?'
+            onConfirm={() => confirm(record._id)}
             okText='Yes'
             cancelText='No'
           >

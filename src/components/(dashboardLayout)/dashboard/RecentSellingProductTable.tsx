@@ -23,7 +23,7 @@ const RecentSellingProductTable = () => {
   const { data, isLoading } = useGetOrdersQuery(
     [
       { label: "limit", value: limit.toString() },
-      { label: "sort", value: "createdAt" },
+      { label: "sort", value: "-createdAt" },
     ],
     {},
   );

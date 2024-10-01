@@ -1,17 +1,15 @@
 "use client";
-import {
-  Input,
-  message,
-  Popconfirm,
-  PopconfirmProps,
-  Table,
-  TableProps,
-} from "antd";
+import { Input, message, Popconfirm, PopconfirmProps, Table, TableProps } from "antd";
 import { IoIosSearch } from "react-icons/io";
 import { IoEyeOutline } from "react-icons/io5";
 import { LiaUserTimesSolid } from "react-icons/lia";
 import UserModal from "./UserModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useGetUsersQuery } from "@/redux/api/userApi";
+import { TResponse } from "@/types/global";
+import { TUser } from "@/types/userType";
+import moment from "moment";
+import { useSearchParams } from "next/navigation";
 
 const confirm: PopconfirmProps["onConfirm"] = (e) => {
   console.log(e);
@@ -19,31 +17,29 @@ const confirm: PopconfirmProps["onConfirm"] = (e) => {
 };
 
 const UserMangementContainer = () => {
-const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [limit, setLimit] = useState(10000000000);
+  const [search, setSearch] = useState("");
+  const [userId, setUserId] = useState("");
 
+  const { data, isLoading } = useGetUsersQuery([
+    { label: "role", value: "CUSTOMER" },
+    { label: "limit", value: limit.toString() },
+    { label: "searchTerm", value: search },
+    { label: "sort", value: "-createdAt" },
+  ]);
 
-  type TDataType = {
-    key: number;
-    name: string;
-    email: string;
-    date: string;
-  };
-  const data: TDataType[] = Array.from({ length: 50 }).map((_, inx) => ({
-    key: inx + 1,
-    name: "Opu",
-    email: "info@gmail.com",
-    date: "11 oct 24, 11.10PM",
-  }));
+  const result = data as TResponse<TUser[]>;
 
-  const columns: TableProps<TDataType>["columns"] = [
+  const columns: TableProps<TUser>["columns"] = [
     {
       title: "Serial",
       dataIndex: "key",
-      render: (value) => `#${value}`,
+      render: (value, record, index) => `#${++index}`,
     },
     {
       title: "Customer Name",
-      dataIndex: "name",
+      dataIndex: "firstName",
     },
     {
       title: "Email",
@@ -51,46 +47,62 @@ const [open, setOpen] = useState(false)
     },
     {
       title: "Date",
-      dataIndex: "date",
+      dataIndex: "createdAt",
+      render: (value) => moment(value).format("DD MMMM YYYY : hh:mm A"),
     },
     {
       title: "Action",
       dataIndex: "action",
-      render: () => (
-        <div className="ml-4 flex gap-x-3">
-          <IoEyeOutline className="cursor-pointer" size={20} onClick={()=> setOpen(true)} />
+      render: (value, record) => (
+        <div className='ml-4 flex gap-x-3'>
+          <IoEyeOutline
+            className='cursor-pointer'
+            size={20}
+            onClick={() => {
+              setOpen(true);
+              setUserId(record._id);
+            }}
+          />
           <Popconfirm
-            title="Block the User"
-            description="Are you sure to block this user?"
+            title='Block the User'
+            description='Are you sure to block this user?'
             onConfirm={confirm}
-            okText="Yes"
-            cancelText="No"
+            okText='Yes'
+            cancelText='No'
           >
-            <LiaUserTimesSolid className="cursor-pointer" size={20} color="red" />
+            <LiaUserTimesSolid className='cursor-pointer' size={20} color='red' />
           </Popconfirm>
         </div>
       ),
     },
   ];
 
+  useEffect(() => {
+    if (!isLoading && result?.meta?.total) {
+      setLimit(result?.meta?.total);
+    }
+  }, []);
+
   return (
     <div>
-      <div className="flex items-center justify-between py-4">
-        <h1 className="text-2xl font-bold w-full">User Management</h1>
+      <div className='flex items-center justify-between py-4'>
+        <h1 className='text-2xl font-bold w-full'>User Management</h1>
         <Input
-          type="search"
-          placeholder="Search..."
+          type='search'
+          placeholder='Search...'
           prefix={<IoIosSearch size={20} />}
-          className="max-w-md bg-black text-[#F8FAFC] placeholder:!text-white py-2"
+          className='max-w-md bg-black text-[#F8FAFC] placeholder:!text-white py-2'
           defaultValue={"Search..."}
+          onChange={(e) => setSearch(e.target.value)}
         />
       </div>
       <Table
         columns={columns}
-        dataSource={data}
+        loading={isLoading}
+        dataSource={result?.data}
         pagination={{ pageSize: 10, responsive: true }}
       ></Table>
-      <UserModal open={open} setOpen={setOpen}></UserModal>
+      <UserModal open={open} userId={userId} setOpen={setOpen}></UserModal>
     </div>
   );
 };

@@ -29,9 +29,9 @@ const usersApi = baseApi.injectEndpoints({
       invalidatesTags: ["Users"],
     }),
     getSingleUser: builder.query({
-      query: ({ slug }: { slug?: string }) => {
+      query: ({ userId }: { userId?: string }) => {
         return {
-          url: `/user/${slug}`,
+          url: `/user/single-user/${userId}`,
           method: "GET",
         };
       },

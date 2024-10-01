@@ -19,10 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${kumbh.className} ${roboto.variable}  antialiased bg-[#232323]`}
-      >
+    <html lang='en'>
+      <body className={`${kumbh.className} ${roboto.variable}  antialiased bg-[#232323]`}>
         <Providers>
           <Toaster />
           {children}

@@ -1,15 +1,16 @@
 "use server";
 
-import { FieldType } from "@/app/(auth)/login/component/LoginForm";
 import { cookies } from "next/headers";
 
-export const login = async (data: FieldType) => {
+export const login = async (data: Record<string, unknown>) => {
   const cookieStore = cookies();
   const payload = {
     email: data.email,
     password: data.password,
   };
-  const res = await fetch(`${process.env.BASE_URL}/auth/sign-in`, {
+  console.log(payload);
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/sign-in`, {
     method: "POST",
     credentials: "include",
     headers: {

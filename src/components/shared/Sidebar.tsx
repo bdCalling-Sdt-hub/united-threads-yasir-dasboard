@@ -1,22 +1,22 @@
 "use client";
+import logoImage from "@/assets//image/logo.png";
+import { useAppSelector } from "@/redux/hooks";
 import { Menu, MenuProps } from "antd";
 import Sider from "antd/es/layout/Sider";
+import MenuItem from "antd/es/menu/MenuItem";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { AiOutlineBarChart } from "react-icons/ai";
 import { CiBadgeDollar, CiLogout } from "react-icons/ci";
 import { GoChecklist } from "react-icons/go";
-import { LuClipboardList } from "react-icons/lu";
-import { PiUsersThreeThin } from "react-icons/pi";
-import { TbListDetails, TbSettingsCheck } from "react-icons/tb";
 import { HiOutlineCircleStack } from "react-icons/hi2";
-import { SlBookOpen } from "react-icons/sl";
-import { RiContactsBookUploadLine } from "react-icons/ri";
+import { LuClipboardList } from "react-icons/lu";
 import { MdManageHistory } from "react-icons/md";
-import { TbChecklist } from "react-icons/tb";
-import logoImage from "@/assets//image/logo.png";
-import { useEffect, useState } from "react";
-import MenuItem from "antd/es/menu/MenuItem";
+import { PiUsersThreeThin } from "react-icons/pi";
+import { RiContactsBookUploadLine } from "react-icons/ri";
+import { SlBookOpen } from "react-icons/sl";
+import { TbChecklist, TbListDetails, TbSettingsCheck } from "react-icons/tb";
 type MenuItem = Required<MenuProps>["items"][number];
 
 type TSidebarType = {
@@ -27,28 +27,28 @@ type TSidebarType = {
 const adminNavLink: MenuItem[] = [
   {
     key: "dashboard",
-    label: <Link href="/dashboard">Dashboard</Link>,
+    label: <Link href='/admin'>Dashboard</Link>,
     icon: <AiOutlineBarChart size={24} />,
   },
   {
     key: "user-management",
     icon: <PiUsersThreeThin strokeWidth={1} size={24} />,
-    label: <Link href="/user-management">User Management</Link>,
+    label: <Link href='/admin/user-management'>User Management</Link>,
   },
   {
     key: "earnings",
     icon: <CiBadgeDollar strokeWidth={1} size={24} />,
-    label: <Link href="/earnings">Earnings</Link>,
+    label: <Link href='/admin/earnings'>Earnings</Link>,
   },
   {
     key: "products",
     icon: <LuClipboardList size={24} />,
-    label: <Link href="/products">Shop Produts</Link>,
+    label: <Link href='/admin/products'>Shop Produts</Link>,
   },
   {
     key: "orders",
     icon: <GoChecklist size={24} />,
-    label: <Link href="/order-details">Order Details</Link>,
+    label: <Link href='/admin/order-details'>Order Details</Link>,
   },
   {
     key: "quotes",
@@ -58,12 +58,12 @@ const adminNavLink: MenuItem[] = [
       {
         key: "productCategory",
         icon: <RiContactsBookUploadLine size={24} />,
-        label: <Link href="/quote-product">Product Category</Link>,
+        label: <Link href='/quote-product'>Product Category</Link>,
       },
       {
         key: "quoteManagement",
         icon: <MdManageHistory size={24} />,
-        label: <Link href="/quote-management">Quote Management</Link>,
+        label: <Link href='/quote-management'>Quote Management</Link>,
       },
     ],
   },
@@ -75,17 +75,17 @@ const adminNavLink: MenuItem[] = [
       {
         key: "aboutUs",
         icon: <HiOutlineCircleStack size={24} />,
-        label: <Link href="/aboutUs">About Us</Link>,
+        label: <Link href='/admin/aboutUs'>About Us</Link>,
       },
       {
         key: "privacyPolicy",
         icon: <HiOutlineCircleStack size={24} />,
-        label: <Link href="/privacy-policy">Privacy Policy</Link>,
+        label: <Link href='/admin/privacy-policy'>Privacy Policy</Link>,
       },
       {
         key: "terms",
         icon: <SlBookOpen size={24} />,
-        label: <Link href="/terms">Terms of use</Link>,
+        label: <Link href='/admin/terms'>Terms of use</Link>,
       },
     ],
   },
@@ -99,7 +99,7 @@ const adminNavLink: MenuItem[] = [
 const nvaLinkCSR: MenuItem[] = [
   {
     key: "quoteDetails",
-    label: <Link href="/quote-details">Quote Details</Link>,
+    label: <Link href='/admin/quote-details'>Quote Details</Link>,
     icon: <TbChecklist size={24} />,
   },
   {
@@ -111,17 +111,7 @@ const nvaLinkCSR: MenuItem[] = [
 
 const Sidebar = ({ collapsed, setCollapsed }: TSidebarType) => {
   const [current, setCurrent] = useState("dashboard");
-  const [role, setRole] = useState("");
-  const [user, setUser] = useState("");
-
-  useEffect(() => {
-    setUser(localStorage.getItem("user") as string);
-    if ( user) {
-      return setRole(user?.split("@")[0] as string);
-    }
-    console.log("user not found");
-  }, [user, role]);
-
+  const user = useAppSelector((state) => state.auth.user);
 
   const onClick: MenuProps["onClick"] = (e) => {
     console.log("click ", e);
@@ -140,21 +130,15 @@ const Sidebar = ({ collapsed, setCollapsed }: TSidebarType) => {
       className={`px-2 overflow-hidden ${!collapsed ? "min-w-[230px]" : ""}`}
     >
       <div>
-        <div className="demo-logo-vertical pb-4 pt-20">
-          <Image src={logoImage} alt="logoImage"></Image>
+        <div className='demo-logo-vertical pb-4 pt-20'>
+          <Image src={logoImage} alt='logoImage'></Image>
         </div>
         <Menu
           onClick={onClick}
           defaultOpenKeys={["dashboard"]}
           selectedKeys={[current]}
-          mode="inline"
-          items={
-            role === ("admin" as string)
-              ? adminNavLink
-              : role === ("csr" as string)
-              ? nvaLinkCSR
-              : []
-          }
+          mode='inline'
+          items={user?.role === "ADMIN" ? adminNavLink : user?.role === "CSR" ? nvaLinkCSR : []}
         />
       </div>
     </Sider>

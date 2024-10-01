@@ -21,6 +21,12 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/(dashboardLayout)/quote-management/[id]/deliveryQuoteProduct"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/(dashboardLayout)/admin/quote-management/[id]/deliveryQuoteProduct"
+  ],
   "exclude": ["node_modules"]
 }

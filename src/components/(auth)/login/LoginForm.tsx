@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { setUser } from "@/redux/features/auth/authSlice";
+import { logout, setUser, TUser } from "@/redux/features/auth/authSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { login } from "@/services/login";
 import type { FormProps } from "antd";
 import { Button, Checkbox, ConfigProvider, Flex, Form, Input } from "antd";
+import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -26,16 +27,25 @@ const LoginForm = () => {
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     try {
+      setError("");
       const res = (await login(values)) as TResponse<any>;
-      if (res.success && res.data.accessToken) {
+      if (res.success && res?.data?.accessToken) {
+        console.log(res.data);
+        const user = jwtDecode(res.data.accessToken) as TUser;
+
         dispatch(
           setUser({
-            user: null,
+            user,
             token: res.data.accessToken,
           }),
         );
-        console.log(res.data.accessToken, "access token");
-        router.push("/");
+        if (user.role === "ADMIN") {
+          router.push("/admin");
+        } else if (user.role === "CSR") {
+          router.push("/csr");
+        } else if (user.role === "CUSTOMER") {
+          logout();
+        }
       } else {
         setError(res.message as string);
       }
@@ -56,7 +66,7 @@ const LoginForm = () => {
     >
       <Form
         name='basic'
-        initialValues={{ remember: true }}
+        initialValues={{ remember: true, email: "admin@gmail.com", password: "123456" }}
         onFinish={onFinish}
         //onFinishFailed={onFinishFailed}
         autoComplete='off'

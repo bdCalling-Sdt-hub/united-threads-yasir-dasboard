@@ -1,16 +1,17 @@
 "use client";
-import { Button, Segmented } from "antd";
+import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
+import { useGetProductsQuery } from "@/redux/api/productApi";
+import { TCategory } from "@/types/categoryTypes";
+import { TResponse } from "@/types/global";
+import { TProduct } from "@/types/productType";
+import { LoadingOutlined } from "@ant-design/icons";
+import { Button, Empty, Segmented, Spin } from "antd";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import AddCetagoryModal from "./AddCetagoryModal";
-import Link from "next/link";
 import ProductCard from "./ProductCard";
-import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
-import { useGetProductsQuery } from "@/redux/api/productApi";
-import { TResponse } from "@/types/global";
-import { TCategory } from "@/types/categoryTypes";
-import { TProduct } from "@/types/productType";
 
 const ProductsContainer = () => {
   const [open, setOpen] = useState(false);
@@ -19,18 +20,24 @@ const ProductsContainer = () => {
   const { data: categoryData, isLoading: categoriesLoading } = useGetCategoriesQuery({});
   const result = categoryData as TResponse<TCategory[]>;
 
-  // Get categories and map them into an array
-  const categories: TCategory[] = result?.data || [];
-  const categoryOptions = categories.map((category) => ({
-    label: category.name,
-    value: category._id,
-  }));
-
-  // Add 'ALL' category manually at the start
-  const allCategories = [{ label: "ALL", value: "ALL" }, ...categoryOptions];
-
-  // Define visible categories to enable scrolling
+  // State for categories and visible categories
+  const [allCategories, setAllCategories] = useState<{ label: string; value: string }[]>([
+    { label: "ALL", value: "ALL" },
+  ]);
   const [visibleCategories, setVisibleCategories] = useState(allCategories.slice(0, 6));
+
+  useEffect(() => {
+    if (!categoriesLoading && result?.data?.length) {
+      // Add categories from API and ensure 'ALL' is only added once
+      const categoryOptions = result.data.map((category) => ({
+        label: category.name,
+        value: category._id,
+      }));
+
+      setAllCategories([{ label: "ALL", value: "ALL" }, ...categoryOptions]);
+      setVisibleCategories([{ label: "ALL", value: "ALL" }, ...categoryOptions].slice(0, 6));
+    }
+  }, [categoryData]);
 
   const handleRightClick = () => {
     setVisibleCategories((prev) => {
@@ -56,12 +63,6 @@ const ProductsContainer = () => {
   ]);
 
   const products: TProduct[] = productData?.data || [];
-
-  useEffect(() => {
-    if (!categoriesLoading && result?.data?.length) {
-      setVisibleCategories(allCategories.slice(0, 6));
-    }
-  }, [categoryData]);
 
   return (
     <>
@@ -101,15 +102,23 @@ const ProductsContainer = () => {
             </Button>
           </div>
         </div>
-        <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
-          {productIsLoading ? (
-            <p>Loading products...</p>
-          ) : (
-            products.map((product) => <ProductCard key={product._id} product={product} />)
-          )}
-        </div>
+        {productIsLoading ? (
+          <div className='w-full flex justify-center h-44 items-center'>
+            <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+          </div>
+        ) : !products?.length ? (
+          <div className='flex justify-center w-full h-44 items-center'>
+            <Empty />
+          </div>
+        ) : (
+          <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
+            {products?.map((product) => (
+              <ProductCard key={product?._id} product={product} />
+            ))}
+          </div>
+        )}
       </div>
-      <AddCetagoryModal open={open} setOpen={setOpen}></AddCetagoryModal>
+      <AddCetagoryModal open={open} setOpen={setOpen} />
     </>
   );
 };

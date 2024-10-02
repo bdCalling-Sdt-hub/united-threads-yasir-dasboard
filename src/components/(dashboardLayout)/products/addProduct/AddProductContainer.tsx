@@ -1,7 +1,8 @@
 "use client";
+import { useAddProductMutation } from "@/redux/api/productApi";
 import { Button, Checkbox, Form, FormProps, GetProp, Input, Upload } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { useState } from "react";
+import { use, useState } from "react";
 import { PiUploadLight } from "react-icons/pi";
 
 type FieldType = {
@@ -12,15 +13,32 @@ const sizeOptions = ["S", "M", "L", "XL", "XXl"];
 
 const AddProductContainer = () => {
   const [size, setSize] = useState([]);
-
+  const [form] = Form.useForm();
+  const [error, setError] = useState("");
   const onSelectSize: GetProp<typeof Checkbox.Group, "onChange"> = (checkedValues) => {
     console.log("checked = ", checkedValues);
     setSize(checkedValues as []);
     console.log(size);
   };
 
-  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    console.log("Success:", values);
+  const [addProduct] = useAddProductMutation();
+
+  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+    console.log(values);
+    try {
+      const formData = new FormData();
+
+      formData.append("data", JSON.stringify(values));
+
+      const res = await addProduct(formData).unwrap();
+      if (res.success) {
+        form.resetFields();
+      } else {
+        setError(res.message);
+      }
+    } catch (error: any) {
+      setError(error.message || "Something went wrong");
+    }
   };
 
   return (

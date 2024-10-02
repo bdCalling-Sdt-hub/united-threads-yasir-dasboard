@@ -8,14 +8,6 @@ import { TResponse } from "@/types/global";
 import { TOrder } from "@/redux/api/orderType";
 import moment from "moment";
 
-type TDataType = {
-  key: number;
-  product: string;
-  buyerEmail: string;
-  date: string;
-  amount: string;
-};
-
 const RecentSellingProductTable = () => {
   const [open, setOpen] = useState(false);
   const [limit, setLimit] = useState(10000000000);

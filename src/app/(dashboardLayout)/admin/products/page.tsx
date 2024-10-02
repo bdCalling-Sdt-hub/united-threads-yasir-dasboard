@@ -1,7 +1,5 @@
 import ProductsContainer from "@/components/(dashboardLayout)/products/ProductsContainer";
 
-
-
 const ProductPage = () => {
   return (
     <div>

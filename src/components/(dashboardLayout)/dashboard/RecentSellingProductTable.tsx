@@ -19,11 +19,11 @@ type TDataType = {
 const RecentSellingProductTable = () => {
   const [open, setOpen] = useState(false);
   const [limit, setLimit] = useState(10000000000);
-
+  const [orderId, setOrderId] = useState("");
   const { data, isLoading } = useGetOrdersQuery(
     [
-      { label: "limit", value: limit.toString() },
       { label: "sort", value: "-createdAt" },
+      { label: "limit", value: limit.toString() },
     ],
     {},
   );
@@ -59,9 +59,15 @@ const RecentSellingProductTable = () => {
     {
       title: "Action",
       dataIndex: "action",
-      render: () => (
+      render: (value, record) => (
         <div className='ml-4 cursor-pointer'>
-          <IoEyeOutline size={20} onClick={() => setOpen(true)} />
+          <IoEyeOutline
+            size={20}
+            onClick={() => {
+              setOpen(true);
+              setOrderId(record._id);
+            }}
+          />
         </div>
       ),
     },
@@ -99,7 +105,11 @@ const RecentSellingProductTable = () => {
           ></Table>
         </div>
       </ConfigProvider>
-      <SellProductDetailsModal open={open} setOpen={setOpen}></SellProductDetailsModal>
+      <SellProductDetailsModal
+        orderId={orderId}
+        open={open}
+        setOpen={setOpen}
+      ></SellProductDetailsModal>
     </>
   );
 };

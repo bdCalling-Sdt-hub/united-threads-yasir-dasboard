@@ -29,9 +29,18 @@ const orderApi = baseApi.injectEndpoints({
       invalidatesTags: ["Order"],
     }),
     getSingleOrder: builder.query({
-      query: ({ slug: orderId }: { slug?: string }) => {
+      query: ({ orderId }: { orderId: string }) => {
         return {
-          url: `/order/${orderId}`,
+          url: `/order/single-order/${orderId}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["Order"],
+    }),
+    getPaymentData: builder.query({
+      query: ({ orderId }: { orderId: string }) => {
+        return {
+          url: `/payment/get-payment/${orderId}`,
           method: "GET",
         };
       },
@@ -40,4 +49,9 @@ const orderApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetOrdersQuery, useGetSingleOrderQuery, useUpdateOrderMutation } = orderApi;
+export const {
+  useGetOrdersQuery,
+  useGetSingleOrderQuery,
+  useUpdateOrderMutation,
+  useGetPaymentDataQuery,
+} = orderApi;

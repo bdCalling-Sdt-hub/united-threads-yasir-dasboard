@@ -21,15 +21,13 @@ import { TCategory } from "@/types/categoryTypes";
 
 // Define product size enum in zod
 const productSizeEnum = z.enum(["XS", "S", "M", "L", "XL", "XXL", "XXXL"]);
-
 // Define product validation schema in zod
 export const addProductValidation = z.object({
   name: z.string().min(1, { message: "Product name is required" }),
-  description: z.string().min(1, { message: "Product description is required" }),
   shortDescription: z.string().optional(),
-  category: z.string().min(1, { message: "Category is required" }),
-  quantity: z.number().min(0, { message: "Quantity must be 0 or greater" }),
-  price: z.number().positive({ message: "Price must be a positive number" }),
+  category: z.string({ required_error: "Category is required" }),
+  quantity: z.string({ required_error: "Quantity is required" }),
+  price: z.string({ message: "Price must be a positive number" }),
   size: z.array(productSizeEnum),
 });
 
@@ -43,7 +41,7 @@ const AddNewProduct = () => {
   const editor = useRef(null);
 
   // Size options
-  const sizeOptions = ["XS", "S", "M", "L", "XL"].map((size) => ({
+  const sizeOptions = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"].map((size) => ({
     label: size,
     value: size,
   }));
@@ -70,20 +68,39 @@ const AddNewProduct = () => {
   const { data: categoryRes } = useGetCategoriesQuery({ limit: 99999 });
   const categories = categoryRes as TResponse<TCategory[]>;
 
-  // Product image file list state
-  const [fileList, setFileList] = useState([]);
+  // Primary image file state (only 1 image)
+  const [primaryImage, setPrimaryImage] = useState<any[]>([]);
 
-  const handleChange = ({ fileList: newFileList }: any) => {
-    if (newFileList.length <= 3) {
-      setFileList(newFileList);
+  const handlePrimaryImageChange = ({ fileList: newFileList }: any) => {
+    if (newFileList.length <= 1) {
+      setPrimaryImage(newFileList);
     } else {
-      ErrorResponse({ message: "You can only upload up to 3 photos." });
+      ErrorResponse({ message: "You can only upload 1 primary image." });
     }
   };
 
-  const beforeUpload = () => {
-    if (fileList.length >= 3) {
-      ErrorResponse({ message: "You can only upload up to 3 photos." });
+  const beforePrimaryImageUpload = () => {
+    if (primaryImage.length >= 1) {
+      ErrorResponse({ message: "You can only upload 1 primary image." });
+      return false;
+    }
+    return true;
+  };
+
+  // Secondary image file list state (up to 4 images)
+  const [secondaryImages, setSecondaryImages] = useState<any[]>([]);
+
+  const handleSecondaryImageChange = ({ fileList: newFileList }: any) => {
+    if (newFileList.length <= 4) {
+      setSecondaryImages(newFileList);
+    } else {
+      ErrorResponse({ message: "You can only upload up to 4 secondary images." });
+    }
+  };
+
+  const beforeSecondaryImageUpload = () => {
+    if (secondaryImages.length >= 4) {
+      ErrorResponse({ message: "You can only upload up to 4 secondary images." });
       return false;
     }
     return true;
@@ -98,18 +115,18 @@ const AddNewProduct = () => {
       return;
     }
 
-    if (!fileList?.length) {
+    if (!primaryImage?.length) {
       ErrorResponse({
-        message: "Please upload at least 1 product image",
+        message: "Please upload 1 primary image",
       });
       return;
     }
 
     const updatedData = {
       ...data,
-      stock: Number(data?.quantity),
+      quantity: Number(data?.quantity),
       price: Number(data?.price),
-      color: colors?.length ? colors.map((clr) => clr.hex) : [],
+      colorsPreferences: colors?.length ? colors.map((clr) => clr.hex) : [],
       size: data.size || [],
       shortDescription: data?.shortDescription,
       description: longDescription,
@@ -120,10 +137,14 @@ const AddNewProduct = () => {
     const formData = new FormData();
     formData.append("data", JSON.stringify(updatedData));
 
-    // Append multiple images to formData
-    const images = fileList.map((file: any) => file.originFileObj);
-    images.forEach((image) => {
-      formData.append("images", image);
+    // Append primary image
+    if (primaryImage.length) {
+      formData.append("primaryImage", primaryImage[0].originFileObj);
+    }
+
+    // Append secondary images
+    secondaryImages.forEach((image: any) => {
+      formData.append("images", image.originFileObj);
     });
 
     try {
@@ -134,7 +155,7 @@ const AddNewProduct = () => {
         duration: 2000,
       });
 
-      router.push("/seller/products");
+      router.push("/admin/products");
     } catch (error) {
       ErrorResponse(error, toastId);
     }
@@ -168,7 +189,6 @@ const AddNewProduct = () => {
                 value={longDescription}
                 config={{
                   height: 400,
-                  //placeholder: "Enter detailed description of your product",
                 }}
                 onBlur={(newContent) => setLongDescription(newContent)}
               />
@@ -228,7 +248,7 @@ const AddNewProduct = () => {
                 </div>
               }
               name='size'
-              mode='tags'
+              mode='multiple'
               options={sizeOptions}
               placeholder='Enter size (press enter to add more)'
               size='large'
@@ -272,15 +292,34 @@ const AddNewProduct = () => {
             <button className='hidden' type='submit' id='formSubmitBtn'></button>
           </EForm>
         </Col>
-        <Col span={8} className='flex justify-center'>
+
+        {/* Primary Image Uploader */}
+        <Col span={8} className='flex flex-col gap-4'>
           <div>
-            <p className='mb-2 required-indicator'>Upload Product Image</p>
+            <p className='mb-2 required-indicator text-lg'>Upload Primary Image</p>
             <Upload
-              onChange={handleChange}
-              beforeUpload={beforeUpload}
-              fileList={fileList}
+              onChange={handlePrimaryImageChange}
+              beforeUpload={beforePrimaryImageUpload}
+              fileList={primaryImage}
               listType='picture'
-              maxCount={3}
+              maxCount={1}
+            >
+              <div className='border text-18 font-500 text-primary border-primary rounded flex flex-col items-center px-[200px] py-[20px] cursor-pointer'>
+                <UploadOutlined />
+                <button>Upload</button>
+              </div>
+            </Upload>
+          </div>
+          {/* Secondary Images Uploader */}
+          <div>
+            <p className='mb-2 required-indicator text-lg'>Upload Images (Max 4)</p>
+            <Upload
+              onChange={handleSecondaryImageChange}
+              beforeUpload={beforeSecondaryImageUpload}
+              fileList={secondaryImages}
+              listType='picture'
+              maxCount={4}
+              multiple
             >
               <div className='border text-18 font-500 text-primary border-primary rounded flex flex-col items-center px-[200px] py-[20px] cursor-pointer'>
                 <UploadOutlined />
@@ -290,6 +329,7 @@ const AddNewProduct = () => {
           </div>
         </Col>
       </Row>
+
       <div className='flex justify-between gap-x-6 mt-10'>
         <Button
           htmlType='submit'

@@ -1,4 +1,4 @@
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; // Use default import
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
@@ -7,6 +7,7 @@ import { TUser } from "./redux/features/auth/authSlice";
 const authRoutes = ["/login"];
 const adminRoutes = ["/admin"];
 const csrRoutes = ["/csr"];
+
 export function middleware(request: NextRequest) {
   const cookiesStore = cookies();
   const accessToken = cookiesStore.get("token")?.value;
@@ -18,53 +19,32 @@ export function middleware(request: NextRequest) {
 
   if (accessToken) {
     try {
-      const user = jwtDecode(accessToken) as TUser;
+      const user = jwtDecode<TUser>(accessToken);
 
-      // find the token expiration date
-      console.log(new Date(user.exp * 1000));
-
-      // check also the token expiration
-      if (user.exp * 1000 < Date.now()) {
+      // Token expiration check
+      if (user.exp && user.exp * 1000 < Date.now()) {
         // Token expired, redirect to login
         return NextResponse.redirect(new URL("/login", request.url));
       }
 
-      if (!user) {
-        // Invalid or no user data in token, redirect to login
-        return NextResponse.redirect(new URL("/login", request.url));
-      }
-
-      // Handle role-based redirection
+      // Handle role-based redirection for /admin routes
       if (adminRoutes.includes(request.nextUrl.pathname)) {
-        // Check if the user has ADMIN role for the /admin route
         if (user.role !== "ADMIN" && user.role !== "CSR") {
           return NextResponse.redirect(new URL("/login", request.url));
         }
       }
 
-      // You can extend this to handle more routes for different user roles
-      //if (authRoutes.includes(request.nextUrl.pathname)) {
-      //  // If already logged in and accessing /login, redirect based on role
-      //  if (user.role === "ADMIN") {
-      //    return NextResponse.redirect(new URL("/admin", request.url));
-      //  } else if (user.role === "CSR") {
-      //    return NextResponse.redirect(new URL("/csr", request.url));
-      //  } else if (user.role === "CUSTOMER") {
-      //    return NextResponse.redirect(new URL("/customer-dashboard", request.url));
-      //  }
-      //}
-
-      // Continue if no redirection is needed
-
-      if (user.role === "ADMIN" && csrRoutes.includes(request.nextUrl.pathname)) {
-        // If the user has ADMIN role, allow them to continue with admin route
-        return NextResponse.next();
-      } else if (user.role === "CSR" && csrRoutes.includes(request.nextUrl.pathname)) {
-        // If the user has CSR role, allow them to continue with csr route
+      // Handle role-based redirection for /csr routes
+      if (csrRoutes.includes(request.nextUrl.pathname)) {
+        if (user.role !== "ADMIN" && user.role !== "CSR") {
+          return NextResponse.redirect(new URL("/login", request.url));
+        }
+        // Allow if the role matches
         return NextResponse.next();
       }
 
-      return NextResponse.redirect(new URL("/login", request.url));
+      // Default: continue if no redirection is required
+      return NextResponse.next();
     } catch (error) {
       console.error("JWT decoding failed:", error);
       // If token decoding fails, redirect to login

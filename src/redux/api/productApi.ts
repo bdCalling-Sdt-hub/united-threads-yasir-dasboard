@@ -25,7 +25,6 @@ const productApi = baseApi.injectEndpoints({
       query: (data) => ({
         url: "/product/create-product",
         method: "POST",
-        headers: { "Content-Type": "multipart/form-data" },
         body: data,
       }),
     }),

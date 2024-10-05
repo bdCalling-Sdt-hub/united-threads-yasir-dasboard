@@ -31,12 +31,12 @@ const RecentSellingProductTable = () => {
     {
       title: "Product",
       dataIndex: "product",
-      render: (value) => value.name,
+      render: (value) => value?.name,
     },
     {
       title: "Buyer Email",
       dataIndex: "user",
-      render: (value) => value.email,
+      render: (value) => value?.email,
     },
     {
       title: "Date",

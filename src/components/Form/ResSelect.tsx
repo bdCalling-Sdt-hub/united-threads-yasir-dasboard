@@ -13,7 +13,7 @@ interface SelectProps {
   placeholder?: string;
   size?: SizeType;
   options: OptionsProps[];
-  defaultValue?: string;
+  defaultValue?: string | string[];
   mode?: "multiple" | "tags";
   showSearch?: boolean;
   filterOption?: (input: string, option?: { [key: string]: any }) => boolean;

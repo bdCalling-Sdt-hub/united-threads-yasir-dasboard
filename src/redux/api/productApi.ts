@@ -42,11 +42,12 @@ const productApi = baseApi.injectEndpoints({
         url: `/product/delete-product/${productId}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Product"],
     }),
 
     getSingleProduct: builder.query({
       query: ({ productId }) => ({
-        url: `/product/get-product/${productId}`,
+        url: `/product/single-product/${productId}`,
         method: "GET",
       }),
       providesTags: ["Product"],

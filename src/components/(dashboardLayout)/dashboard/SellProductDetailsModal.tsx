@@ -35,7 +35,7 @@ const SellProductDetailsModal = ({ open, setOpen, orderId }: TPropsType) => {
             <h4 className='text-center text-2xl font-medium'>Product Details</h4>
             <div className='mt-5'>
               <Image
-                src={order?.product?.image || productImage}
+                src={order?.product?.primaryImage || productImage}
                 alt='image'
                 width={1900}
                 height={1000}

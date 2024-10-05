@@ -4,13 +4,18 @@ export type TProduct = {
   name: string;
   description: string;
   shortDescription: string;
-  images: string[];
-  image?: string;
+  images: {
+    url: string;
+    key: string;
+  };
+  primaryImage?: string;
   category: string;
   quantity: number;
   price: number;
-  size: string;
+  size: string[];
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
+  orderCount: number;
+  colorsPreferences: string[]; // hex colors array;
 };

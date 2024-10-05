@@ -1,4 +1,4 @@
-import MessageContainer from "@/components/(dashboardLayout)/(csrRoute)/message/[user]/MessageContainer";
+import MessageContainer from "@/components/(dashboardLayout)/csr/message/[user]/MessageContainer";
 
 const MessagePage = () => {
   return <MessageContainer></MessageContainer>;

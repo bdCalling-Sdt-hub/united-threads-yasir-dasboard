@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useAddCategoryMutation } from "@/redux/api/categoryApi";
 import { Button, Form, FormProps, Input, Modal } from "antd";

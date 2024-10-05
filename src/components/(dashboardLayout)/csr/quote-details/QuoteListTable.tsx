@@ -138,13 +138,13 @@ const columns: TableProps<TDataType>["columns"] = [
 
     render: (value) => {
       if (value === "Pending") {
-        return <p className="text-[#F16365]">{value}</p>;
+        return <p className='text-[#F16365]'>{value}</p>;
       }
       if (value === "Quote Sent") {
         return <p>{value}</p>;
       }
       if (value === "Approved") {
-        return <p className="text-[#00B047]">{value}</p>;
+        return <p className='text-[#00B047]'>{value}</p>;
       }
     },
     filters: [
@@ -167,9 +167,9 @@ const columns: TableProps<TDataType>["columns"] = [
     title: "Action",
     dataIndex: "action",
     render: () => (
-      <div className="ml-4">
-        <Link href={"/quote-details/1"}>
-        <IoEyeOutline className="cursor-pointer" size={20} />
+      <div className='ml-4'>
+        <Link href={"/csr/quote-details/1"}>
+          <IoEyeOutline className='cursor-pointer' size={20} />
         </Link>
       </div>
     ),
@@ -179,11 +179,7 @@ const columns: TableProps<TDataType>["columns"] = [
 const QuoteListTable = () => {
   return (
     <div>
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={{ pageSize: 10 }}
-      ></Table>
+      <Table columns={columns} dataSource={data} pagination={{ pageSize: 10 }}></Table>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { TUser } from "./redux/features/auth/authSlice";
 
 const authRoutes = ["/login"];
 const adminRoutes = ["/admin"];
+const csrRoutes = ["/csr"];
 export function middleware(request: NextRequest) {
   const cookiesStore = cookies();
   const accessToken = cookiesStore.get("token")?.value;
@@ -54,7 +55,16 @@ export function middleware(request: NextRequest) {
       //}
 
       // Continue if no redirection is needed
-      return NextResponse.next();
+
+      if (user.role === "ADMIN" && csrRoutes.includes(request.nextUrl.pathname)) {
+        // If the user has ADMIN role, allow them to continue with admin route
+        return NextResponse.next();
+      } else if (user.role === "CSR" && csrRoutes.includes(request.nextUrl.pathname)) {
+        // If the user has CSR role, allow them to continue with csr route
+        return NextResponse.next();
+      }
+
+      return NextResponse.redirect(new URL("/login", request.url));
     } catch (error) {
       console.error("JWT decoding failed:", error);
       // If token decoding fails, redirect to login

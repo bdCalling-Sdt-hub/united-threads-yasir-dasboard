@@ -99,7 +99,7 @@ const adminNavLink: MenuItem[] = [
 const nvaLinkCSR: MenuItem[] = [
   {
     key: "quoteDetails",
-    label: <Link href='/admin/quote-details'>Quote Details</Link>,
+    label: <Link href='/csr/quote-details'>Quote Details</Link>,
     icon: <TbChecklist size={24} />,
   },
   {

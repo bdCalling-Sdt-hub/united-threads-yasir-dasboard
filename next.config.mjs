@@ -6,6 +6,11 @@ const nextConfig = {
       destination: "/login",
       permanent: true,
     },
+    {
+      source: "/csr",
+      destination: "/csr/quote-details",
+      permanent: true,
+    },
   ],
 };
 

@@ -41,17 +41,18 @@ const ProductCard = ({ product }: { product: TProduct }) => {
 
       {/* delete and esit btn */}
       <div className='mt-2 flex gap-1 absolute top-0 right-1'>
-        <div className='p-3 bg-red-500 rounded-full'>
-          <Popconfirm
-            title='Delete the task'
-            description='Are you sure to delete this task?'
-            onConfirm={confirm}
-            okText='Yes'
-            cancelText='No'
-          >
-            <FiTrash2 color='#fff' size={16} className='cursor-pointer' />
-          </Popconfirm>
-        </div>
+        <Popconfirm
+          title='Delete the task'
+          description='Are you sure to delete this task?'
+          onConfirm={confirm}
+          okText='Yes'
+          cancelText='No'
+        >
+          <div className='p-3 bg-red-500 rounded-full cursor-pointer'>
+            <FiTrash2 color='#fff' size={16} />
+          </div>
+        </Popconfirm>
+
         <Link
           href={`/admin/products/update-product/${product._id}`}
           className='p-3  bg-green-500 rounded-full'

@@ -69,7 +69,7 @@ const RecentSellingProductTable = () => {
     if (!isLoading && result?.meta?.total) {
       setLimit(result?.meta?.total);
     }
-  }, [isLoading]);
+  }, [isLoading, result?.meta?.total]);
 
   return (
     <>

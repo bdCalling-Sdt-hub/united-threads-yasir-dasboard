@@ -1,8 +1,8 @@
 import { baseApi } from "./baseApi";
 
-const productApi = baseApi.injectEndpoints({
+const quoteProductApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getProducts: builder.query({
+    getQuoteProducts: builder.query({
       query: (query: { label: string; value?: string }[] | []) => {
         const params = new URLSearchParams();
         if (query.length) {
@@ -14,53 +14,53 @@ const productApi = baseApi.injectEndpoints({
         }
 
         return {
-          url: "/product/products",
+          url: "/quote-product/products",
           method: "GET",
           params: params,
         };
       },
-      providesTags: ["Product"],
+      providesTags: ["QuoteProduct"],
     }),
-    addProduct: builder.mutation({
+    addQuoteProduct: builder.mutation({
       query: (data) => ({
-        url: "/product/create-product",
+        url: "/quote-product/create-product",
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Product"],
+      invalidatesTags: ["QuoteProduct"],
     }),
 
-    updateProduct: builder.mutation({
+    updateQuoteProduct: builder.mutation({
       query: ({ productId, data }) => ({
-        url: `/product/update-product/${productId}`,
+        url: `/quote-product/update-product/${productId}`,
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: ["Product"],
+      invalidatesTags: ["QuoteProduct"],
     }),
 
-    deleteProduct: builder.mutation({
+    deleteQuoteProduct: builder.mutation({
       query: ({ productId }) => ({
-        url: `/product/delete-product/${productId}`,
+        url: `/quote-product/delete-product/${productId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Product"],
+      invalidatesTags: ["QuoteProduct"],
     }),
 
-    getSingleProduct: builder.query({
+    getSingleQuoteProduct: builder.query({
       query: ({ productId }) => ({
         url: `/product/single-product/${productId}`,
         method: "GET",
       }),
-      providesTags: ["Product"],
+      providesTags: ["QuoteProduct"],
     }),
   }),
 });
 
 export const {
-  useGetProductsQuery,
-  useAddProductMutation,
-  useUpdateProductMutation,
-  useDeleteProductMutation,
-  useGetSingleProductQuery,
-} = productApi;
+  useGetQuoteProductsQuery,
+  useAddQuoteProductMutation,
+  useUpdateQuoteProductMutation,
+  useDeleteQuoteProductMutation,
+  useGetSingleQuoteProductQuery,
+} = quoteProductApi;

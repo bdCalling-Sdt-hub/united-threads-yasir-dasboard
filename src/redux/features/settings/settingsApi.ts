@@ -1,23 +1,21 @@
-
 import { baseApi } from "../../api/baseApi";
 
 const settingsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getSettings : builder.query({
-      query: () => ({
-        url: `/settings/get-settings`,
+    getSettings: builder.query({
+      query: ({ label }: { label: string }) => ({
+        url: `/settings/get-settings?label=${label}`,
         method: "GET",
-      }) 
+      }),
     }),
-
-    updateSettings : builder.mutation({
+    createSettings: builder.mutation({
       query: (data) => ({
-        url: "/settings/update",
-        method: "PATCH",
+        url: "/settings/create-settings",
+        method: "POST",
         body: data,
       }),
-    })
+    }),
   }),
 });
 
-export const { useUpdateSettingsMutation, useGetSettingsQuery } = settingsApi;
+export const { useCreateSettingsMutation, useGetSettingsQuery } = settingsApi;

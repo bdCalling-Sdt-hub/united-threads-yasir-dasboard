@@ -62,6 +62,16 @@ const baseQueryWithRefreshToken: BaseQueryFn<FetchArgs, BaseQueryApi, Definition
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithRefreshToken,
-  tagTypes: ["Users", "Settings", "Order", "Payment", "Product", "Category", "Profile", "Meta"],
+  tagTypes: [
+    "Users",
+    "Settings",
+    "Order",
+    "Payment",
+    "Product",
+    "Category",
+    "Profile",
+    "Meta",
+    "QuoteProduct",
+  ],
   endpoints: () => ({}),
 });

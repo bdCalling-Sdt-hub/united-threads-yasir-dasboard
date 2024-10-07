@@ -248,9 +248,9 @@ const OrderListTable = () => {
     {
       title: "Action",
       dataIndex: "action",
-      render: () => (
+      render: (value, record) => (
         <div className='ml-4'>
-          <Link href={"/admin/order-details/1"}>
+          <Link href={`/admin/order-details/${record._id}`}>
             <IoEyeOutline size={20} />
           </Link>
         </div>

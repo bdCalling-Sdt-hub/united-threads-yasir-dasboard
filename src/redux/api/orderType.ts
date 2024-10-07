@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TProduct } from "@/types/productType";
 import { TUser } from "@/types/userType";
 

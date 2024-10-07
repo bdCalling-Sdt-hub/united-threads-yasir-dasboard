@@ -58,12 +58,12 @@ const adminNavLink: MenuItem[] = [
       {
         key: "productCategory",
         icon: <RiContactsBookUploadLine size={24} />,
-        label: <Link href='/quote-product'>Product Category</Link>,
+        label: <Link href='/admin/quote-product'>Product Category</Link>,
       },
       {
         key: "quoteManagement",
         icon: <MdManageHistory size={24} />,
-        label: <Link href='/quote-management'>Quote Management</Link>,
+        label: <Link href='/admin/quote-management'>Quote Management</Link>,
       },
     ],
   },

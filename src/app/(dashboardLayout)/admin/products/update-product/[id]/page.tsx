@@ -208,7 +208,6 @@ const UpdateProduct = ({ params }: { params: { id: string } }) => {
     }
   }, [product]);
 
-  console.log({ secondaryImages });
 
   return (
     <div>

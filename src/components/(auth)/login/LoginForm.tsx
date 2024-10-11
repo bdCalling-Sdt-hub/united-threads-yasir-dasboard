@@ -17,10 +17,6 @@ type FieldType = {
   remember?: string;
 };
 
-//const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
-//  console.log("Failed:", errorInfo);
-//};
-
 const LoginForm = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);

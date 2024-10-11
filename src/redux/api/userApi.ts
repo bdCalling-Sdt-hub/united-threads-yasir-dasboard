@@ -51,7 +51,7 @@ const usersApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: ["Profile"],
     }),
     changePassword: builder.mutation({
       query: (data) => ({
@@ -59,7 +59,7 @@ const usersApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: ["Users"],
+      invalidatesTags: ["Profile"],
     }),
   }),
 });

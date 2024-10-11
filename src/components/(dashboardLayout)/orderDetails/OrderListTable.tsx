@@ -196,8 +196,6 @@ const OrderListTable = () => {
 
   const result = data as TResponse<TOrder[]>;
 
-  console.log(result?.data, "data");
-
   const columns: TableProps<TOrder>["columns"] = [
     {
       title: "Order ID",

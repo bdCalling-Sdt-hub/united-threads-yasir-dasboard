@@ -1,10 +1,10 @@
 import userImage from "@/assets/image/user.png";
-import Image from "next/image";
 import { useGetSingleUserQuery } from "@/redux/api/userApi";
-import { Skeleton, Avatar, Row, Col, Modal } from "antd";
 import { TResponse } from "@/types/global";
 import { TUser } from "@/types/userType";
+import { Col, Modal, Row, Skeleton } from "antd";
 import moment from "moment";
+import Image from "next/image";
 
 type TPropsType = {
   open: boolean;

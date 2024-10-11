@@ -128,7 +128,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                 <LuCalendarDays className='w-6 h-6' />
                 <p className='text-md'>{moment(quote?.createdAt).format("MMM Do, YYYY")}</p>
               </div>
-              <Link href={"/message/userName"}>
+              <Link href={`/csr/message/${user?._id}`}>
                 <Button size='large' icon={<TbMessage />}>
                   Message
                 </Button>

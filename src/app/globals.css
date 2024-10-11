@@ -37,13 +37,10 @@ body {
   background-color: #575858 !important;
   margin-left: 4px;
   margin-right: 4px;
- 
 }
-.ant-menu-item-selected{
+.ant-menu-item-selected {
   background-color: #fff !important;
 }
-
-
 
 .recharts-cartesian-axis-tick > text {
   fill: #fff;
@@ -85,9 +82,10 @@ body {
   overflow: auto !important;
 }
 
-.ant-menu-sub > .ant-menu-item{
+.ant-menu-sub > .ant-menu-item {
   padding-left: 25px !important;
 }
 
-
-
+.ant-upload {
+  border: none !important;
+}

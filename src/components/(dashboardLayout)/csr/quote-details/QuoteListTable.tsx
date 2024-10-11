@@ -21,8 +21,6 @@ const QuoteListTable = ({ date }: { date?: string | null }) => {
     query.push({ label: "createdAt", value: date });
   }
 
-  console.log({ query });
-
   const { data, isLoading } = useGetQuotesQuery(query, {});
 
   const result = data as TResponse<TQuote[]>;

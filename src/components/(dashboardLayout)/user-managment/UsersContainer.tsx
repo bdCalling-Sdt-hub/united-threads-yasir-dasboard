@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useGetUsersQuery, useUpdateUserMutation } from "@/redux/api/userApi";
 import { TResponse } from "@/types/global";
@@ -94,7 +95,7 @@ const UserMangementContainer = () => {
     if (!isLoading && result?.meta?.total) {
       setLimit(result?.meta?.total);
     }
-  }, []);
+  }, [result?.meta?.total, isLoading]);
 
   return (
     <div>

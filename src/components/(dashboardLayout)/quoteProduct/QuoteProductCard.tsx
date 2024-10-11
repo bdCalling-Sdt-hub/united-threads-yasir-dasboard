@@ -1,17 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import productImg from "@/assets/product.jpg";
-import { useDeleteProductMutation } from "@/redux/api/productApi";
 import { useDeleteQuoteProductMutation } from "@/redux/api/quoteProductApi";
 import { TQuoteProduct } from "@/types/quoteProductTypes";
 import { Popconfirm, PopconfirmProps, Tag } from "antd";
 import Image from "next/image";
-import Link from "next/link";
+import { useState } from "react";
 import { FaArrowUp } from "react-icons/fa6";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { toast } from "sonner";
 import UpdateQuoteProductModal from "./UpdateQuoteProductModal";
-import { useState } from "react";
 
 const QuoteProductCard = ({ product }: { product: TQuoteProduct }) => {
   const [deleteProduct] = useDeleteQuoteProductMutation();

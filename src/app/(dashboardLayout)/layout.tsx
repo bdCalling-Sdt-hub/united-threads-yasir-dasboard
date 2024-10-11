@@ -1,7 +1,11 @@
 "use client";
-import userImag from "@/assets/image/userImage.png";
+import userImag from "@/assets/image/user.png";
 import Sidebar from "@/components/shared/Sidebar";
-import { Button, Layout } from "antd";
+import { useGetProfileQuery } from "@/redux/api/userApi";
+import { TResponse } from "@/types/global";
+import { TUser } from "@/types/userType";
+import { Button, Layout, Skeleton } from "antd";
+import SkeletonAvatar from "antd/es/skeleton/Avatar";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -14,9 +18,9 @@ const { Content } = Layout;
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
-
+  const { data, isLoading } = useGetProfileQuery([]);
+  const result = (data as TResponse<TUser>)?.data;
   const navbarTitle = pathname.split("/")[1];
-  console.log(navbarTitle);
   return (
     <Layout style={{ minHeight: "100dvh" }}>
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
@@ -54,14 +58,23 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
             </Link>
             <Link href={"/profile"}>
               <div className='flex items-center gap-x-3'>
-                <Image
-                  src={userImag}
-                  alt='admin profile'
-                  width={48}
-                  height={48}
-                  className='rounded-full'
-                />
-                <h4 className='text-base font-medium text-info '>Akash</h4>
+                {isLoading ? (
+                  <>
+                    <SkeletonAvatar active={true} size={40} />
+                    <Skeleton />
+                  </>
+                ) : (
+                  <>
+                    <Image
+                      src={result?.profilePicture || userImag}
+                      alt='admin profile'
+                      width={48}
+                      height={48}
+                      className='rounded-full'
+                    />
+                    <h4 className='text-base font-medium text-info '>{result?.firstName}</h4>
+                  </>
+                )}
               </div>
             </Link>
           </div>

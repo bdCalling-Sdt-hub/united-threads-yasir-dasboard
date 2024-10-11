@@ -1,11 +1,42 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { ConfigProvider } from "antd";
-import { Form, Input, Button } from "antd";
-
+import { useChangePasswordMutation } from "@/redux/api/userApi";
+import { Button, ConfigProvider, Form, Input } from "antd";
+import { useState } from "react";
+import { toast } from "sonner";
+type TChangePasswordFormProps = {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};
 const ChangePasswordForm = () => {
-  // @ts-expect-error: Ignoring TypeScript error due to inferred 'any' type for 'values' which is handled in the form submit logic
-  const onFinishChangePassword = (values) => {
-    console.log("Change Password values:", values);
+  const [error, setError] = useState("");
+  const [updateProfile, { isLoading: updateLoading }] = useChangePasswordMutation();
+  const [form] = Form.useForm();
+
+  const onFinishEditProfile = async (values: TChangePasswordFormProps) => {
+    setError("");
+    if (values.newPassword !== values.confirmNewPassword) {
+      return setError("Passwords do not match");
+    }
+
+    const payload = {
+      oldPassword: values.currentPassword,
+      newPassword: values.newPassword,
+    };
+
+    try {
+      const res = await updateProfile(payload).unwrap();
+      if (res.success) {
+        toast.success(res.message);
+        form.resetFields();
+      } else {
+        setError(res.data.message);
+      }
+    } catch (error: any) {
+      console.log(error);
+      setError(error?.data?.message || "Something went wrong");
+    }
   };
 
   return (
@@ -30,10 +61,10 @@ const ChangePasswordForm = () => {
         },
       }}
     >
-      <Form layout="vertical" onFinish={onFinishChangePassword}>
+      <Form layout='vertical' onFinish={onFinishEditProfile}>
         <Form.Item
-          label="Current Password"
-          name="currentPassword"
+          label='Current Password'
+          name='currentPassword'
           rules={[
             {
               required: true,
@@ -41,20 +72,20 @@ const ChangePasswordForm = () => {
             },
           ]}
         >
-          <Input.Password size="large" placeholder="Current Password" />
+          <Input.Password size='large' placeholder='Current Password' />
         </Form.Item>
 
         <Form.Item
-          label="New Password"
-          name="newPassword"
+          label='New Password'
+          name='newPassword'
           rules={[{ required: true, message: "Please enter a new password!" }]}
         >
-          <Input.Password size="large" placeholder="New Password" />
+          <Input.Password size='large' placeholder='New Password' />
         </Form.Item>
 
         <Form.Item
-          label="Confirm New Password"
-          name="confirmNewPassword"
+          label='Confirm New Password'
+          name='confirmNewPassword'
           rules={[
             {
               required: true,
@@ -65,18 +96,16 @@ const ChangePasswordForm = () => {
                 if (!value || getFieldValue("newPassword") === value) {
                   return Promise.resolve();
                 }
-                return Promise.reject(
-                  new Error("The two passwords do not match!")
-                );
+                return Promise.reject(new Error("The two passwords do not match!"));
               },
             }),
           ]}
         >
-          <Input.Password size="large" placeholder="Confirm New Password" />
+          <Input.Password size='large' placeholder='Confirm New Password' />
         </Form.Item>
-
+        {error && <p className='text-red-500'>{error}</p>}
         <Form.Item>
-          <Button htmlType="submit" block size="large">
+          <Button htmlType='submit' loading={updateLoading} block size='large'>
             Save Changes
           </Button>
         </Form.Item>

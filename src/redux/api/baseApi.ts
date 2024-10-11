@@ -36,7 +36,6 @@ const baseQueryWithRefreshToken: BaseQueryFn<FetchArgs, BaseQueryApi, Definition
   //   toast.error(result.error?.data?.message);
   // }
 
-  console.log({ result });
   if (result.error?.status === 401) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh-token`, {
       credentials: "include",
@@ -72,6 +71,7 @@ export const baseApi = createApi({
     "Profile",
     "Meta",
     "QuoteProduct",
+    "Quote",
   ],
   endpoints: () => ({}),
 });

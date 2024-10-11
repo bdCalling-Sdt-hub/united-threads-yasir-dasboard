@@ -2,7 +2,7 @@
 import { useGetUsersQuery, useUpdateUserMutation } from "@/redux/api/userApi";
 import { TResponse } from "@/types/global";
 import { TUser } from "@/types/userType";
-import { Input, message, Popconfirm, PopconfirmProps, Table, TableProps } from "antd";
+import { Input, message, Popconfirm, Table, TableProps } from "antd";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";

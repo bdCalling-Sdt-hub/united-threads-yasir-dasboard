@@ -23,12 +23,14 @@ type FieldType = {
 
 const LoginForm = () => {
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     try {
       setError("");
+      setLoading(true);
       const res = (await login(values)) as TResponse<any>;
       if (res.success && res?.data?.accessToken) {
         const user = jwtDecode(res.data.accessToken) as TUser;
@@ -53,6 +55,8 @@ const LoginForm = () => {
       }
     } catch (error: any) {
       setError(error.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -112,6 +116,7 @@ const LoginForm = () => {
             htmlType='submit'
             size='large'
             style={{ backgroundColor: "#232323", color: "#F8FAFC" }}
+            loading={loading}
           >
             Sign in
           </Button>

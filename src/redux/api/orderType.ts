@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TProduct } from "@/types/productType";
+import { TQuoteProduct } from "@/types/quoteProductTypes";
 import { TUser } from "@/types/userType";
 
 export type TOrder = {
   _id: string;
   user: TUser;
   product: TProduct;
+  quote: TQuoteProduct;
   quantity: number;
   amount: number;
   status: string;

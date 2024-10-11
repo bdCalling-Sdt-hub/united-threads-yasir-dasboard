@@ -1,9 +1,9 @@
 import QuoteOrderDetailsContainer from "@/components/(dashboardLayout)/csr/quote-details/[id]/QuoteOrderDetailsContainer";
 
-const QuoteOrderDetaisPage = () => {
+const QuoteOrderDetaisPage = ({ params }: { params: { id: string } }) => {
   return (
     <div>
-      <QuoteOrderDetailsContainer></QuoteOrderDetailsContainer>
+      <QuoteOrderDetailsContainer id={params.id}></QuoteOrderDetailsContainer>
     </div>
   );
 };

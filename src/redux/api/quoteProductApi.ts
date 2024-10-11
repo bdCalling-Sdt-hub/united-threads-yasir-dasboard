@@ -49,7 +49,7 @@ const quoteProductApi = baseApi.injectEndpoints({
 
     getSingleQuoteProduct: builder.query({
       query: ({ productId }) => ({
-        url: `/product/single-product/${productId}`,
+        url: `/quote-product/single-product/${productId}`,
         method: "GET",
       }),
       providesTags: ["QuoteProduct"],

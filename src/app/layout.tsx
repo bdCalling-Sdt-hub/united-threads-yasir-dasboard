@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+//import "sweetalert2/src/sweetalert2.scss";
 
 import Providers from "@/lib/Providers/Providers";
 import { kumbh, roboto } from "./fonts";

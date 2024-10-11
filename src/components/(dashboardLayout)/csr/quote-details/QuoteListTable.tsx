@@ -1,185 +1,89 @@
 "use client";
+import { useGetQuotesQuery } from "@/redux/api/quoteApi";
+import { TResponse } from "@/types/global";
+import { TQuote } from "@/types/quoteTypes";
 import { Table, TableProps } from "antd";
+import moment from "moment";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 
-type TDataType = {
-  key: number;
-  product: string;
-  customerName: string;
-  date: string;
-  amount: string;
-  status: string;
-};
-const data: TDataType[] = [
-  {
-    key: 1,
-    product: "Hoodie",
-    customerName: "Farvez Sir",
-    date: "11 oct 24, 11.10PM",
-    amount: "$152",
-    status: "Pending",
-  },
-  {
-    key: 2,
-    product: "Hoodie",
-    customerName: "Farvez Sir",
-    date: "11 oct 24, 11.10PM",
-    amount: "$152",
-    status: "Approved",
-  },
-  {
-    key: 3,
-    product: "Hoodie",
-    customerName: "Farvez Sir",
-    date: "11 oct 24, 11.10PM",
-    amount: "$152",
-    status: "Quote Sent",
-  },
-  {
-    key: 4,
-    product: "Hoodie",
-    customerName: "Farvez Sir",
-    date: "11 oct 24, 11.10PM",
-    amount: "$152",
-    status: "Pending",
-  },
-  {
-    key: 5,
-    product: "Hoodie",
-    customerName: "Farvez Sir",
-    date: "11 oct 24, 11.10PM",
-    amount: "$152",
-    status: "Quote Sent",
-  },
-  {
-    key: 6,
-    product: "Hoodie",
-    customerName: "Farvez Sir",
-    date: "11 oct 24, 11.10PM",
-    amount: "$152",
-    status: "Approved",
-  },
-  {
-    key: 7,
-    product: "Hoodie",
-    customerName: "Farvez Sir",
-    date: "11 oct 24, 11.10PM",
-    amount: "$152",
-    status: "Pending",
-  },
-  {
-    key: 8,
-    product: "Hoodie",
-    customerName: "Farvez Sir",
-    date: "11 oct 24, 11.10PM",
-    amount: "$152",
-    status: "Quote Sent",
-  },
-  {
-    key: 9,
-    product: "Hoodie",
-    customerName: "Farvez Sir",
-    date: "11 oct 24, 11.10PM",
-    amount: "$152",
-    status: "Pending",
-  },
-  {
-    key: 10,
-    product: "Hoodie",
-    customerName: "Farvez Sir",
-    date: "11 oct 24, 11.10PM",
-    amount: "$152",
-    status: "Approved",
-  },
-  {
-    key: 11,
-    product: "Hoodie",
-    customerName: "Farvez Sir",
-    date: "11 oct 24, 11.10PM",
-    amount: "$152",
-    status: "Quote Sent",
-  },
-  {
-    key: 12,
-    product: "Hoodie",
-    customerName: "Farvez Sir",
-    date: "11 oct 24, 11.10PM",
-    amount: "$152",
-    status: "Approved",
-  },
-];
+const QuoteListTable = ({ date }: { date?: string | null }) => {
+  const [limit, setLimit] = useState(10000000000);
 
-const columns: TableProps<TDataType>["columns"] = [
-  {
-    title: "Order ID",
-    dataIndex: "key",
-    render: (value) => `#${value}`,
-  },
-  {
-    title: "Product",
-    dataIndex: "product",
-  },
-  {
-    title: "Customer Name",
-    dataIndex: "customerName",
-  },
-  {
-    title: "Date",
-    dataIndex: "date",
-  },
-  {
-    title: "Amount",
-    dataIndex: "amount",
-  },
-  {
-    title: "Status",
-    dataIndex: "status",
+  const query = [
+    { label: "sort", value: "-createdAt" },
+    { label: "limit", value: limit.toString() },
+    { label: "quoteStatus", value: "pending" },
+  ];
 
-    render: (value) => {
-      if (value === "Pending") {
-        return <p className='text-[#F16365]'>{value}</p>;
-      }
-      if (value === "Quote Sent") {
-        return <p>{value}</p>;
-      }
-      if (value === "Approved") {
-        return <p className='text-[#00B047]'>{value}</p>;
-      }
+  if (date && typeof date === "string") {
+    query.push({ label: "createdAt", value: date });
+  }
+
+  console.log({ query });
+
+  const { data, isLoading } = useGetQuotesQuery(query, {});
+
+  const result = data as TResponse<TQuote[]>;
+
+  const columns: TableProps<TQuote>["columns"] = [
+    {
+      title: "Quote ID",
+      dataIndex: "_id",
+      render: (value) => `#${value}`,
     },
-    filters: [
-      {
-        text: "Pending",
-        value: "Pending",
-      },
-      {
-        text: "Quote Sent",
-        value: "Quote Sent",
-      },
-      {
-        text: "Approved",
-        value: "Approved",
-      },
-    ],
-    onFilter: (value, record) => record.status.indexOf(value as string) === 0,
-  },
-  {
-    title: "Action",
-    dataIndex: "action",
-    render: () => (
-      <div className='ml-4'>
-        <Link href={"/csr/quote-details/1"}>
-          <IoEyeOutline className='cursor-pointer' size={20} />
-        </Link>
-      </div>
-    ),
-  },
-];
+    {
+      title: "Quote Name",
+      dataIndex: "name", // Updated to reflect the TQuote field 'name'
+      render: (value) => value || "N/A",
+    },
+    {
+      title: "Color",
+      dataIndex: "hexColor", // Added pantone color field from TQuote
+      render: (value) => <span style={{ color: value }}>{value}</span>,
+    },
+    {
+      title: "Quantity",
+      dataIndex: "quantity",
+    },
+    //{
+    //  title: "Total",
+    //  dataIndex: "price",
+    //  render: (value) => `$${value}`,
+    //},
+    {
+      title: "Created At",
+      dataIndex: "createdAt",
+      render: (value) => moment(value).format("lll"),
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      render: (value, record) => (
+        <div className='ml-4'>
+          <Link href={`/csr/quote-details/${record._id}`}>
+            <IoEyeOutline size={20} />
+          </Link>
+        </div>
+      ),
+    },
+  ];
 
-const QuoteListTable = () => {
+  useEffect(() => {
+    if (!isLoading && result?.meta?.total) {
+      setLimit(result?.meta?.total);
+    }
+  }, [isLoading, result?.meta?.total]);
+
   return (
     <div>
-      <Table columns={columns} dataSource={data} pagination={{ pageSize: 10 }}></Table>
+      <Table
+        columns={columns}
+        loading={isLoading}
+        dataSource={result?.data}
+        pagination={{ pageSize: 20 }}
+      ></Table>
     </div>
   );
 };

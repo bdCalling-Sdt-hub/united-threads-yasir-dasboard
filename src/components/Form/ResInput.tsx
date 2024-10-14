@@ -35,6 +35,7 @@ const EInput = ({
           validateStatus={error ? "error" : ""}
           help={error ? error.message : ""}
           required={required}
+          className='w-full'
         >
           {type === "password" ? (
             <Input.Password

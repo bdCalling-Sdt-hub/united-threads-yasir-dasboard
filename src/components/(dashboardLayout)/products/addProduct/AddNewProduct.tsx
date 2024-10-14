@@ -1,28 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
+
 import EForm from "@/components/Form/FormProvider";
 import EInput from "@/components/Form/ResInput";
+import ESelect from "@/components/Form/ResSelect";
 import ETextArea from "@/components/Form/ResTextarea";
 import ErrorResponse from "@/components/shared/ErrorResponse";
 import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
 import { useAddProductMutation } from "@/redux/api/productApi";
-import { InfoCircleOutlined, PlusSquareFilled, UploadOutlined } from "@ant-design/icons";
-import { Button, Col, ColorPicker, Popover, Row, Tooltip, Upload } from "antd";
-import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
-import JoditEditor from "jodit-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import ESelect from "@/components/Form/ResSelect";
-import { TResponse } from "@/types/global";
 import { TCategory } from "@/types/categoryTypes";
+import { TResponse } from "@/types/global";
+import { Button, Col, ColorPicker, Popover, Row, Spin, Tooltip, Upload } from "antd";
+import { useRouter } from "next/navigation";
+import { useRef, useState, useEffect, Suspense } from "react";
+import { toast } from "sonner";
+import { z } from "zod";
+import { PlusSquareFilled, UploadOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { zodResolver } from "@hookform/resolvers/zod";
+import JoditEditor from "jodit-react";
 
 // Define product size enum in zod
 const productSizeEnum = z.enum(["XS", "S", "M", "L", "XL", "XXL", "XXXL"]);
+
 // Define product validation schema in zod
-export const addProductValidation = z.object({
+const addProductValidation = z.object({
   name: z.string().min(1, { message: "Product name is required" }),
   shortDescription: z.string().optional(),
   category: z.string({ required_error: "Category is required" }),
@@ -162,7 +164,7 @@ const AddNewProduct = () => {
   };
 
   return (
-    <div>
+    <Suspense fallback={<Spin />}>
       <Row gutter={[16, 16]}>
         <Col span={16}>
           <EForm onSubmit={onSubmit} resolver={zodResolver(addProductValidation)}>
@@ -310,6 +312,7 @@ const AddNewProduct = () => {
               </div>
             </Upload>
           </div>
+
           {/* Secondary Images Uploader */}
           <div>
             <p className='mb-2 required-indicator text-lg'>Upload Images (Max 4)</p>
@@ -338,9 +341,14 @@ const AddNewProduct = () => {
         >
           Upload
         </Button>
-        <Button className='w-1/2 bg-white h-[44px] text-black font-500 text-20'>Cancel</Button>
+        <Button
+          onClick={router.back}
+          className='w-1/2 bg-white h-[44px] text-black font-500 text-20'
+        >
+          Cancel
+        </Button>
       </div>
-    </div>
+    </Suspense>
   );
 };
 

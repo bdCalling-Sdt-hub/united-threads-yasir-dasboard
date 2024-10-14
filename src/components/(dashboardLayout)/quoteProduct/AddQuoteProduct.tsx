@@ -1,17 +1,17 @@
-import { Modal, Tooltip, Button, ColorPicker, Upload } from "antd";
-import { useState } from "react";
-import { PiUploadLight } from "react-icons/pi";
-import { PlusSquareFilled } from "@ant-design/icons";
-import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
-import { TCategory } from "@/types/categoryTypes";
-import { TResponse } from "@/types/global";
 import EForm from "@/components/Form/FormProvider";
 import EInput from "@/components/Form/ResInput";
 import ESelect from "@/components/Form/ResSelect";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
 import { useAddQuoteProductMutation } from "@/redux/api/quoteProductApi";
+import { TCategory } from "@/types/categoryTypes";
+import { TResponse } from "@/types/global";
+import { PlusSquareFilled } from "@ant-design/icons";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, ColorPicker, Modal, Tooltip, Upload } from "antd";
+import { useState } from "react";
+import { PiUploadLight } from "react-icons/pi";
 import { toast } from "sonner";
+import * as z from "zod";
 
 // Define validation schema in zod
 export const addQuoteProductValidation = z.object({

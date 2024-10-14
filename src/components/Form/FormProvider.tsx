@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Form } from "antd";
 import { ReactNode, useEffect } from "react";
-import {
-  FieldValues,
-  FormProvider,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { FieldValues, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 
 type TFormConfig = {
   defaultValues?: Record<string, any>;
@@ -40,7 +35,7 @@ const EForm = ({ onSubmit, children, defaultValues, resolver }: TFormProps) => {
 
   return (
     <FormProvider {...methods}>
-      <Form layout="vertical" onFinish={methods.handleSubmit(submit)}>
+      <Form layout='vertical' className='w-full' onFinish={methods.handleSubmit(submit)}>
         {children}
       </Form>
     </FormProvider>

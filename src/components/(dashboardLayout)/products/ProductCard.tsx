@@ -30,7 +30,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
   return (
     <div className={`p-4 border border-primaryBlack rounded-xl font-roboto space-y-4 relative`}>
       <div className='flex items-center gap-4 mt-5'>
-        <Image src={productImg} alt={product.name} width={84} height={84} />
+        <Image src={product.primaryImage ?? productImg} alt={product.name} width={84} height={84} />
         <div>
           <div className=' flex flex-col gap-3'>
             <h1 className='text-xl font-bold'>{product.name}</h1>

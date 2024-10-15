@@ -12,3 +12,32 @@ export type TResponse<T> = {
   data: T;
   meta?: TMeta;
 };
+
+export type TChatList = {
+  chatId: string;
+  participants: [
+    {
+      user: string;
+      isBlocked: boolean;
+      _id: string;
+    },
+    {
+      user: string;
+      isBlocked: boolean;
+      _id: string;
+    },
+  ];
+  latestMessage: {
+    _id: string;
+    sender: string;
+    receiver: string;
+    chat: string;
+    text: string;
+    seen: boolean;
+    file?: string[];
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  };
+  unreadMessageCount: number;
+};

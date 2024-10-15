@@ -1,5 +1,6 @@
 "use client";
 import userImag from "@/assets/image/user.png";
+import NotificationCount from "@/components/shared/NotificationCount";
 import Sidebar from "@/components/shared/Sidebar";
 import { useGetProfileQuery } from "@/redux/api/userApi";
 import { TResponse } from "@/types/global";
@@ -45,17 +46,9 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
             </h1>
           </div>
           <div className='flex items-center gap-x-6'>
-            <Link href={"/notifications"}>
-              <div
-                role='button'
-                className='relative aspect-square size-12 rounded-full bg-info flex-item-center'
-              >
-                <GoBell size={20} />
-                <span className='absolute top-1.5 right-1.5 size-[18px] bg-warning text-primaryWhite rounded-full text-sm flex-item-center'>
-                  3
-                </span>
-              </div>
-            </Link>
+            <>
+             <NotificationCount />
+            </>
             <Link href={"/profile"}>
               <div className='flex items-center gap-x-3'>
                 {isLoading ? (

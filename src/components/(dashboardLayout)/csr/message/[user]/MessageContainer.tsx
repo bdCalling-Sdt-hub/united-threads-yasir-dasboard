@@ -6,14 +6,16 @@ import { useSocket } from "@/lib/Providers/SocketProvider";
 import { useUploadFileMutation } from "@/redux/api/messageApi";
 import { selectUser } from "@/redux/features/auth/authSlice";
 import { useAppSelector } from "@/redux/hooks";
-import { Button, Divider } from "antd";
-import { CircleOff, Loader2, Paperclip, Send, XCircle } from "lucide-react";
+import { Button, Divider, Popconfirm } from "antd";
+import { ArrowLeftFromLine, CircleOff, Loader2, Paperclip, Send, XCircle } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import OwnerMsgCard from "./OwnerMsgCarda";
 import ReceiverMsgCard from "./ReceiverMsgCard";
+import { TUser } from "@/types/userType";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 // Define the type for form data
 type MessageFormData = {
@@ -26,8 +28,9 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
   const [messageLoading, setMessageLoading] = useState(false);
   const [messages, setMessages] = useState<any[]>([]); // State for previous and new messages
   const [activeUsers, setActiveUsers] = useState<string[]>([]);
-  const [userDetails, setUserDetails] = useState<any>(null);
-  const [typing, setTyping] = useState(false);
+  const [userDetails, setUserDetails] = useState<TUser | null>(null);
+  const [typing, setTyping] = useState<null | TUser>(null);
+  const [chatId, setChatId] = useState("");
 
   const user = useAppSelector(selectUser);
   const userId = user?._id;
@@ -43,13 +46,27 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
   } = useForm<MessageFormData>(); // Use the defined type
 
   useEffect(() => {
+    if (socket) {
+      socket.on("online-users", (data) => {
+        setActiveUsers(data?.data || []);
+      });
+
+      // Cleanup listener on component unmount
+      return () => {
+        socket.off("online-users", (data) => {
+          setActiveUsers(data?.data || []);
+        });
+      };
+    }
+  }, [socket]);
+
+  useEffect(() => {
     if (socket && userId) {
       // Emit the event to request message page information (this does not return data directly)
-      socket.emit("message-page", { userId });
+      socket.emit("message-page", { userId: receiverId });
 
       // Listen for "user-details" event
       socket.on("user-details", (response: any) => {
-        console.log(response);
         if (response.success) {
           setUserDetails(response.data);
         } else {
@@ -72,7 +89,7 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
         socket.off("my-messages");
       };
     }
-  }, [socket, userId]);
+  }, [socket, userId, receiverId]);
 
   // Listen for incoming new messages
   useEffect(() => {
@@ -82,22 +99,44 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
 
       // Add the listener for new messages
       socket.on("new-message::" + userId, (messageData: any) => {
-        console.log(messageData, "message data");
         setMessages((prevMessages) => [...prevMessages, messageData]); // Append new message to the existing list
-      });
-
-      // Add the listener for active users
-      socket.on("online-users", (data) => {
-        setActiveUsers(data?.data);
       });
 
       // Cleanup function to remove the listener on component unmount or when dependencies change
       return () => {
         socket.off("new-message::" + userId);
-        socket.off("online-users");
       };
     }
-  }, [socket, userId]);
+  }, [socket, userId, receiverId]);
+
+  // Listen for typing events from the server
+  useEffect(() => {
+    if (socket && receiverId) {
+      socket.on("typing::" + userId, (data) => {
+        const user = data?.data;
+        if (user._id === receiverId) {
+          setTyping(data?.data);
+        }
+      });
+      socket.on("stop-typing::" + userId, (data) => {
+        const user = data?.data;
+        if (user._id === receiverId) {
+          setTyping(null);
+        }
+      });
+
+      //return () => {
+      //  socket.off("typing::" + userId);
+      //};
+    }
+  }, [socket, receiverId, userId]);
+
+  useEffect(() => {
+    if (socket && receiverId && messages.length > 0 && chatId) {
+      // Emit the seen event
+      socket.emit("seen", { chatId });
+    }
+  }, [socket, receiverId, messages, chatId]);
 
   // Handle file selection and generate image previews
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -128,8 +167,6 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
 
   // Handle form submission using react-hook-form
   const onSubmit: SubmitHandler<MessageFormData> = async (data) => {
-    console.log(data);
-
     if (!files.length && !data.message) {
       toast.error("Please enter a message or upload an image");
       return;
@@ -179,18 +216,57 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
     }
   };
 
-
+  useEffect(() => {
+    if (messages.length > 0) {
+      setChatId(messages[0]?.chat);
+    }
+  }, [messages]);
 
   useEffect(() => {
-    if (socket && userId) {
-      socket.emit("typing", )
+    if (socket && receiverId) {
+      socket.on("io-error", (error: any) => {
+        console.log(error);
+      });
     }
-  })
+  }, [socket, receiverId]);
 
+  const handleFocus = (isTyping: boolean) => {
+    if (isTyping) {
+      socket?.emit("typing", { receiverId });
+    } else {
+      socket?.emit("stop-typing", { receiverId });
+    }
+  };
+
+  useEffect(() => {
+    if (socket && receiverId) {
+      // Listener for block event
+      socket.on(`block::${receiverId}`, (data) => {
+        setUserDetails((prevDetails: any) => ({
+          ...prevDetails,
+          isActive: false, // Update the isActive state to false when user is blocked
+        }));
+      });
+
+      // Listener for unblock event
+      socket.on(`unblock::${receiverId}`, (data) => {
+        setUserDetails((prevDetails: any) => ({
+          ...prevDetails,
+          isActive: true, // Update the isActive state to true when user is unblocked
+        }));
+      });
+
+      // Cleanup the listeners on component unmount
+      return () => {
+        socket.off(`block::${receiverId}`);
+        socket.off(`unblock::${receiverId}`);
+      };
+    }
+  }, [socket, receiverId]);
 
   return (
-    <div className='lg:mx-auto '>
-      <div className='relative z-10 flex flex-col rounded-xl rounded-t-xl border-t-8 border-t-primaryBlack px-10 py-8 lg:flex-row'>
+    <div className='lg:mx-auto h-full '>
+      <div className='relative z-10 flex flex-col rounded-xl rounded-t-xl border-t-8 border-t-primaryBlack px-10 py-8 lg:flex-row h-full'>
         {/* Right - Chat Section */}
         <div className='flex flex-col justify-between lg:flex-grow lg:px-8'>
           <div className='flex items-center justify-between border-b border-opacity-[40%] pb-1'>
@@ -215,14 +291,12 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
                 <div className='mt-1 flex items-center gap-x-2'>
                   <div
                     className={`h-2 w-2 rounded-full ${
-                      activeUsers.find((u: any) => u.id === receiverId)
-                        ? "bg-green-500"
-                        : "bg-red-500"
+                      activeUsers.find((u: any) => u === receiverId) ? "bg-green-500" : "bg-red-500"
                     }`}
                   />
                   <p className='text-black border-t-black'>
                     {" "}
-                    {activeUsers.find((u: any) => u.id === receiverId) ? (
+                    {activeUsers.find((u: any) => u === receiverId) ? (
                       "Online"
                     ) : (
                       <span className='text-gray-400'>Offline</span>
@@ -231,91 +305,165 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
                 </div>
               </div>
             </div>
-            <button className='flex items-center gap-x-2'>
-              <CircleOff size={20} color='#d55758' />
-              <p className='text-xl text-black'>Block</p>
-            </button>
+            {!userDetails?.isActive ? (
+              //<Popconfirm
+              //  title={`Block ${userDetails?.firstName} `}
+              //  description='Are you sure to delete this task?'
+              //  icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+              //  onConfirm={() => {
+              //    socket?.emit("unblock", { receiverId });
+              //  }}
+              //  okText='Yes'
+              //  cancelText='No'
+              //>
+              //</Popconfirm>
+              <button
+                onClick={() => {
+                  socket?.emit("unblock", { receiverId });
+                }}
+                className='flex items-center gap-x-2'
+              >
+                <ArrowLeftFromLine size={20} color='green' />
+                <p className='text-xl text-black'>Unblock</p>
+              </button>
+            ) : (
+              <Popconfirm
+                title={`Block ${userDetails?.firstName} `}
+                description='Are you sure to delete this task?'
+                icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                onConfirm={() => {
+                  socket?.emit("block", { receiverId });
+                }}
+                okText='Yes'
+                cancelText='No'
+              >
+                <button className='flex items-center gap-x-2'>
+                  <CircleOff size={20} color='#d55758' />
+                  <p className='text-xl text-black'>Block</p>
+                </button>
+              </Popconfirm>
+            )}
           </div>
 
-          {/* Message Preview Section */}
-          <div className='max-h-full space-y-8 overflow-hidden pt-8'>
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`flex ${
-                  msg.sender === userId ? "flex-row-reverse" : "flex-row"
-                } items-start gap-x-4`}
-              >
-                <Image
-                  src={msg.sender === userId ? userImg2 : userImg}
-                  alt="user's image"
-                  className='h-[50px] w-[50px] rounded-full'
-                />
-                <div className='max-w-[50%] space-y-3 overflow-hidden'>
-                  {msg.sender === userId ? (
-                    <OwnerMsgCard createdAt={msg.createdAt} file={msg.file} message={msg.text} />
-                  ) : (
-                    <ReceiverMsgCard message={msg.text} createdAt={msg.createdAt} file={msg.file} />
-                  )}
+          <div>
+            {/* Message Preview Section */}
+            <div className='max-h-full space-y-8 overflow-hidden pt-8 h-full'>
+              {messages.length ? (
+                messages.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`flex ${
+                      msg.sender === userId ? "flex-row-reverse" : "flex-row"
+                    } items-start gap-x-4`}
+                  >
+                    <Image
+                      src={msg.sender === userId ? userImg2 : userImg}
+                      alt="user's image"
+                      className='h-[50px] w-[50px] rounded-full'
+                    />
+                    <div className='max-w-[50%] space-y-3 overflow-hidden'>
+                      {msg.sender === userId ? (
+                        <OwnerMsgCard
+                          createdAt={msg.createdAt}
+                          file={msg.file}
+                          message={msg.text}
+                        />
+                      ) : (
+                        <ReceiverMsgCard
+                          message={msg.text}
+                          createdAt={msg.createdAt}
+                          file={msg.file}
+                        />
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className='flex items-center justify-center h-full'>
+                  <p className='text-center text-lg text-gray-400'>
+                    No messages yet. Start a conversation
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <Divider />
+
+            {/* Preview selected images */}
+            <div className='flex flex-col pb-10'>
+              <div className='flex gap-2 mt-4'>
+                {imgPreviews.map((preview, index) => (
+                  <div key={index} className='relative'>
+                    <Image
+                      src={preview}
+                      alt={`Preview ${index}`}
+                      className='h-[100px] w-auto rounded-md'
+                      width={300}
+                      height={300}
+                    />
+                    <button
+                      className='absolute top-0 right-0'
+                      onClick={() => handleRemoveImage(index)}
+                    >
+                      <XCircle size={20} color='red' />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* File input and message send */}
+              <div className='mt-auto'>
+                <div className='flex w-full items-center gap-x-6'>
+                  <label htmlFor='file'>
+                    <input
+                      type='file'
+                      multiple // Allow multiple file selection
+                      onChange={handleFileChange}
+                      name='file'
+                      id='file'
+                      className='sr-only'
+                    />
+                    <Paperclip role='button' />
+                  </label>
+
+                  {/* Form submission using react-hook-form */}
+                  <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className='flex w-full items-stretch gap-x-4'
+                  >
+                    <div className='w-full flex flex-col justify-center relative'>
+                      {typing && (
+                        <p className='text-sm text-gray-500 absolute -top-6'>
+                          {typing?.firstName} {typing?.lastName} is typing...
+                        </p>
+                      )}
+                      <input
+                        onFocus={() => handleFocus(true)}
+                        placeholder='Type a message'
+                        type='text'
+                        className='w-full border-2 border-black/50 bg-transparent rounded-lg px-4 py-2'
+                        {...register("message", {
+                          required: false,
+                          onBlur: () => {
+                            handleFocus(false);
+                          },
+                        })}
+                      />
+                    </div>
+                    <Button
+                      htmlType='submit'
+                      className='border-2 border-black/50 bg-transparent py-5'
+                    >
+                      {messageLoading ? (
+                        <Loader2 size={22} className='animate-spin' />
+                      ) : (
+                        <Send color='#000' />
+                      )}
+                    </Button>
+                  </form>
                 </div>
               </div>
-            ))}
-          </div>
-
-          <Divider />
-
-          {/* Preview selected images */}
-          <div className='flex gap-2 mt-4'>
-            {imgPreviews.map((preview, index) => (
-              <div key={index} className='relative'>
-                <Image
-                  src={preview}
-                  alt={`Preview ${index}`}
-                  className='h-[100px] w-auto rounded-md'
-                  width={300}
-                  height={300}
-                />
-                <button className='absolute top-0 right-0' onClick={() => handleRemoveImage(index)}>
-                  <XCircle size={20} color='red' />
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* File input and message send */}
-          <div className='mt-10 flex w-full items-center gap-x-6'>
-            <label htmlFor='file'>
-              <input
-                type='file'
-                multiple // Allow multiple file selection
-                onChange={handleFileChange}
-                name='file'
-                id='file'
-                className='sr-only'
-              />
-              <Paperclip role='button' />
-            </label>
-
-            {/* Form submission using react-hook-form */}
-            <form onSubmit={handleSubmit(onSubmit)} className='flex w-full items-stretch gap-x-4'>
-              <input
-                placeholder='Type a message'
-                type='text'
-                className='w-full border-2 border-black/50 bg-transparent rounded-lg px-4 py-2'
-                {...register("message", { required: false })}
-              />
-              <Button
-                htmlType='submit'
-                disabled={messageLoading}
-                className='border-2 border-black/50 bg-transparent py-6'
-              >
-                {messageLoading ? (
-                  <Loader2 size={22} className='animate-spin' />
-                ) : (
-                  <Send color='#000' />
-                )}
-              </Button>
-            </form>
+            </div>
           </div>
         </div>
       </div>

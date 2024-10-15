@@ -1,11 +1,13 @@
 "use client";
 import logoImage from "@/assets//image/logo.png";
 import { useAppSelector } from "@/redux/hooks";
-import { Menu, MenuProps } from "antd";
+import { logoutUser } from "@/services/logout";
+import { Button, Menu, MenuProps } from "antd";
 import Sider from "antd/es/layout/Sider";
 import MenuItem from "antd/es/menu/MenuItem";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AiOutlineBarChart } from "react-icons/ai";
 import { CiBadgeDollar, CiLogout } from "react-icons/ci";
@@ -112,12 +114,13 @@ const nvaLinkCSR: MenuItem[] = [
 const Sidebar = ({ collapsed, setCollapsed }: TSidebarType) => {
   const [current, setCurrent] = useState("dashboard");
   const user = useAppSelector((state) => state.auth.user);
-
+  const router = useRouter();
   const onClick: MenuProps["onClick"] = (e) => {
     console.log("click ", e);
     setCurrent(e.key);
     if (e.key === "logout") {
-      localStorage.removeItem("user");
+      //localStorage.removeItem("user");
+      logoutUser(router);
     }
   };
 

@@ -265,89 +265,80 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
   }, [socket, receiverId]);
 
   return (
-    <div className='lg:mx-auto h-full '>
-      <div className='relative z-10 flex flex-col rounded-xl rounded-t-xl border-t-8 border-t-primaryBlack px-10 py-8 lg:flex-row h-full'>
+    <div className='lg:mx-auto max-h-[100vh]'>
+      <div className='relative z-10 flex flex-col rounded-xl rounded-t-xl border-t-8 border-t-primaryBlack px-10 py-4 lg:flex-row border'>
         {/* Right - Chat Section */}
         <div className='flex flex-col justify-between lg:flex-grow lg:px-8'>
-          <div className='flex items-center justify-between border-b border-opacity-[40%] pb-1'>
-            <div className='flex items-center gap-x-5'>
-              <div className='w-[25%]'>
-                <Image
-                  src={
-                    userDetails && userDetails?.profilePicture
-                      ? userDetails?.profilePicture
-                      : userImg2
-                  }
-                  width={50}
-                  height={50}
-                  alt='user image'
-                  className='aspect-square w-full rounded-full'
-                />
-              </div>
-              <div className='lg:flex-grow'>
-                <h3 className='text-xl font-semibold text-black '>
-                  {userDetails?.firstName} {userDetails?.lastName}{" "}
-                </h3>
-                <div className='mt-1 flex items-center gap-x-2'>
-                  <div
-                    className={`h-2 w-2 rounded-full ${
-                      activeUsers.find((u: any) => u === receiverId) ? "bg-green-500" : "bg-red-500"
-                    }`}
+          <div className=' space-y-0 pt-8'>
+            <div className='flex items-center justify-between border-b border-opacity-[40%] pb-1'>
+              <div className='flex items-center gap-x-5'>
+                <div className='w-[25%]'>
+                  <Image
+                    src={
+                      userDetails && userDetails?.profilePicture
+                        ? userDetails?.profilePicture
+                        : userImg2
+                    }
+                    width={50}
+                    height={50}
+                    alt='user image'
+                    className='aspect-square w-full rounded-full'
                   />
-                  <p className='text-black border-t-black'>
-                    {" "}
-                    {activeUsers.find((u: any) => u === receiverId) ? (
-                      "Online"
-                    ) : (
-                      <span className='text-gray-400'>Offline</span>
-                    )}
-                  </p>
+                </div>
+                <div className='lg:flex-grow'>
+                  <h3 className='text-xl font-semibold text-black '>
+                    {userDetails?.firstName} {userDetails?.lastName}{" "}
+                  </h3>
+                  <div className='mt-1 flex items-center gap-x-2'>
+                    <div
+                      className={`h-2 w-2 rounded-full ${
+                        activeUsers.find((u: any) => u === receiverId)
+                          ? "bg-green-500"
+                          : "bg-red-500"
+                      }`}
+                    />
+                    <p className='text-black border-t-black'>
+                      {" "}
+                      {activeUsers.find((u: any) => u === receiverId) ? (
+                        "Online"
+                      ) : (
+                        <span className='text-gray-400'>Offline</span>
+                      )}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-            {!userDetails?.isActive ? (
-              //<Popconfirm
-              //  title={`Block ${userDetails?.firstName} `}
-              //  description='Are you sure to delete this task?'
-              //  icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-              //  onConfirm={() => {
-              //    socket?.emit("unblock", { receiverId });
-              //  }}
-              //  okText='Yes'
-              //  cancelText='No'
-              //>
-              //</Popconfirm>
-              <button
-                onClick={() => {
-                  socket?.emit("unblock", { receiverId });
-                }}
-                className='flex items-center gap-x-2'
-              >
-                <ArrowLeftFromLine size={20} color='green' />
-                <p className='text-xl text-black'>Unblock</p>
-              </button>
-            ) : (
-              <Popconfirm
-                title={`Block ${userDetails?.firstName} `}
-                description='Are you sure to delete this task?'
-                icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-                onConfirm={() => {
-                  socket?.emit("block", { receiverId });
-                }}
-                okText='Yes'
-                cancelText='No'
-              >
-                <button className='flex items-center gap-x-2'>
-                  <CircleOff size={20} color='#d55758' />
-                  <p className='text-xl text-black'>Block</p>
+              {!userDetails?.isActive ? (
+                <button
+                  onClick={() => {
+                    socket?.emit("unblock", { receiverId });
+                  }}
+                  className='flex items-center gap-x-2'
+                >
+                  <ArrowLeftFromLine size={20} color='green' />
+                  <p className='text-xl text-black'>Unblock</p>
                 </button>
-              </Popconfirm>
-            )}
-          </div>
+              ) : (
+                <Popconfirm
+                  title={`Block ${userDetails?.firstName} `}
+                  description='Are you sure to delete this task?'
+                  icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                  onConfirm={() => {
+                    socket?.emit("block", { receiverId });
+                  }}
+                  okText='Yes'
+                  cancelText='No'
+                >
+                  <button className='flex items-center gap-x-2'>
+                    <CircleOff size={20} color='#d55758' />
+                    <p className='text-xl text-black'>Block</p>
+                  </button>
+                </Popconfirm>
+              )}
+            </div>
 
-          <div>
             {/* Message Preview Section */}
-            <div className='max-h-full space-y-8 overflow-hidden pt-8 h-full'>
+            <div className='max-h-[54vh] h-full overflow-hidden scroll-hide overflow-y-auto'>
               {messages.length ? (
                 messages.map((msg, index) => (
                   <div
@@ -386,11 +377,12 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
                 </div>
               )}
             </div>
-
+          </div>
+          <>
             <Divider />
 
             {/* Preview selected images */}
-            <div className='flex flex-col pb-10'>
+            <div className='flex flex-col'>
               <div className='flex gap-2 mt-4'>
                 {imgPreviews.map((preview, index) => (
                   <div key={index} className='relative'>
@@ -412,10 +404,11 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
               </div>
 
               {/* File input and message send */}
-              <div className='mt-auto'>
+              <div>
                 <div className='flex w-full items-center gap-x-6'>
                   <label htmlFor='file'>
                     <input
+                      disabled={!socket || !userDetails?.isActive}
                       type='file'
                       multiple // Allow multiple file selection
                       onChange={handleFileChange}
@@ -437,7 +430,14 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
                           {typing?.firstName} {typing?.lastName} is typing...
                         </p>
                       )}
+                      {!userDetails?.isActive && (
+                        <p className='text-sm text-gray-500 absolute text-center w-full -top-7'>
+                          {userDetails?.firstName} {userDetails?.lastName} is blocked
+                        </p>
+                      )}
+
                       <input
+                        disabled={!socket || !userDetails?.isActive}
                         onFocus={() => handleFocus(true)}
                         placeholder='Type a message'
                         type='text'
@@ -451,6 +451,7 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
                       />
                     </div>
                     <Button
+                      disabled={!socket || !userDetails?.isActive}
                       htmlType='submit'
                       className='border-2 border-black/50 bg-transparent py-5'
                     >
@@ -464,7 +465,7 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
                 </div>
               </div>
             </div>
-          </div>
+          </>
         </div>
       </div>
     </div>

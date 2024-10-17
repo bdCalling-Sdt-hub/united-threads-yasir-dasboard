@@ -18,6 +18,10 @@ body {
   }
 }
 
+.scroll-hide::-webkit-scrollbar {
+  scrollbar-width: none;
+}
+
 .flex-item-center {
   @apply flex items-center justify-center;
 }

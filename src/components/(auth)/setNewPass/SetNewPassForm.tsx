@@ -1,7 +1,9 @@
 "use client";
+import { useResetPasswordMutation } from "@/redux/features/auth/authApi";
 import type { FormProps } from "antd";
 import { Button, ConfigProvider, Form, Input } from "antd";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 
 type FieldType = {
@@ -9,21 +11,33 @@ type FieldType = {
   confirmPass?: string;
 };
 
-const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
-  console.log("Failed:", errorInfo);
-};
-
 const SetNewPassForm = () => {
-  const route = useRouter();
+  const router = useRouter();
+  const [error, setError] = useState<string>("");
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
+  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+    setError("");
 
-  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    console.log("Success:", values);
-    if (values?.newPass === values?.confirmPass) {
-      toast.success("Successfully Password Reset");
-    } else {
-      toast.error("Does not match Comfirm Password");
+    if (values.newPass !== values.confirmPass) {
+      setError("Passwords do not match");
+      return;
     }
-    route.push("/login");
+
+    try {
+      const payload = {
+        password: values.newPass,
+      };
+      const token = sessionStorage.getItem("token");
+      const res = await resetPassword({ data: payload, token }).unwrap();
+
+      if (res.success) {
+        router.push("/login");
+        sessionStorage.removeItem("token");
+        toast.success("Password changed successfully");
+      }
+    } catch (error: any) {
+      setError(error?.data?.message || "Something went wrong");
+    }
   };
 
   return (
@@ -37,34 +51,35 @@ const SetNewPassForm = () => {
       }}
     >
       <Form
-        name="basic"
+        name='basic'
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-        layout="vertical"
-        className="md:w-[481px]"
+        autoComplete='off'
+        layout='vertical'
+        className='md:w-[481px]'
       >
         <Form.Item<FieldType>
-          label="New Password"
-          name="newPass"
+          label='New Password'
+          name='newPass'
           rules={[{ required: true, message: "Please input your email!" }]}
         >
-          <Input.Password size="large" placeholder="*******" />
+          <Input.Password size='large' placeholder='*******' />
         </Form.Item>
 
         <Form.Item<FieldType>
-          name="confirmPass"
-          label="Confirm Password"
+          name='confirmPass'
+          label='Confirm Password'
           rules={[{ required: true, message: "Please input your password!" }]}
         >
-          <Input.Password size="large" placeholder="*******" />
+          <Input.Password size='large' placeholder='*******' />
         </Form.Item>
 
         <Form.Item style={{ display: "flex", justifyContent: "center" }}>
+          {error && <p className='text-red-500'>{error}</p>}
           <Button
-            htmlType="submit"
-            size="large"
+            loading={isLoading}
+            htmlType='submit'
+            size='large'
             style={{ backgroundColor: "#232323", color: "#F8FAFC" }}
           >
             Update Password

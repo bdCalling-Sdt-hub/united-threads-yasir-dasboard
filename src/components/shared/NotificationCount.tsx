@@ -33,7 +33,8 @@ const NotificationCount = () => {
     .reduce((a, b) => a + b, 0);
 
   //const senderId = chatList[0]?.participants?.find((item) => item.user !== user?._id);
-  const lastMessageSender = chatList[0]?.latestMessage.sender;
+  const lastMessageSender =
+    chatList[0]?.latestMessage.seen === false ? chatList[0]?.latestMessage.sender : null;
   return (
     <Link
       href={`${lastMessageSender ? "/csr/message/" + lastMessageSender : "/csr/quote-details"}`}

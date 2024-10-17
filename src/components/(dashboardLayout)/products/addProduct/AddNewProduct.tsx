@@ -93,16 +93,16 @@ const AddNewProduct = () => {
   const [secondaryImages, setSecondaryImages] = useState<any[]>([]);
 
   const handleSecondaryImageChange = ({ fileList: newFileList }: any) => {
-    if (newFileList.length <= 4) {
+    if (newFileList.length <= 3) {
       setSecondaryImages(newFileList);
     } else {
-      ErrorResponse({ message: "You can only upload up to 4 secondary images." });
+      ErrorResponse({ message: "You can only upload up to 3 secondary images." });
     }
   };
 
   const beforeSecondaryImageUpload = () => {
-    if (secondaryImages.length >= 4) {
-      ErrorResponse({ message: "You can only upload up to 4 secondary images." });
+    if (secondaryImages.length >= 3) {
+      ErrorResponse({ message: "You can only upload up to 3 secondary images." });
       return false;
     }
     return true;

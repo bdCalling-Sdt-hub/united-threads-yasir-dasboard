@@ -4,53 +4,57 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { TUser } from "./redux/features/auth/authSlice";
 
-const authRoutes = ["/login"];
+const authRoutes = ["/login", "/verifyEmail", "/forgetPassword", "/setNewPass"];
 const adminRoutes = ["/admin"];
 const csrRoutes = ["/csr"];
 
 export function middleware(request: NextRequest) {
-  const cookiesStore = cookies();
-  const accessToken = cookiesStore.get("token")?.value;
+  //const cookiesStore = cookies();
+  //const accessToken = cookiesStore.get("token")?.value;
 
-  if (!accessToken && !authRoutes.includes(request.nextUrl.pathname)) {
-    // No token and not on login page, redirect to login
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
+  //console.log("from middleware");
 
-  if (accessToken) {
-    try {
-      const user = jwtDecode<TUser>(accessToken);
+  //if (!accessToken && !authRoutes.includes(request.nextUrl.pathname)) {
+  //  // No token and not on login page, redirect to login
+  //  return NextResponse.redirect(new URL("/login", request.url));
+  //}
 
-      // Token expiration check
-      if (user.exp && user.exp * 1000 < Date.now()) {
-        // Token expired, redirect to login
-        return NextResponse.redirect(new URL("/login", request.url));
-      }
+  //console.log(request.nextUrl.pathname, "middleware");
 
-      // Handle role-based redirection for /admin routes
-      if (adminRoutes.includes(request.nextUrl.pathname)) {
-        if (user.role !== "ADMIN" && user.role !== "CSR") {
-          return NextResponse.redirect(new URL("/login", request.url));
-        }
-      }
+  //if (accessToken) {
+  //  try {
+  //    const user = jwtDecode<TUser>(accessToken);
 
-      // Handle role-based redirection for /csr routes
-      if (csrRoutes.includes(request.nextUrl.pathname)) {
-        if (user.role !== "ADMIN" && user.role !== "CSR") {
-          return NextResponse.redirect(new URL("/login", request.url));
-        }
-        // Allow if the role matches
-        return NextResponse.next();
-      }
+  //    // Token expiration check
+  //    if (user.exp && user.exp * 1000 < Date.now()) {
+  //      // Token expired, redirect to login
+  //      return NextResponse.redirect(new URL("/login", request.url));
+  //    }
 
-      // Default: continue if no redirection is required
-      return NextResponse.next();
-    } catch (error) {
-      console.error("JWT decoding failed:", error);
-      // If token decoding fails, redirect to login
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-  }
+  //    // Handle role-based redirection for /admin routes
+  //    if (adminRoutes.includes(request.nextUrl.pathname)) {
+  //      if (user.role !== "ADMIN" && user.role !== "CSR") {
+  //        return NextResponse.redirect(new URL("/login", request.url));
+  //      }
+  //    }
+
+  //    // Handle role-based redirection for /csr routes
+  //    if (csrRoutes.includes(request.nextUrl.pathname)) {
+  //      if (user.role !== "ADMIN" && user.role !== "CSR") {
+  //        return NextResponse.redirect(new URL("/login", request.url));
+  //      }
+  //      // Allow if the role matches
+  //      return NextResponse.next();
+  //    }
+
+  //    // Default: continue if no redirection is required
+  //    return NextResponse.next();
+  //  } catch (error) {
+  //    console.error("JWT decoding failed:", error);
+  //    // If token decoding fails, redirect to login
+  //    return NextResponse.redirect(new URL("/login", request.url));
+  //  }
+  //}
 
   // Default: continue the request
   return NextResponse.next();

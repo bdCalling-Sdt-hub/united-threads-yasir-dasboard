@@ -12,8 +12,7 @@ export type TQuote = {
   category: TCategory;
   hexColor: string;
   colorsPreferences: string[];
-  size: string[];
-  price: number;
+  size: string;
   isDeleted: boolean;
   images: any[];
   quantity: number;

@@ -23,6 +23,8 @@ const QuoteListTable = ({ date }: { date?: string | null }) => {
 
   const { data, isLoading } = useGetQuotesQuery(query, {});
 
+  console.log(data, "dataIndex");
+
   const result = data as TResponse<TQuote[]>;
 
   const columns: TableProps<TQuote>["columns"] = [
@@ -37,9 +39,19 @@ const QuoteListTable = ({ date }: { date?: string | null }) => {
       render: (value) => value || "N/A",
     },
     {
-      title: "Color",
+      title: "Pantone Code",
       dataIndex: "hexColor", // Added pantone color field from TQuote
-      render: (value) => <span style={{ color: value }}>{value}</span>,
+      render: (value, record) => {
+        return (
+          <div className='flex items-center gap-x-2'>
+            <span
+              className='size-4 inline-block rounded-full'
+              style={{ backgroundColor: value }}
+            ></span>
+            <span style={{ color: value }}>{record.pantoneColor}</span>
+          </div>
+        );
+      },
     },
     {
       title: "Quantity",

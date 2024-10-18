@@ -6,7 +6,7 @@ import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CiUser } from "react-icons/ci";
 import { LuCalendarDays } from "react-icons/lu";
 import { TbMessage } from "react-icons/tb";
@@ -56,7 +56,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
     const hex = rgbHex(css);
     const panton = generatePantoneColor(`#${hex}`);
     setPantoneColor(panton.pantone);
-    setSelectedColor(hex); // Ensure this is a valid string (hex color like #ff0000)
+    setSelectedColor(hex);
   };
 
   const onFinish = (values: FieldType) => {
@@ -113,6 +113,10 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
     });
   };
 
+  useEffect(() => {
+    setPantoneColor(quote?.pantoneColor || "#000000");
+  }, [quote?.pantoneColor]);
+
   return (
     <>
       {isLoading ? (
@@ -158,7 +162,6 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                 color: quote?.hexColor,
                 quantity: quote?.quantity,
                 materialPreference: quote?.materialPreferences,
-                price: quote?.price,
               }}
             >
               <div className='space-y-5'>
@@ -213,7 +216,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                   </div>
 
                   <div className='lg:w-1/3 w-full'>
-                    <Form.Item label='Price' name='price'>
+                    <Form.Item label='Price' name='price' rules={[{ required: true }]}>
                       <InputNumber
                         size='large'
                         style={{ width: "100%" }}

@@ -46,7 +46,7 @@ const QuoteListTable = ({ date }: { date?: string | null }) => {
           <div className='flex items-center gap-x-2'>
             <span
               className='size-4 inline-block rounded-full'
-              style={{ backgroundColor: value }}
+              style={{ backgroundColor: value.slice(0, 1) === "#" ? value : `#${value}` }}
             ></span>
             <span style={{ color: value }}>{record.pantoneColor}</span>
           </div>

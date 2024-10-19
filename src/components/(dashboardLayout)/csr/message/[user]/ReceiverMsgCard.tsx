@@ -12,7 +12,7 @@ const ReceiverMsgCard = ({
 }) => {
   return (
     <div className='space-y-2 flex flex-col items-start relative'>
-      <p className='text-xs px-3'>{moment(createdAt).format("hh:mm A")}</p>
+      <p className='text-xs px-3'>{moment(createdAt).format("DD MMMM YYYY : hh:mm A")}</p>
       {message ? (
         <div className='max-w-max rounded-xl border bg-primaryBlack text-white px-3 py-2'>
           <p className='text-primaryWhite'>{message}</p>

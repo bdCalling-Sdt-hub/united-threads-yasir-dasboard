@@ -7,7 +7,15 @@ import { useUploadFileMutation } from "@/redux/api/messageApi";
 import { selectUser } from "@/redux/features/auth/authSlice";
 import { useAppSelector } from "@/redux/hooks";
 import { Button, Divider, Popconfirm } from "antd";
-import { ArrowLeftFromLine, CircleOff, Loader2, Paperclip, Send, XCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowLeftFromLine,
+  CircleOff,
+  Loader2,
+  Paperclip,
+  Send,
+  XCircle,
+} from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -16,6 +24,7 @@ import OwnerMsgCard from "./OwnerMsgCarda";
 import ReceiverMsgCard from "./ReceiverMsgCard";
 import { TUser } from "@/types/userType";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
 
 // Define the type for form data
 type MessageFormData = {
@@ -36,6 +45,7 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
   const userId = user?._id;
   const [uploadFile] = useUploadFileMutation();
   const { socket } = useSocket();
+  const router = useRouter();
 
   // Initialize the form with react-hook-form
   const {
@@ -271,40 +281,43 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
         <div className='flex flex-col justify-between lg:flex-grow lg:px-8'>
           <div className=' space-y-0 pt-8'>
             <div className='flex items-center justify-between border-b border-opacity-[40%] pb-1'>
-              <div className='flex items-center gap-x-5'>
-                <div className='w-[25%]'>
-                  <Image
-                    src={
-                      userDetails && userDetails?.profilePicture
-                        ? userDetails?.profilePicture
-                        : userImg2
-                    }
-                    width={50}
-                    height={50}
-                    alt='user image'
-                    className='aspect-square w-full rounded-full'
-                  />
-                </div>
-                <div className='lg:flex-grow'>
-                  <h3 className='text-xl font-semibold text-black '>
-                    {userDetails?.firstName} {userDetails?.lastName}{" "}
-                  </h3>
-                  <div className='mt-1 flex items-center gap-x-2'>
-                    <div
-                      className={`h-2 w-2 rounded-full ${
-                        activeUsers.find((u: any) => u === receiverId)
-                          ? "bg-green-500"
-                          : "bg-red-500"
-                      }`}
+              <div className='flex items-center gap-x-4'>
+                <ArrowLeft className='cursor-pointer' onClick={() => router.back()} />
+                <div className='flex items-center gap-x-5'>
+                  <div className=''>
+                    <Image
+                      src={
+                        userDetails && userDetails?.profilePicture
+                          ? userDetails?.profilePicture
+                          : userImg2
+                      }
+                      width={50}
+                      height={50}
+                      alt='user image'
+                      className='aspect-square w-full rounded-full'
                     />
-                    <p className='text-black border-t-black'>
-                      {" "}
-                      {activeUsers.find((u: any) => u === receiverId) ? (
-                        "Online"
-                      ) : (
-                        <span className='text-gray-400'>Offline</span>
-                      )}
-                    </p>
+                  </div>
+                  <div className='lg:flex-grow'>
+                    <h3 className='text-xl font-semibold text-black '>
+                      {userDetails?.firstName} {userDetails?.lastName}{" "}
+                    </h3>
+                    <div className='mt-1 flex items-center gap-x-2'>
+                      <div
+                        className={`h-2 w-2 rounded-full ${
+                          activeUsers.find((u: any) => u === receiverId)
+                            ? "bg-green-500"
+                            : "bg-red-500"
+                        }`}
+                      />
+                      <p className='text-black border-t-black'>
+                        {" "}
+                        {activeUsers.find((u: any) => u === receiverId) ? (
+                          "Online"
+                        ) : (
+                          <span className='text-gray-400'>Offline</span>
+                        )}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -338,34 +351,35 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
             </div>
 
             {/* Message Preview Section */}
-            <div className='max-h-[54vh] h-full overflow-hidden scroll-hide overflow-y-auto'>
+            <div className='max-h-[54vh] h-full overflow-hidden scroll-hide overflow-y-auto pt-10'>
               {messages.length ? (
                 messages.map((msg, index) => (
-                  <div
-                    key={index}
-                    className={`flex ${
-                      msg.sender === userId ? "flex-row-reverse" : "flex-row"
-                    } items-start gap-x-4`}
-                  >
-                    <Image
-                      src={msg.sender === userId ? userImg2 : userImg}
-                      alt="user's image"
-                      className='h-[50px] w-[50px] rounded-full'
-                    />
-                    <div className='max-w-[50%] space-y-3 overflow-hidden'>
-                      {msg.sender === userId ? (
-                        <OwnerMsgCard
-                          createdAt={msg.createdAt}
-                          file={msg.file}
-                          message={msg.text}
-                        />
-                      ) : (
-                        <ReceiverMsgCard
-                          message={msg.text}
-                          createdAt={msg.createdAt}
-                          file={msg.file}
-                        />
-                      )}
+                  <div key={index}>
+                    <div
+                      className={`flex ${
+                        msg.sender === userId ? "flex-row-reverse" : "flex-row"
+                      } items-start gap-x-4`}
+                    >
+                      <Image
+                        src={msg.sender === userId ? userImg2 : userImg}
+                        alt="user's image"
+                        className='h-[50px] w-[50px] rounded-full'
+                      />
+                      <div className='max-w-[50%] space-y-3 overflow-hidden'>
+                        {msg.sender === userId ? (
+                          <OwnerMsgCard
+                            createdAt={msg.createdAt}
+                            file={msg.file}
+                            message={msg.text}
+                          />
+                        ) : (
+                          <ReceiverMsgCard
+                            message={msg.text}
+                            createdAt={msg.createdAt}
+                            file={msg.file}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))

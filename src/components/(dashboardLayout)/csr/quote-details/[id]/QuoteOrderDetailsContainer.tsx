@@ -18,6 +18,7 @@ import generatePantoneColor from "@/lib/utils/convertHexToPanton";
 import { useGetSingleQuoteQuery, useUpdateQuoteMutation } from "@/redux/api/quoteApi";
 import { TResponse } from "@/types/global";
 import { TQuote } from "@/types/quoteTypes";
+import { ScrollText } from "lucide-react";
 
 type FieldType = {
   category: string;
@@ -123,34 +124,6 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
         <Skeleton active />
       ) : (
         <div>
-          <div className='flex justify-between'>
-            <div>
-              <div className='flex items-center gap-3'>
-                <p className='text-xl font-bold'>Quote ID: #{quote?._id}</p>
-              </div>
-              <div className='flex items-center gap-3 mt-3 mb-5'>
-                <LuCalendarDays className='w-6 h-6' />
-                <p className='text-md'>{moment(quote?.createdAt).format("MMM Do, YYYY")}</p>
-              </div>
-              <Link href={`/csr/message/${user?._id}`}>
-                <Button size='large' icon={<TbMessage />}>
-                  Message
-                </Button>
-              </Link>
-            </div>
-            <div className='flex gap-3'>
-              <CiUser className='w-12 h-12 rounded-md bg-primaryBlack text-primaryWhite py-2 px-2' />
-              <div>
-                <h2 className='text-xl font-bold mb-3'>Retailer</h2>
-                <p className='mb-2'>
-                  Full Name: {user?.firstName} {user?.lastName}
-                </p>
-                <p className='mb-2'>Email: {user?.email}</p>
-                <p className='mb-2'>Phone: {user?.contact}</p>
-              </div>
-            </div>
-          </div>
-
           {/* Product Information */}
           <div>
             <Form
@@ -164,9 +137,26 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                 materialPreference: quote?.materialPreferences,
               }}
             >
-              <div className='space-y-5'>
-                <div className='flex justify-between'>
-                  <div className='lg:w-1/3 w-full'>
+              <div>
+                <div className='grid lg:grid-cols-3'>
+                  <div className=' max-w-lg lg:col-span-2'>
+                    <div className='flex gap-3'>
+                      <>
+                        <ScrollText className='w-12 h-12 rounded-md bg-primaryBlack text-primaryWhite py-2 px-2' />
+                      </>
+                      <div>
+                        <div className='space-y-3'>
+                          <h2 className='text-xl font-bold'>Quote Details</h2>
+                          <p className='font-bold'>Quote ID: #{quote?._id}</p>
+                        </div>
+                        <div className='flex items-center gap-3 mt-1 mb-5'>
+                          <LuCalendarDays className='w-6 h-6' />
+                          <p className='text-md'>
+                            {moment(quote?.createdAt).format("MMM Do, YYYY")}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                     <Form.Item label='Category' name='category'>
                       <Select size='large' disabled />
                     </Form.Item>
@@ -185,24 +175,29 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                       />
                     </Form.Item>
 
-                    <div className='flex gap-x-5'>
-                      <div className='border-r-2 pr-5'>
-                        <Form.Item label='Color' name='color'>
-                          <ColorPicker
-                            size='large'
-                            onChange={(value, css) => handleColorChange(css)}
-                            value={selectedColor.toString()}
-                          />
-                        </Form.Item>
-                      </div>
-
-                      <div>
-                        <h1 className='text-lg'>Pantone code</h1>
-                        <p className='mt-2 text-lg'>{pantoneColor}</p>
+                    <div className='flex items-start gap-x-3'>
+                      <Form.Item name='color' className=''>
+                        <ColorPicker
+                          size='large'
+                          onChange={(value, css) => handleColorChange(css)}
+                          value={selectedColor.toString()}
+                        />
+                      </Form.Item>
+                      <div className='text-sm'>
+                        <p>Pantone code</p>
+                        <p>{pantoneColor}</p>
                       </div>
                     </div>
 
                     <Form.Item label='Quantity' name='quantity'>
+                      <InputNumber
+                        size='large'
+                        style={{ width: "100%" }}
+                        placeholder='Please input quantity'
+                      />
+                    </Form.Item>
+
+                    <Form.Item label='Price' name='price' rules={[{ required: true }]}>
                       <InputNumber
                         size='large'
                         style={{ width: "100%" }}
@@ -215,14 +210,26 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                     </Form.Item>
                   </div>
 
-                  <div className='lg:w-1/3 w-full'>
-                    <Form.Item label='Price' name='price' rules={[{ required: true }]}>
-                      <InputNumber
-                        size='large'
-                        style={{ width: "100%" }}
-                        placeholder='Please input quantity'
-                      />
-                    </Form.Item>
+                  <div className='w-full space-y-3 h-full flex flex-col justify-between'>
+                    <div className='flex gap-3'>
+                      <CiUser className='w-12 h-12 rounded-md bg-primaryBlack text-primaryWhite py-2 px-2' />
+                      <div className='w-full'>
+                        <div className='flex items-center justify-between w-full'>
+                          <h2 className='text-xl font-bold mb-3'>Retailer</h2>
+                        </div>
+                        <p className='mb-2'>
+                          Full Name: {user?.firstName} {user?.lastName}
+                        </p>
+                        <p className='mb-2'>Email: {user?.email}</p>
+                        <p className='mb-2'>Phone: {user?.contact}</p>
+                      </div>
+                    </div>
+                    <Link href={`/csr/message/${user?._id}`}>
+                      <Button size='large' icon={<TbMessage />} block>
+                        Message Retailer
+                      </Button>
+                    </Link>
+
                     <div className='flex gap-4'>
                       <div className='flex flex-col gap-1 justify-center items-center'>
                         <Image
@@ -249,11 +256,16 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                         </figcaption>
                       </div>
                     </div>
+                    <div>
+                      <Form.Item label='Comment (Optional)' name='comment'>
+                        <TextArea rows={4} placeholder='Write comment for Retailer...' />
+                      </Form.Item>
+                      <Button htmlType='submit' block size='large'>
+                        Quote Accept
+                      </Button>
+                    </div>
                   </div>
                 </div>
-                <Button htmlType='submit' block size='large'>
-                  Quote Accept
-                </Button>
               </div>
             </Form>
           </div>

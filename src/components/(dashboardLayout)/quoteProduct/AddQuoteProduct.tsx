@@ -18,7 +18,6 @@ export const addQuoteProductValidation = z.object({
   name: z.string().min(1, { message: "Product name is required" }),
   category: z.string({ required_error: "Category is required" }),
   size: z.array(z.string()).optional(),
-  stock: z.string({ required_error: "Stock is required" }),
 });
 
 type TPropsType = {
@@ -86,7 +85,6 @@ const AddQuoteProduct = ({ open, setOpen }: TPropsType) => {
       colorsPreferences: colors?.length ? colors.map((clr) => clr.hex) : [],
       category: data.category,
       size: data.size,
-      stock: Number(data.stock),
     };
     formData.append("data", JSON.stringify(payload));
     formData.append("frontSide", frontSideImage[0]?.originFileObj);
@@ -199,13 +197,13 @@ const AddQuoteProduct = ({ open, setOpen }: TPropsType) => {
               mode='multiple'
             />
 
-            <EInput
+            {/*<EInput
               type='number'
               label='Stock'
               name='stock'
               size='large'
               placeholder='Enter Stock'
-            />
+            />*/}
 
             {/* Front Side Image Upload */}
             <div className='mt-4'>

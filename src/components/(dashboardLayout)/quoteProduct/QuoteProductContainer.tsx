@@ -10,16 +10,17 @@ import { Button, Empty, Segmented, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { FaChevronLeft } from "react-icons/fa6";
-import AddCetagoryModal from "./AddCetagoryModal";
+import AddCategoryModal from "./AddQuoteCategoryModal";
 import QuoteProductCard from "./QuoteProductCard";
 import AddQuoteProduct from "./AddQuoteProduct";
+import { useGetQuoteCategoriesQuery } from "@/redux/api/quoteCategoryApi";
 
 const QuoteProductContainer = () => {
   const [open, setOpen] = useState(false);
   const [openAddProduct, setOpenAddProduct] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
 
-  const { data: categoryData, isLoading: categoriesLoading } = useGetCategoriesQuery({});
+  const { data: categoryData, isLoading: categoriesLoading } = useGetQuoteCategoriesQuery({});
   const result = categoryData as TResponse<TCategory[]>;
 
   // State for categories and visible categories
@@ -120,7 +121,7 @@ const QuoteProductContainer = () => {
           </div>
         )}
       </div>
-      <AddCetagoryModal open={open} setOpen={setOpen}></AddCetagoryModal>
+      <AddCategoryModal open={open} setOpen={setOpen}></AddCategoryModal>
       <AddQuoteProduct open={openAddProduct} setOpen={setOpenAddProduct}></AddQuoteProduct>
     </>
   );

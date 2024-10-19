@@ -27,6 +27,7 @@ type FieldType = {
   quantity: number;
   materialPreference: string;
   price: number;
+  comment: string;
 };
 
 const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
@@ -78,6 +79,9 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
             materialPreferences: values.materialPreference,
             price: values.price,
             quantity: values.quantity,
+            size: values.size,
+            pantoneColor: pantoneColor,
+            comment: values.comment,
           };
 
           const formData = new FormData();
@@ -201,7 +205,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                       <InputNumber
                         size='large'
                         style={{ width: "100%" }}
-                        placeholder='Please input quantity'
+                        placeholder='Please input price'
                       />
                     </Form.Item>
 

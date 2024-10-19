@@ -20,6 +20,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  console.log({});
+
   if (accessToken) {
     try {
       const user = jwtDecode<TUser>(accessToken);
@@ -35,9 +37,9 @@ export function middleware(request: NextRequest) {
       const isAdminRoute = adminRoutes.includes(request.nextUrl.pathname.split("/")[1]);
       const isCsrRoute = csrRoutes.includes(request.nextUrl.pathname.split("/")[1]);
 
+      console.log(request.nextUrl.pathname.split("/"), "from middleware");
+
       if (isAdminRoute) {
-        console.log(user, "from middleware");
-        console.log(user.role);
         if (user.role !== "ADMIN") {
           cookiesStore.delete("token");
           cookiesStore.delete("refreshToken");
@@ -46,8 +48,8 @@ export function middleware(request: NextRequest) {
       }
 
       // Handle role-based redirection for /csr routes
-      if (csrRoutes.includes(request.nextUrl.pathname.split("/")[1])) {
-        if (isCsrRoute) {
+      if (isCsrRoute) {
+        if (user.role !== "CSR") {
           cookiesStore.delete("token");
           cookiesStore.delete("refreshToken");
           return NextResponse.redirect(new URL("/login", request.url));
@@ -66,18 +68,20 @@ export function middleware(request: NextRequest) {
   }
 
   // Default: continue the request
-  return NextResponse.next();
+  return NextResponse.redirect(new URL("/login", request.url));
 }
 
 // Config for which routes the middleware should apply
 export const config = {
   matcher: [
-    "/admin",
-    "/csr",
-    "/customer-dashboard",
-    "/login",
-    "/verifyEmail",
-    "/forgetPassword",
-    "/setNewPass",
+    //"/admin",
+    //"/csr",
+    //"/customer-dashboard",
+    //"/login",
+    //"/verifyEmail",
+    //"/forgetPassword",
+    //"/setNewPass",
+
+    "/:path*",
   ], // Define which routes to match
 };

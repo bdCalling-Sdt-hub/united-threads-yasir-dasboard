@@ -12,10 +12,12 @@ import OrderDetailsSkeleton from "./SingleOrderDetailsSkeleton";
 import Image from "next/image";
 import productPlaceholder from "@/assets/product.jpg";
 import { toast } from "sonner";
+import { TQuoteProduct } from "@/types/quoteProductTypes";
+import { TProduct } from "@/types/productType";
 
 const SingleOrderDetailsContainer = ({ id }: { id: string }) => {
   const { data, isLoading } = useGetSingleOrderQuery({ orderId: id });
-  const result = data as TResponse<TOrder>;
+  const result = data as TResponse<TOrder & { quote: TQuoteProduct; product: TProduct }>;
 
   const order = result?.data as TOrder;
 
@@ -26,13 +28,13 @@ const SingleOrderDetailsContainer = ({ id }: { id: string }) => {
       render: (value, record) => (
         <div className='flex gap-3 items-center'>
           <Image
-            src={record.product.primaryImage || productPlaceholder}
+            src={record?.product?.primaryImage || productPlaceholder}
             alt='productImage'
             width={50}
             height={50}
             className='h-auto w-auto '
           />
-          <h4 className='text-lg font-medium'>{value.name}</h4>
+          <h4 className='text-lg font-medium'>{value?.name}</h4>
         </div>
       ),
     },
@@ -54,19 +56,21 @@ const SingleOrderDetailsContainer = ({ id }: { id: string }) => {
   const [updateOrder] = useUpdateOrderMutation();
 
   const handleChange = async (value: string) => {
+    console.log(`selected ${value}`);
+
     try {
       const res = await updateOrder({
         orderId: id,
-        status: value,
-      });
+        data: {
+          status: value,
+        },
+      }).unwrap();
 
       if (res.data?.success) {
-        toast.success(res.data?.message);
-      } else {
-        toast.error(res.data?.message);
+        toast.success(res?.data?.message);
       }
     } catch (error: any) {
-      toast.error(error.message || "Something went wrong");
+      toast.error(error.data?.message || "Something went wrong");
     }
   };
 
@@ -104,14 +108,24 @@ const SingleOrderDetailsContainer = ({ id }: { id: string }) => {
 
               <div>
                 <h2 className='text-xl font-bold mb-1.5'>Customer Information</h2>
-                <p className=' mb-1'>
-                  Full Name: {order.user.firstName} {order?.user?.lastName}{" "}
-                </p>
-                <p className=' mb-1'>Email: {order?.user?.email}</p>
-                <p className=' mb-1'>PHone: {order?.user?.contact}</p>
-                <p className=' mb-1'>
-                  Address: {order?.state} {order?.city} {order?.houseNo}{" "}
-                </p>
+                <div className='grid'>
+                  <div>
+                    <p className=' mb-1'>Full Name:</p>
+                    <p className=' mb-1'>Email: </p>
+                    <p className=' mb-1'>PHone: </p>
+                  </div>
+                  <div>
+                    <p>Address:</p>
+                    <p>
+                      {order?.state} {order?.city} {order?.houseNo}{" "}
+                    </p>
+                    <p> {order?.user?.contact}</p>
+                    <p> {order?.user?.email}</p>
+                    <p>
+                      {order?.user?.firstName} {order?.user?.lastName}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

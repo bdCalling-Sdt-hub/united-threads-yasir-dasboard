@@ -37,7 +37,7 @@ const StatisticBar = () => {
           <h4 className='text-3xl font-bold '>
             {!isLoading ? (
               <>
-                $ <CountUp end={result?.data?.revenueCount} duration={2} start={0} />
+                $ <CountUp end={result?.data?.revenueCount / 100} duration={2} start={0} />
               </>
             ) : (
               <>

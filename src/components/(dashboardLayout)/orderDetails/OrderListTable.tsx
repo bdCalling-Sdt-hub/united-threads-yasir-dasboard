@@ -189,7 +189,7 @@ const OrderListTable = () => {
     [
       { label: "sort", value: "-createdAt" },
       { label: "limit", value: limit.toString() },
-      { label: "orderType", value: "SHOP" },
+      //{ label: "orderType", value: "SHOP" },
     ],
     {},
   );

@@ -2,6 +2,7 @@ import EForm from "@/components/Form/FormProvider";
 import EInput from "@/components/Form/ResInput";
 import ESelect from "@/components/Form/ResSelect";
 import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
+import { useGetQuoteCategoriesQuery } from "@/redux/api/quoteCategoryApi";
 import { useAddQuoteProductMutation } from "@/redux/api/quoteProductApi";
 import { TCategory } from "@/types/categoryTypes";
 import { TResponse } from "@/types/global";
@@ -37,7 +38,7 @@ const AddQuoteProduct = ({ open, setOpen }: TPropsType) => {
   }));
 
   // Fetch categories
-  const { data: categoryRes } = useGetCategoriesQuery({ limit: 99999 });
+  const { data: categoryRes } = useGetQuoteCategoriesQuery({ limit: 99999 });
   const categories = categoryRes as TResponse<TCategory[]>;
 
   // Handle color selection

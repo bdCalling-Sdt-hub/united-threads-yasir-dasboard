@@ -3,7 +3,7 @@ import "./globals.css";
 //import "sweetalert2/src/sweetalert2.scss";
 
 import Providers from "@/lib/Providers/Providers";
-import { kumbh, roboto } from "./fonts";
+import { kumbh, roboto, poppins } from "./fonts";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className={`${kumbh.className} ${roboto.variable}  antialiased bg-[#232323]`}>
+      <body className={`${poppins.className}  antialiased bg-[#232323]`}>
         <Providers>
           <Toaster />
           {children}

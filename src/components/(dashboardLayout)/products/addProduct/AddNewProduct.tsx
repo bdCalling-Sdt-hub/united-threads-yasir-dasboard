@@ -28,9 +28,9 @@ const addProductValidation = z.object({
   name: z.string().min(1, { message: "Product name is required" }),
   shortDescription: z.string().optional(),
   category: z.string({ required_error: "Category is required" }),
-  quantity: z.string({ required_error: "Quantity is required" }),
   price: z.string({ message: "Price must be a positive number" }),
   size: z.array(productSizeEnum),
+  stock: z.string({ required_error: "Stock is required" }),
 });
 
 const AddNewProduct = () => {
@@ -126,11 +126,11 @@ const AddNewProduct = () => {
 
     const updatedData = {
       ...data,
-      quantity: Number(data?.quantity),
       price: Number(data?.price),
       colorsPreferences: colors?.length ? colors.map((clr) => clr.hex) : [],
       size: data.size || [],
       shortDescription: data?.shortDescription,
+      stock: Number(data?.stock),
       description: longDescription,
     };
 
@@ -215,7 +215,7 @@ const AddNewProduct = () => {
             <EInput
               label='Stock Quantity'
               placeholder='Enter stock quantity'
-              name='quantity'
+              name='stock'
               size='large'
               type='number'
             />

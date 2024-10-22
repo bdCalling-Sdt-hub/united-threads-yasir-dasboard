@@ -34,10 +34,7 @@ const ProfileContainer = () => {
     try {
       const res = await updateProfile(formData).unwrap();
       if (res.success) {
-        console.log({ message: res.message });
-      } else {
-        setError(res.data.message);
-        console.log({ message: res.data.message });
+        toast.success(res.message);
       }
     } catch (error: any) {
       console.log(error);
@@ -46,8 +43,6 @@ const ProfileContainer = () => {
       toast.dismiss(toastId);
     }
   };
-
-  console.log(error);
 
   return (
     <div className='bg-[#434344] py-8 rounded'>

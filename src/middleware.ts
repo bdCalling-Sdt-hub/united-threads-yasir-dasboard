@@ -13,14 +13,10 @@ export function middleware(request: NextRequest) {
   const cookiesStore = cookies();
   const accessToken = cookiesStore.get("token")?.value;
 
-  console.log("from middleware");
-
   if (!accessToken && !authRoutes.includes(request.nextUrl.pathname)) {
     // No token and not on login page, redirect to login
     return NextResponse.redirect(new URL("/login", request.url));
   }
-
-  console.log({});
 
   if (accessToken) {
     try {
@@ -36,8 +32,6 @@ export function middleware(request: NextRequest) {
 
       const isAdminRoute = adminRoutes.includes(request.nextUrl.pathname.split("/")[1]);
       const isCsrRoute = csrRoutes.includes(request.nextUrl.pathname.split("/")[1]);
-
-      console.log(request.nextUrl.pathname.split("/"), "from middleware");
 
       if (isAdminRoute) {
         if (user.role !== "ADMIN") {

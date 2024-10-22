@@ -12,12 +12,15 @@ type TPropsType = {
   userId?: string;
 };
 const UserModal = ({ open, setOpen, userId }: TPropsType) => {
-  const { data, isLoading } = useGetSingleUserQuery({ userId });
+  const { data, isLoading } = useGetSingleUserQuery(
+    { userId },
+    {
+      skip: !userId,
+    },
+  );
 
   const result = data as TResponse<TUser>;
   const user = result?.data;
-
-  console.log(user);
 
   return (
     <Modal

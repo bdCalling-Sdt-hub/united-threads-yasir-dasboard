@@ -19,6 +19,13 @@ export type TQuote = {
   materialPreferences: string;
   quoteStatus?: TQuoteStatus;
   isAccepted?: boolean;
+  price: number;
+  country: string;
+  state: string;
+  city: string;
+  houseNo?: string;
+  area?: string;
+  comment?: string;
   createdAt?: Date;
   updatedAt?: Date;
 };

@@ -69,7 +69,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
         <div className='flex justify-between items-center font-semibold'>
           <p>Sales Count</p>
           <p className='flex items-center gap-2'>
-            <FaArrowUp size={16} /> {product.orderCount}
+            <FaArrowUp size={16} /> {product.salesCount}
           </p>
         </div>
         <div className='border-t'></div>
@@ -77,7 +77,7 @@ const ProductCard = ({ product }: { product: TProduct }) => {
           <p>Remaining Products</p>
           {/* <p className=" rounded-xl min-w-16 border-primaryBlack"></p>  */}
           <div className='flex items-center gap-2'>
-            <p>{product.quantity}</p>
+            <p>{product.stock}</p>
           </div>
         </div>
       </div>

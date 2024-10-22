@@ -8,7 +8,6 @@ export const login = async (data: Record<string, unknown>) => {
     email: data.email,
     password: data.password,
   };
-  console.log(payload);
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/sign-in`, {
     method: "POST",

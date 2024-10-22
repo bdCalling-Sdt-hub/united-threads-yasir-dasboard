@@ -28,7 +28,7 @@ export const addProductValidation = z.object({
   name: z.string().optional(),
   shortDescription: z.string().optional(),
   category: z.string().optional(),
-  quantity: z.number().optional(),
+  stock: z.string().optional(),
   price: z.number().optional(),
   size: z.array(productSizeEnum).optional(),
 });
@@ -123,8 +123,8 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
 
     const updatedData = {
       ...data,
-      quantity: data?.quantity ? Number(data?.quantity) : undefined,
-      price: data?.price ? Number(data?.price) : undefined,
+      stock: data?.stock ? Number(data?.stock) : 0,
+      price: data?.price ? Number(data?.price) : 0,
       colorsPreferences: colors?.length ? colors.map((clr) => clr.hex) : [],
       size: data.size || [],
       shortDescription: data?.shortDescription,
@@ -167,7 +167,7 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
     name: product?.data?.name || "",
     shortDescription: product?.data?.shortDescription || "",
     price: product?.data?.price || "",
-    quantity: product?.data?.quantity || "",
+    quantity: product?.data?.stock || "",
     size: product?.data?.size || [],
     category: product?.data?.category || "",
   };
@@ -269,7 +269,7 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
                 <EInput
                   label='Stock Quantity'
                   placeholder='Enter stock quantity'
-                  name='quantity'
+                  name='stock'
                   size='large'
                   type='number'
                 />

@@ -149,8 +149,6 @@ const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) =>
     stock: quoteProduct?.stock?.toString() || "",
   };
 
-  console.log(initialValues, "initial values");
-
   return (
     <Modal
       open={open}

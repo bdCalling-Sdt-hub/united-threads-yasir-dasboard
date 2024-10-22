@@ -45,10 +45,3 @@ export default function generatePantoneColor(hexColor: string) {
   // Return Pantone Color Object
   return pantoneColorObject;
 }
-
-// Example usage:
-const hexColor = "#ff5733";
-const pantoneColor = generatePantoneColor(hexColor);
-console.log(
-  `Pantone: ${pantoneColor.pantone}, Hex: #${pantoneColor.hex}, Distance: ${pantoneColor.distance}`,
-);

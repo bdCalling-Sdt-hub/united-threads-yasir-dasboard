@@ -10,12 +10,14 @@ export type TProduct = {
   };
   primaryImage?: string;
   category: string;
-  quantity: number;
+  stock: number;
   price: number;
   size: string[];
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
-  orderCount: number;
-  colorsPreferences: string[]; // hex colors array;
+  colorsPreferences: string[];
+  rating?: number;
+  salesCount?: number;
+  reviewCount?: number;
 };

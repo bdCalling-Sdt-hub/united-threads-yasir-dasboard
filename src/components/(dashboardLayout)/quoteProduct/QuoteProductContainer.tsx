@@ -66,7 +66,6 @@ const QuoteProductContainer = () => {
   ]);
 
   const products = (productData as TResponse<TQuoteProduct[]>)?.data || [];
-  console.log(products);
   return (
     <>
       <div className='space-y-6'>

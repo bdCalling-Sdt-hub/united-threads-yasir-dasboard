@@ -23,8 +23,6 @@ const QuoteListTable = ({ date }: { date?: string | null }) => {
 
   const { data, isLoading } = useGetQuotesQuery(query, {});
 
-  console.log(data, "dataIndex");
-
   const result = data as TResponse<TQuote[]>;
 
   const columns: TableProps<TQuote>["columns"] = [

@@ -17,6 +17,10 @@ const NotificationCount = () => {
       socket.on(`chat-list::${user?._id}`, (data) => {
         setChatList(data?.data || []);
       });
+
+      socket.on("notification::" + user?._id, (data) => {
+        console.log(data);
+      });
     }
 
     return () => {

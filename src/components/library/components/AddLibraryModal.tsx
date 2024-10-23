@@ -5,6 +5,7 @@ import { useAddCategoryMutation } from "@/redux/api/categoryApi";
 import { Button, Form, FormProps, Input, Modal, Upload } from "antd";
 import { useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
+import { useCreateLibraryMutation } from "@/redux/api/libraryApi";
 
 type TPropsType = {
   open: boolean;
@@ -15,15 +16,15 @@ type FieldType = {
   name: string;
 };
 
-const AddCetagoryModal = ({ open, setOpen }: TPropsType) => {
-  const [primaryImage, setPrimaryImage] = useState<any[]>([]);
+const AddLibraryModal = ({ open, setOpen }: TPropsType) => {
+  const [image, setImage] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [form] = Form.useForm();
-  const [addCategory, { isLoading }] = useAddCategoryMutation();
+  const [createLibrary, { isLoading }] = useCreateLibraryMutation();
 
   const beforePrimaryImageUpload = () => {
-    if (primaryImage.length >= 1) {
-      ErrorResponse({ message: "Please upload a Image for the category" });
+    if (image.length >= 1) {
+      ErrorResponse({ message: "Please upload a Image for the library" });
       return false;
     }
     return true;
@@ -31,25 +32,24 @@ const AddCetagoryModal = ({ open, setOpen }: TPropsType) => {
 
   const handlePrimaryImageChange = ({ fileList: newFileList }: any) => {
     if (newFileList.length <= 1) {
-      setPrimaryImage(newFileList);
+      setImage(newFileList);
     } else {
-      ErrorResponse({ message: "You can only upload 1 primary image." });
+      ErrorResponse({ message: "You can only upload 1 gallery image." });
     }
   };
 
-  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+  const onFinish: FormProps<FieldType>["onFinish"] = async () => {
     setError("");
-    if (!primaryImage[0]?.originFileObj) {
-      setError("Please upload a Image for the category");
+    if (!image[0]?.originFileObj) {
+      setError("Please select an image for the library.");
       return;
     }
 
     try {
       const formData = new FormData();
 
-      formData.append("data", JSON.stringify(values));
-      formData.append("image", primaryImage[0]?.originFileObj);
-      const res = await addCategory(formData).unwrap();
+      formData.append("file", image[0]?.originFileObj);
+      const res = await createLibrary(formData).unwrap();
       if (res.success) {
         form.resetFields();
         setOpen(false);
@@ -73,19 +73,19 @@ const AddCetagoryModal = ({ open, setOpen }: TPropsType) => {
       }}
     >
       <div className='pb-2'>
-        <h4 className='text-center text-2xl font-medium'>Add new category </h4>
+        <h4 className='text-center text-2xl font-medium'>Add Library </h4>
         <div className='mt-10'>
           <Form layout='vertical' onFinish={onFinish}>
-            <Form.Item label='Category name' name='name'>
+            {/*<Form.Item label='Category name' name='name'>
               <Input size='large' placeholder='Enter category name'></Input>
-            </Form.Item>
+            </Form.Item>*/}
 
             <div className='mb-4'>
-              <p className='mb-2 required-indicator text-lg'>Upload Primary Image</p>
+              <p className='mb-2 required-indicator text-lg'>Upload Library Image</p>
               <Upload
                 onChange={handlePrimaryImageChange}
                 beforeUpload={beforePrimaryImageUpload}
-                fileList={primaryImage}
+                fileList={image}
                 listType='picture'
                 maxCount={1}
               >
@@ -98,7 +98,7 @@ const AddCetagoryModal = ({ open, setOpen }: TPropsType) => {
 
             {error && <p className='text-red-500 pb-2'>{error}</p>}
             <Button loading={isLoading} htmlType='submit' block size='large'>
-              Add Category
+              Add Library
             </Button>
           </Form>
         </div>
@@ -107,4 +107,4 @@ const AddCetagoryModal = ({ open, setOpen }: TPropsType) => {
   );
 };
 
-export default AddCetagoryModal;
+export default AddLibraryModal;

@@ -58,6 +58,7 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
   useEffect(() => {
     if (socket) {
       socket.on("online-users", (data) => {
+        console.log(data, "from message container");
         setActiveUsers(data?.data || []);
       });
 
@@ -109,7 +110,12 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
 
       // Add the listener for new messages
       socket.on("new-message::" + userId, (messageData: any) => {
-        setMessages((prevMessages) => [...prevMessages, messageData]); // Append new message to the existing list
+        if (
+          messageData?.data?.sender?._id !== userId &&
+          messageData?.data?.receiver?._id !== userId
+        ) {
+          setMessages((prevMessages) => [...prevMessages, messageData]); // Append new message to the existing list
+        }
       });
 
       // Cleanup function to remove the listener on component unmount or when dependencies change
@@ -273,6 +279,8 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
       };
     }
   }, [socket, receiverId]);
+
+  console.log({ activeUsers });
 
   return (
     <div className='lg:mx-auto max-h-[100vh]'>

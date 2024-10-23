@@ -5,6 +5,7 @@ import { logoutUser } from "@/services/logout";
 import { Button, Menu, MenuProps } from "antd";
 import Sider from "antd/es/layout/Sider";
 import MenuItem from "antd/es/menu/MenuItem";
+import { Images } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -68,6 +69,11 @@ const adminNavLink: MenuItem[] = [
         label: <Link href='/admin/quote-management'>Quote Management</Link>,
       },
     ],
+  },
+  {
+    key: "gallery",
+    icon: <Images size={24} />,
+    label: <Link href='/admin/gallery'>Gallery</Link>,
   },
   {
     key: "settings",

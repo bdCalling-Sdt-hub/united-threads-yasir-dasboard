@@ -46,9 +46,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
             </h1>
           </div>
           <div className='flex items-center gap-x-6'>
-            <>
-             <NotificationCount />
-            </>
+            <>{result?.role === "CSR" && <NotificationCount />}</>
             <Link href={"/profile"}>
               <div className='flex items-center gap-x-3'>
                 {isLoading ? (

@@ -16,6 +16,7 @@ const SellProductDetailsModal = ({ open, setOpen, orderId }: TPropsType) => {
 
   const result = data as TResponse<TOrder>;
   const order = result?.data;
+  console.log({ order });
   return (
     <>
       <Modal
@@ -35,7 +36,7 @@ const SellProductDetailsModal = ({ open, setOpen, orderId }: TPropsType) => {
             <h4 className='text-center text-2xl font-medium'>Product Details</h4>
             <div className='mt-5'>
               <Image
-                src={order?.product?.primaryImage || productImage}
+                src={order?.product?.primaryImage || order?.quote?.frontSide || productImage}
                 alt='image'
                 width={1900}
                 height={1000}
@@ -44,7 +45,7 @@ const SellProductDetailsModal = ({ open, setOpen, orderId }: TPropsType) => {
               <div className='mt-10'>
                 <div className='flex justify-between'>
                   <h4>Product Name :</h4>
-                  <p className='font-medium'>{order?.product?.name}</p>
+                  <p className='font-medium'>{order?.product?.name || order?.quote?.name}</p>
                 </div>
                 <Divider></Divider>
                 <div className='flex justify-between'>
@@ -55,7 +56,7 @@ const SellProductDetailsModal = ({ open, setOpen, orderId }: TPropsType) => {
                       //key={inx}
                       className=' bg-slate-200 p-1 rounded-md text-black m-1 uppercase'
                     >
-                      {order?.product?.size}
+                      {order?.product?.size || order?.quote?.size}
                     </span>
                     {/*))}*/}
                     <p className='font-medium'></p>
@@ -64,7 +65,7 @@ const SellProductDetailsModal = ({ open, setOpen, orderId }: TPropsType) => {
                 <Divider></Divider>
                 <div className='flex justify-between'>
                   <h4>Price :</h4>
-                  <p className='font-medium'>${order?.amount}</p>
+                  <p className='font-medium'>${order?.product?.price || order?.quote?.price}</p>
                 </div>
                 <Divider></Divider>
                 <div className='flex justify-between'>

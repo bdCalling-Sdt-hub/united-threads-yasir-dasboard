@@ -42,9 +42,39 @@ const usersApi = baseApi.injectEndpoints({
       },
     }),
     getUserAndRevenueCount: builder.query({
-      query: () => {
+      query: (query: { label: string; value: string }[] | []) => {
+        const params = new URLSearchParams();
+        if (query.length) {
+          query.forEach((item) => {
+            params.append(item.label, item.value);
+          });
+        }
         return {
           url: "/meta/user-and-revenue",
+          method: "GET",
+          params: params,
+        };
+      },
+    }),
+    getEarningGrowth: builder.query({
+      query: (query: { label: string; value: string }[] | []) => {
+        const params = new URLSearchParams();
+        if (query.length) {
+          query.forEach((item) => {
+            params.append(item.label, item.value);
+          });
+        }
+        return {
+          url: "/meta/earning-growth",
+          method: "GET",
+          params: params,
+        };
+      },
+    }),
+    getSellGrowth: builder.query({
+      query: () => {
+        return {
+          url: "/meta/sell-growth",
           method: "GET",
         };
       },
@@ -57,4 +87,6 @@ export const {
   useGetRevenueCountQuery,
   useGetSellCountQuery,
   useGetUserAndRevenueCountQuery,
+  useGetEarningGrowthQuery,
+  useGetSellGrowthQuery,
 } = usersApi;

@@ -1,4 +1,4 @@
-import DashboardContainer from "@/components/(dashboardLayout)/dashboard/DashboardContainer";
+import DashboardContainer from "@/components/dashboardLayout/dashboard/DashboardContainer";
 import React from "react";
 
 const DashboradPage = () => {

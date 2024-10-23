@@ -60,7 +60,7 @@ const AboutUsEditor = () => {
     if (data) {
       setValue(result?.data?.content);
     }
-  }, [isLoading, result?.data?.content]);
+  }, [isLoading, result?.data?.content, data]);
 
   return (
     <>

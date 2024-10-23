@@ -10,6 +10,7 @@ import { FaArrowUp } from "react-icons/fa6";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { toast } from "sonner";
 import UpdateQuoteProductModal from "./UpdateQuoteProductModal";
+import generatePantoneColor from "@/lib/utils/convertHexToPanton";
 
 const QuoteProductCard = ({ product }: { product: TQuoteProduct }) => {
   const [deleteProduct] = useDeleteQuoteProductMutation();
@@ -32,14 +33,33 @@ const QuoteProductCard = ({ product }: { product: TQuoteProduct }) => {
     <div
       className={`p-4 border border-primaryBlack rounded-xl font-roboto space-y-4 relative w-full`}
     >
-      <div className='flex items-center gap-4 mt-5'>
-        <Image src={productImg} alt={product.name} width={84} height={84} />
-        <div>
-          <div className=' flex flex-col gap-3'>
-            <h1 className='text-xl font-bold'>{product.name}</h1>
-            {/*<p className='text-base'> ${product}</p>*/}
+      <div className='flex flex-col gap-4 mt-5 w-10/12 mx-auto'>
+        <div className='flex items-center gap-4 justify-between'>
+          <div>
+            <Image
+              src={product?.frontSide || productImg}
+              alt={product.name}
+              width={84}
+              height={84}
+              className='w-auto h-[140px]'
+            />
+            <p className='text-center mt-1'>Front Side</p>
+          </div>
+          <div className='h-[150px] w-[1px] bg-primaryBlack'></div>
+          <div>
+            <Image
+              src={product?.backSide || productImg}
+              alt={product.name}
+              width={84}
+              height={84}
+              className='w-auto h-[140px]'
+            />
+            <p className='text-center mt-1'>Back Side</p>
           </div>
         </div>
+      </div>
+      <div>
+        <h1 className='text-xl font-bold'>{product.name}</h1>
       </div>
 
       {/* delete and esit btn */}
@@ -62,11 +82,21 @@ const QuoteProductCard = ({ product }: { product: TQuoteProduct }) => {
       </div>
 
       <div className='space-y-2'>
-        <h3 className='text-lg font-semibold'>Product Size</h3>
+        <h3 className='text-lg font-semibold'>Sizes</h3>
         <div className='flex items-center gap-x-3'>
           {product?.size?.map((s) => (
-            <Tag key={s} color='' className='min-w-12 text-center'>
+            <Tag key={s} className='min-w-12 text-center'>
               {s}
+            </Tag>
+          ))}
+        </div>
+      </div>
+      <div className='space-y-2'>
+        <h3 className='text-lg font-semibold'>Colors Preferences</h3>
+        <div className='flex items-center gap-x-3'>
+          {product?.colorsPreferences?.map((s) => (
+            <Tag key={s} className='min-w-12 text-center' color={s}>
+              {generatePantoneColor(s).pantone}
             </Tag>
           ))}
         </div>
@@ -75,16 +105,16 @@ const QuoteProductCard = ({ product }: { product: TQuoteProduct }) => {
         <div className='flex justify-between items-center font-semibold'>
           <p>Sales Count</p>
           <p className='flex items-center gap-2'>
-            <FaArrowUp size={16} /> {product.orderCount}
+            <FaArrowUp size={16} /> {product?.orderCount}
           </p>
         </div>
-        <div className='border-t'></div>
-        <div className='flex justify-between items-center font-semibold'>
+        {/*<div className='border-t'></div>*/}
+        {/*<div className='flex justify-between items-center font-semibold'>
           <p>Remaining Products</p>
           <div className='flex items-center gap-2'>
             <p>{product.stock}</p>
           </div>
-        </div>
+        </div>*/}
       </div>
       <UpdateQuoteProductModal open={open} setOpen={setOpen} quoteProduct={product} />
     </div>

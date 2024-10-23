@@ -75,17 +75,17 @@ const QuoteProductContainer = () => {
             icon={<CiCirclePlus size={20} color='#fff' />}
             onClick={() => setOpen(true)}
           >
-            Add New Category
+            Add Quote Category
           </Button>
           <div className='flex items-center justify-between py-4'>
-            <h1 className='text-2xl font-bold w-full'>All Products</h1>
+            <h1 className='text-2xl font-bold w-full'>All Quote Products</h1>
 
             <Button
               className='bg-[#232323] text-[#fff] min-w-48 !py-5'
               icon={<CiCirclePlus size={20} color='#fff' />}
               onClick={() => setOpenAddProduct(!openAddProduct)}
             >
-              Add Product
+              Add Quote Product
             </Button>
           </div>
           <div className='w-full flex items-center gap-x-6'>

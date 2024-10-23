@@ -1,5 +1,4 @@
-import EarningContainer from '@/components/(dashboardLayout)/earning/EarningContainer';
-
+import EarningContainer from "@/components/dashboardLayout/earning/EarningContainer";
 
 const EarningPage = () => {
   return (

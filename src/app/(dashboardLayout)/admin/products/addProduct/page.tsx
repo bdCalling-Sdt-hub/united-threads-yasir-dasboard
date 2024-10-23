@@ -1,4 +1,4 @@
-import AddNewProduct from "@/components/(dashboardLayout)/products/addProduct/AddNewProduct";
+import AddNewProduct from "@/components/dashboardLayout/products/addProduct/AddNewProduct";
 
 const AddProduct = () => {
   return (

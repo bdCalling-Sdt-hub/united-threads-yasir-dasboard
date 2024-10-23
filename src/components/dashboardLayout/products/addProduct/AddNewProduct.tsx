@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
-
 import EForm from "@/components/Form/FormProvider";
 import EInput from "@/components/Form/ResInput";
 import ESelect from "@/components/Form/ResSelect";
@@ -18,7 +17,8 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { PlusSquareFilled, UploadOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import JoditEditor from "jodit-react";
+import dynamic from "next/dynamic";
+const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
 // Define product size enum in zod
 const productSizeEnum = z.enum(["XS", "S", "M", "L", "XL", "XXL", "XXXL"]);
@@ -186,14 +186,16 @@ const AddNewProduct = () => {
 
             <div className='space-y-2 mb-10' id='add-product-detailed-desc'>
               <label>Detailed Description</label>
-              <JoditEditor
-                ref={editor}
-                value={longDescription}
-                config={{
-                  height: 400,
-                }}
-                onBlur={(newContent) => setLongDescription(newContent)}
-              />
+              <Suspense fallback={<Spin />}>
+                <JoditEditor
+                  ref={editor}
+                  value={longDescription}
+                  config={{
+                    height: 400,
+                  }}
+                  onBlur={(newContent) => setLongDescription(newContent)}
+                />
+              </Suspense>
               {longDescError && <p style={{ color: "red" }}>{longDescError}</p>}
             </div>
 

@@ -1,4 +1,4 @@
-import QuoteOrderDetailsContainer from "@/components/(dashboardLayout)/csr/quote-details/[id]/QuoteOrderDetailsContainer";
+import QuoteOrderDetailsContainer from "@/components/dashboardLayout/csr/quote-details/[id]/QuoteOrderDetailsContainer";
 
 const QuoteOrderDetaisPage = ({ params }: { params: { id: string } }) => {
   return (

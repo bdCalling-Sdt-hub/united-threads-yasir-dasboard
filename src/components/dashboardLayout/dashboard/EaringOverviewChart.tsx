@@ -1,5 +1,5 @@
 "use client";
-import { useGetRevenueCountQuery } from "@/redux/api/metaApi";
+import { useGetEarningGrowthQuery, useGetRevenueCountQuery } from "@/redux/api/metaApi";
 import { TResponse } from "@/types/global";
 import { Select } from "antd";
 import { useState } from "react";
@@ -9,6 +9,10 @@ const EaringOverviewChart = () => {
   const [selectedYear, setSelectedYear] = useState("2024");
 
   const { data } = useGetRevenueCountQuery([{ label: "year", value: selectedYear }], {});
+  const { data: growth, isLoading } = useGetEarningGrowthQuery(
+    [{ label: "year", value: selectedYear }],
+    {},
+  );
 
   const result = data as TResponse<{ name: string; totalRevenue: number }[]>;
 
@@ -22,7 +26,10 @@ const EaringOverviewChart = () => {
       <div className='text-primaryWhite flex justify-between items-center mb-10'>
         <h1 className='text-xl'>Earning Overview</h1>
         <h1 className=''>
-          Monthly Growth: <span className='ml-4 font-medium'>35.80%</span>
+          Yearly Growth:
+          <span className='ml-4 font-medium'>
+            {isLoading ? "0.00%" : `${growth?.data?.growthPercentage}%`}
+          </span>
         </h1>
 
         <Select

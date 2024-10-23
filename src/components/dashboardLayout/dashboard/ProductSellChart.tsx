@@ -1,5 +1,5 @@
 "use client";
-import { useGetSellCountQuery } from "@/redux/api/metaApi";
+import { useGetEarningGrowthQuery, useGetSellCountQuery } from "@/redux/api/metaApi";
 import { TResponse } from "@/types/global";
 import { Select } from "antd";
 import { useState } from "react";
@@ -11,6 +11,11 @@ const ProductSellChart = () => {
   const { data } = useGetSellCountQuery([{ label: "year", value: selectedYear }], {});
   const result = data as TResponse<{ name: string; totalQuantity: number }[]>;
 
+  const { data: growth, isLoading } = useGetEarningGrowthQuery(
+    [{ label: "year", value: selectedYear }],
+    {},
+  );
+
   const handleChange = (value: string) => {
     setSelectedYear(value);
   };
@@ -20,9 +25,11 @@ const ProductSellChart = () => {
       <div className='text-primaryWhite flex justify-between items-center mb-10'>
         <h1 className='text-xl'>Product Selling Overview</h1>
         <h1 className=''>
-          Monthly Growth: <span className='ml-4 font-medium'>35.80%</span>
+          Yearly Growth:{" "}
+          <span className='ml-4 font-medium'>
+            {isLoading ? "0.00%" : `${growth?.data?.growthPercentage}%`}
+          </span>
         </h1>
-
         <Select
           value={selectedYear}
           style={{ width: 120 }}

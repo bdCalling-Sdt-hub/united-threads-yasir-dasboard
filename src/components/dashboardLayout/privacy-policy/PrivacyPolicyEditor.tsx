@@ -20,30 +20,8 @@ type TSettings = {
 // Dynamically import ReactQuill with SSR disabled
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-const TermsEditor = () => {
+const PrivacyPolicyEditor = () => {
   const [value, setValue] = useState("");
-
-  const [createSettings, { isLoading: isCreateLoading }] = useCreateSettingsMutation();
-
-  const handleSave = async () => {
-    try {
-      const res = await createSettings({ label: "terms", content: value }).unwrap();
-
-      if (res?.success) {
-        toast.success(res?.message);
-      } else {
-        toast.error(res?.message);
-      }
-    } catch (error: any) {
-      toast.error(error?.data?.message || "Something went wrong");
-    }
-  };
-
-  const { data, isLoading } = useGetSettingsQuery({
-    label: "terms",
-  });
-
-  const result = data as TResponse<TSettings>;
 
   const toolbarOptions = [
     ["image"],
@@ -58,11 +36,33 @@ const TermsEditor = () => {
     toolbar: toolbarOptions,
   };
 
+  const [createSettings, { isLoading: isCreateLoading }] = useCreateSettingsMutation();
+
+  const handleSave = async () => {
+    try {
+      const res = await createSettings({ label: "privacy", content: value }).unwrap();
+
+      if (res?.success) {
+        toast.success(res?.message);
+      } else {
+        toast.error(res?.message);
+      }
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Something went wrong");
+    }
+  };
+
+  const { data, isLoading } = useGetSettingsQuery({
+    label: "privacy",
+  });
+
+  const result = data as TResponse<TSettings>;
+
   useEffect(() => {
     if (data) {
       setValue(result?.data?.content);
     }
-  }, [isLoading, result?.data?.content]);
+  }, [isLoading, result?.data?.content, data]);
 
   return (
     <>
@@ -92,4 +92,4 @@ const TermsEditor = () => {
   );
 };
 
-export default dynamic(() => Promise.resolve(TermsEditor), { ssr: false });
+export default dynamic(() => Promise.resolve(PrivacyPolicyEditor), { ssr: false });

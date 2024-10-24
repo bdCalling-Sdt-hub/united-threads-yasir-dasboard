@@ -4,7 +4,7 @@ import { ORDER_STATUS } from "@/constant";
 import { useGetOrdersQuery } from "@/redux/api/orderApi";
 import { TOrder } from "@/redux/api/orderType";
 import { TResponse } from "@/types/global";
-import { Table, TableProps } from "antd";
+import { Dropdown, MenuProps, Space, Table, TableProps } from "antd";
 import moment from "moment";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -18,11 +18,14 @@ const OrderListTable = () => {
     [
       { label: "sort", value: "-createdAt" },
       { label: "limit", value: limit.toString() },
+      { label: "paymentStatus", value: "PAID" },
     ],
     {},
   );
 
   const result = data as TResponse<TOrder[]>;
+
+  console.log(result, "result");
 
   const columns: TableProps<TOrder>["columns"] = [
     {
@@ -64,8 +67,22 @@ const OrderListTable = () => {
       title: "Status",
       dataIndex: "status",
 
-      render: (value) => {
-        return <Tag status={value} />;
+      render: (value, record) => {
+        console.log({ value });
+        return (
+          <div>
+            <>
+              <Tag status={record.status} />
+            </>
+            {/*<Dropdown menu={{ items }} trigger={["click"]}>
+              <a onClick={(e) => e.preventDefault()}>
+                <Space>
+                  <Tag status={value} />
+                </Space>
+              </a>
+            </Dropdown>*/}
+          </div>
+        );
       },
       filters: Object.keys(ORDER_STATUS).map((key) => ({
         text: key,

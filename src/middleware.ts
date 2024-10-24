@@ -1,9 +1,8 @@
 import { jwtDecode } from "jwt-decode"; // Use default import
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { TUser } from "./redux/features/auth/authSlice";
-import { logoutUser } from "./services/logout";
 
 const authRoutes = ["/login", "/verifyEmail", "/forgetPassword", "/setNewPass"];
 const adminRoutes = ["admin"];
@@ -13,69 +12,71 @@ export function middleware(request: NextRequest) {
   const cookiesStore = cookies();
   const accessToken = cookiesStore.get("token")?.value;
 
-  if (!accessToken && !authRoutes.includes(request.nextUrl.pathname)) {
-    // No token and not on login page, redirect to login
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
+  //if (!accessToken && !authRoutes.includes(request.nextUrl.pathname)) {
+  //  // No token and not on login page, redirect to login
+  //  return NextResponse.redirect(new URL("/login", request.url));
+  //}
+  // If a token is found, process it
   if (accessToken) {
     try {
+      // Decode the token to extract user information
       const user = jwtDecode<TUser>(accessToken);
 
-      // Token expiration check
+      // Check if the token has expired
       if (user.exp && user.exp * 1000 < Date.now()) {
-        // Token expired, redirect to login
-        return NextResponse.redirect(new URL("/login", request.url));
+        // Token has expired, redirect to login and delete the token from cookies
+        const response = NextResponse.redirect(new URL("/login", request.url));
+        response.cookies.delete("token"); // Delete the token
+        response.cookies.delete("refreshToken"); // Delete the refresh token
+        return response; // Return the response with cookies deleted
       }
 
-      // Handle role-based redirection for /admin routes
-
+      // Role-based redirection: check if the route is admin or CSR
       const isAdminRoute = adminRoutes.includes(request.nextUrl.pathname.split("/")[1]);
       const isCsrRoute = csrRoutes.includes(request.nextUrl.pathname.split("/")[1]);
 
+      // Admin route check
       if (isAdminRoute) {
         if (user.role !== "ADMIN") {
-          cookiesStore.delete("token");
-          cookiesStore.delete("refreshToken");
-          return NextResponse.redirect(new URL("/login", request.url));
+          // If the user is not an admin, delete cookies and redirect to login
+          const response = NextResponse.redirect(new URL("/login", request.url));
+          response.cookies.delete("token");
+          response.cookies.delete("refreshToken");
+          return response;
         }
       }
 
-      // Handle role-based redirection for /csr routes
+      // CSR route check
       if (isCsrRoute) {
         if (user.role !== "CSR") {
-          cookiesStore.delete("token");
-          cookiesStore.delete("refreshToken");
-          return NextResponse.redirect(new URL("/login", request.url));
+          // If the user is not CSR, delete cookies and redirect to login
+          const response = NextResponse.redirect(new URL("/login", request.url));
+          response.cookies.delete("token");
+          response.cookies.delete("refreshToken");
+          return response;
         }
-        // Allow if the role matches
+        // If the user role matches CSR, continue the request
         return NextResponse.next();
       }
 
-      // Default: continue if no redirection is required
+      // Default: continue the request if no specific redirection is needed
       return NextResponse.next();
     } catch (error) {
+      // Handle errors in JWT decoding
       console.error("JWT decoding failed:", error);
-      // If token decoding fails, redirect to login
-      return NextResponse.redirect(new URL("/login", request.url));
+      // Redirect to login and delete the cookies if token decoding fails
+      const response = NextResponse.redirect(new URL("/login", request.url));
+      response.cookies.delete("token");
+      response.cookies.delete("refreshToken");
+      return response;
     }
   }
 
-  // Default: continue the request
-  return NextResponse.redirect(new URL("/login", request.url));
+  // Default: if no token is present and no other checks apply, allow the request to proceed
+  return NextResponse.next();
 }
 
 // Config for which routes the middleware should apply
 export const config = {
-  matcher: [
-    //"/admin",
-    //"/csr",
-    //"/customer-dashboard",
-    //"/login",
-    //"/verifyEmail",
-    //"/forgetPassword",
-    //"/setNewPass",
-
-    "/:path*",
-  ], // Define which routes to match
+  matcher: ["/:path*"], // Define which routes to match
 };

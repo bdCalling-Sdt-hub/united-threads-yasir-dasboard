@@ -37,7 +37,7 @@ export type TPayment = {
 
 export type TStripeCheckoutSession = {
   id: string;
-  object: "checkout.session";
+  object: any;
   after_expiration?: null;
   allow_promotion_codes?: null;
   amount_subtotal: number;
@@ -64,7 +64,7 @@ export type TStripeCheckoutSession = {
     terms_of_service_acceptance?: null;
   };
   customer: string;
-  customer_creation: "if_required";
+  customer_creation: string;
   customer_details: {
     address: {
       city?: null;

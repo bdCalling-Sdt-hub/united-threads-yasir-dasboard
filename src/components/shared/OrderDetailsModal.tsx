@@ -16,7 +16,7 @@ const OrderDetailsModal = ({ open, setOpen }: TPropsType) => {
   const result = data as TResponse<TOrder>;
   const user = result?.data?.user;
   const order = result?.data;
-
+ 
   return (
     <Modal
       style={{ minWidth: "400px" }}

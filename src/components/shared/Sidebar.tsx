@@ -36,7 +36,7 @@ const adminNavLink: MenuItem[] = [
   {
     key: "user-management",
     icon: <PiUsersThreeThin strokeWidth={1} size={24} />,
-    label: <Link href='/admin/user-management'>User Management</Link>,
+    label: <Link href='/admin/user-management'>Customer Management</Link>,
   },
   {
     key: "earnings",
@@ -110,6 +110,12 @@ const nvaLinkCSR: MenuItem[] = [
     label: <Link href='/csr/quote-details'>Quote Details</Link>,
     icon: <TbChecklist size={24} />,
   },
+  {
+    key: "messages",
+    label: <Link href='/csr/messages'>Messages</Link>,
+    icon: <TbListDetails size={24} />,
+  },
+
   {
     key: "logout",
     icon: <CiLogout strokeWidth={0.8} size={24} />,

@@ -10,7 +10,7 @@ import SocketProvider from "./SocketProvider";
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <Provider store={store}>
-      <AntdRegistry>
+      <AntdRegistry >
         <SocketProvider>
           <ConfigProvider theme={mainTheme}>{children}</ConfigProvider>
         </SocketProvider>

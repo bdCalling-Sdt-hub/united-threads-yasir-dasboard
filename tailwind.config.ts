@@ -20,6 +20,7 @@ const config: Config = {
       },
       fontFamily: {
         roboto: ["var(--font-roboto)"],
+        uncut: ["var(--font-uncut-sans)"],
       },
     },
   },

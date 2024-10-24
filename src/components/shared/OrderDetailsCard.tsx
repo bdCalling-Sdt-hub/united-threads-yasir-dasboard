@@ -7,9 +7,35 @@ import { CalendarDays, MapPin, Package, CreditCard } from "lucide-react";
 import { TUser } from "@/types/userType";
 import { TOrder } from "@/redux/api/orderType";
 import Tag from "./Tag";
+import { Dropdown, MenuProps, Space } from "antd";
+import { useUpdateOrderMutation } from "@/redux/api/orderApi";
+import { toast } from "sonner";
+import { ORDER_STATUS } from "@/constant";
+import { useRouter } from "next/navigation";
 
 export default function OrderDetails({ user, order }: { user: TUser; order: TOrder }) {
   const [imageError, setImageError] = useState(false);
+
+  const items: MenuProps["items"] = ["PENDING", "SHIPPED", "DELIVERED", "CANCELED"].map((key) => ({
+    key,
+    label: ORDER_STATUS[key as keyof typeof ORDER_STATUS],
+    onClick: () => handleChange(key as string),
+  }));
+
+  const [updateOrder] = useUpdateOrderMutation();
+  const router = useRouter();
+
+  const handleChange = async (value: string) => {
+    try {
+      const res = await updateOrder({ orderId: order._id, data: { status: value } }).unwrap();
+      if (res.success) {
+        toast.success(res?.message);
+        router.refresh();
+      }
+    } catch (error) {
+      toast.error((error as Error).message || "Something went wrong");
+    }
+  };
 
   return (
     <div className='mx-auto space-y-6'>
@@ -73,17 +99,23 @@ export default function OrderDetails({ user, order }: { user: TUser; order: TOrd
               <div
                 className='w-6 h-6 rounded-full mr-2'
                 style={{
-                  backgroundColor: order.quote.hexColor || order.product.colorsPreferences[0],
+                  backgroundColor: order?.quote?.hexColor || order?.product?.colorsPreferences[0],
                 }}
               ></div>
               <span className='text-sm text-gray-500'>
-                {order.quote.hexColor || order.product.colorsPreferences[0]}
+                {order?.quote?.hexColor || order?.product?.colorsPreferences[0]}
               </span>
             </div>
           </div>
           <div className='space-y-1'>
             <p className='font-semibold'>Order Status</p>
-            <Tag status={order?.status} />
+            <Dropdown menu={{ items }} trigger={["click"]}>
+              <a onClick={(e) => e.preventDefault()}>
+                <Space>
+                  <Tag status={order?.status} />
+                </Space>
+              </a>
+            </Dropdown>
           </div>
           <div className='space-y-1'>
             <p className='font-semibold'>Payment Status</p>

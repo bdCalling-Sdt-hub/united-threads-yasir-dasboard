@@ -8,7 +8,7 @@ const OwnerMsgCard = ({
 }: {
   message: string;
   createdAt: string;
-  file: string[];
+  file: string[] | null;
 }) => {
   return (
     <div className='space-y-2 flex flex-col items-end relative'>
@@ -30,9 +30,20 @@ const OwnerMsgCard = ({
             ) : (
               ""
             )}
-            <Image.PreviewGroup items={file}>
-              <Image src={file[0]} alt='image' className='max-h-[300px] w-auto' />
-            </Image.PreviewGroup>
+            <div className={`grid ${file.length > 1 ? "grid-cols-2" : "grid-cols-1"} gap-4`}>
+              <Image.PreviewGroup>
+                {file?.map((img) => (
+                  <Image
+                    key={img}
+                    src={img}
+                    alt={img}
+                    height={200}
+                    width={200}
+                    className='h-[200px] w-auto rounded-xl border'
+                  />
+                ))}
+              </Image.PreviewGroup>
+            </div>
           </div>
         </>
       ) : (

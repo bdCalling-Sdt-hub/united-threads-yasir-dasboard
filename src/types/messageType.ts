@@ -10,3 +10,4 @@ export type TMessage = {
   updatedAt: string;
   __v: number;
 };
+

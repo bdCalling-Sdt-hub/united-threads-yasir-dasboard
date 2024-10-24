@@ -39,6 +39,7 @@ const LoginForm = () => {
             token: res.data.accessToken,
           }),
         );
+        console.log(user);
         if (user.role === "ADMIN") {
           router.push("/admin");
         } else if (user.role === "CSR") {

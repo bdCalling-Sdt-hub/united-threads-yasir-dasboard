@@ -11,7 +11,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode, useState } from "react";
-import { GoBell } from "react-icons/go";
 import { IoMenu } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 const { Content } = Layout;

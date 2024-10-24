@@ -17,7 +17,7 @@ import {
   XCircle,
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import OwnerMsgCard from "./OwnerMsgCarda";
@@ -280,7 +280,15 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
     }
   }, [socket, receiverId]);
 
-  console.log({ activeUsers });
+  const chatBoxRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (messages) {
+      if (chatBoxRef.current) {
+        chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+      }
+    }
+  }, [messages]);
 
   return (
     <div className='lg:mx-auto max-h-[100vh]'>
@@ -359,7 +367,10 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
             </div>
 
             {/* Message Preview Section */}
-            <div className='max-h-[54vh] h-full overflow-hidden scroll-hide overflow-y-auto pt-10'>
+            <div
+              ref={chatBoxRef}
+              className='max-h-[54vh] h-full overflow-hidden scroll-hide overflow-y-auto pt-10'
+            >
               {messages.length ? (
                 messages.map((msg, index) => (
                   <div key={index}>

@@ -42,6 +42,7 @@ body {
   margin-left: 4px;
   margin-right: 4px;
 }
+
 .ant-menu-item-selected {
   background-color: #fff !important;
 }

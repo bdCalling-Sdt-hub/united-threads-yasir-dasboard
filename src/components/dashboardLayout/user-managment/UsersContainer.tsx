@@ -45,12 +45,14 @@ const UserMangementContainer = () => {
 
   const result = data as TResponse<TUser[]>;
 
+  console.log(result, "result");
+
   const columns: TableProps<TUser>["columns"] = [
-    {
-      title: "Serial",
-      dataIndex: "key",
-      render: (value, record, index) => `#${++index}`,
-    },
+    //{
+    //  title: "Serial",
+    //  dataIndex: "key",
+    //  render: (value, record, index) => `#${++index}`,
+    //},
     {
       title: "Customer Name",
       dataIndex: "firstName",
@@ -100,7 +102,7 @@ const UserMangementContainer = () => {
   return (
     <div>
       <div className='flex items-center justify-between py-4'>
-        <h1 className='text-2xl font-bold w-full'>User Management</h1>
+        <h1 className='text-2xl font-bold w-full'>Customer Management</h1>
         <Input
           type='search'
           placeholder='Search...'

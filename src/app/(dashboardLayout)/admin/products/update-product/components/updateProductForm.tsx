@@ -351,7 +351,7 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
             </Col>
 
             {/* Primary Image Uploader */}
-            <Col span={8} className='flex flex-col gap-4'>
+            <Col span={8} className='flex flex-col gap-4 border'>
               <div>
                 <p className='mb-2 required-indicator text-lg'>Upload Primary Image</p>
                 <Upload

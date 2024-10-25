@@ -10,7 +10,6 @@ const StatisticBar = () => {
   const { data, isLoading } = useGetUserAndRevenueCountQuery([]);
 
   const result = data as TResponse<{ userCount: number; revenueCount: number }>;
-  console.log({ result });
   return (
     <div className='h-32 flex text-primaryWhite font-roboto'>
       <div className='w-1/2 h-full mr-4 bg-primaryBlack rounded-xl flex gap-6 px-12 items-center '>

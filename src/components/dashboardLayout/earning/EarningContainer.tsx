@@ -50,12 +50,12 @@ const EarningContainer = () => {
     {
       title: "Product",
       dataIndex: "product",
-      render: (value) => value.name,
+      render: (value) => value?.name,
     },
     {
       title: "Buyer Email",
       dataIndex: "user",
-      render: (value) => value.email,
+      render: (value) => value?.email,
     },
     {
       title: "Date",
@@ -88,7 +88,7 @@ const EarningContainer = () => {
 
   let todayEaring = 0;
   result?.data?.forEach((item) => {
-    if (moment(item.createdAt).isSame(moment(), "day")) {
+    if (moment(item?.createdAt).isSame(moment(), "day")) {
       todayEaring += item.amount;
     }
   });

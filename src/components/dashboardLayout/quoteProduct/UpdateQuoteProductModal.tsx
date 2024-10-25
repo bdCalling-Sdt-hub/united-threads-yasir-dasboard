@@ -2,7 +2,7 @@
 import EForm from "@/components/Form/FormProvider";
 import EInput from "@/components/Form/ResInput";
 import ESelect from "@/components/Form/ResSelect";
-import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
+import { useGetQuoteCategoriesQuery } from "@/redux/api/quoteCategoryApi";
 import { useUpdateQuoteProductMutation } from "@/redux/api/quoteProductApi";
 import { TCategory } from "@/types/categoryTypes";
 import { TResponse } from "@/types/global";
@@ -20,7 +20,6 @@ export const addQuoteProductValidation = z.object({
   name: z.string().min(1, { message: "Product name is required" }),
   category: z.string().min(1, { message: "Category is required" }),
   size: z.array(z.string()).optional(),
-  stock: z.string().min(1, { message: "Stock must be greater than 0" }),
 });
 
 type TPropsType = {
@@ -44,7 +43,9 @@ const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) =>
   }));
 
   // Fetch categories
-  const { data: categoryRes, isLoading: categoryLoading } = useGetCategoriesQuery({ limit: 99999 });
+  const { data: categoryRes, isLoading: categoryLoading } = useGetQuoteCategoriesQuery({
+    limit: 99999,
+  });
   const categories = categoryRes as TResponse<TCategory[]>;
 
   // Handle color selection
@@ -137,17 +138,9 @@ const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) =>
         name: quoteProduct?.name || "",
         category: quoteProduct?.category?._id || "", // Ensure this is the correct field
         size: quoteProduct?.size || [], // Ensure it's an array
-        stock: quoteProduct?.stock?.toString() || "",
       });
     }
   }, [quoteProduct]);
-
-  const initialValues = {
-    name: quoteProduct?.name || "",
-    category: quoteProduct?.category?._id || "",
-    size: quoteProduct?.size || [],
-    stock: quoteProduct?.stock?.toString() || "",
-  };
 
   return (
     <Modal
@@ -168,7 +161,7 @@ const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) =>
             <EForm
               onSubmit={onSubmit}
               resolver={zodResolver(addQuoteProductValidation)}
-              defaultValues={initialValues} // Pass default values
+              defaultValues={defaultValues} // Pass default values
               key={colors.length}
             >
               {/* Product Name */}
@@ -242,14 +235,6 @@ const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) =>
                 size='large'
                 mode='multiple'
                 defaultValue={defaultValues.size} // Ensure default values are set
-              />
-
-              <EInput
-                type='number'
-                label='Stock'
-                name='stock'
-                size='large'
-                placeholder='Enter Stock'
               />
 
               {/* Front Side Image Upload */}

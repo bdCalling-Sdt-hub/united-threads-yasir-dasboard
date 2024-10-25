@@ -45,6 +45,7 @@ const LibraryContainer = () => {
             Add New Library
           </Button>
         </div>
+        <h1 className='text-2xl font-bold w-full'>Your Libraries</h1>
         {productIsLoading ? (
           <div className='w-full flex justify-center h-44 items-center'>
             <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />

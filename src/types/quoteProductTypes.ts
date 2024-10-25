@@ -15,7 +15,7 @@ export type TQuoteProduct = {
   images: TImage[];
   createdAt: string;
   updatedAt: string;
-  orderCount: number;
+  salesCount: number;
 };
 
 export type TImage = {

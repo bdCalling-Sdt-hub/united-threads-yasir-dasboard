@@ -49,31 +49,36 @@ const adminNavLink: MenuItem[] = [
     label: <Link href='/admin/products'>Shop Produts</Link>,
   },
   {
+    key: "quotes",
+    icon: <Images size={24} />,
+    label: <Link href='/admin/quote-product'>Quote Product</Link>,
+  },
+  {
     key: "orders",
     icon: <GoChecklist size={24} />,
     label: <Link href='/admin/order-details'>Order Details</Link>,
   },
+  //{
+  //  key: "quotes",
+  //  icon: <TbListDetails size={24} />,
+  //  label: "Quote Details",
+  //  children: [
+  //    {
+  //      key: "quoteCategory",
+  //      icon: <RiContactsBookUploadLine size={24} />,
+  //      label: <Link href='/admin/quote-product'>Quote Product</Link>,
+  //    },
+  //    {
+  //      key: "quoteManagement",
+  //      icon: <MdManageHistory size={24} />,
+  //      label: <Link href='/admin/quote-management'>Quote Management</Link>,
+  //    },
+  //  ],
+  //},
   {
-    key: "quotes",
-    icon: <TbListDetails size={24} />,
-    label: "Quote Details",
-    children: [
-      {
-        key: "quoteCategory",
-        icon: <RiContactsBookUploadLine size={24} />,
-        label: <Link href='/admin/quote-product'>Quote Product</Link>,
-      },
-      {
-        key: "quoteManagement",
-        icon: <MdManageHistory size={24} />,
-        label: <Link href='/admin/quote-management'>Quote Management</Link>,
-      },
-    ],
-  },
-  {
-    key: "gallery",
+    key: "library",
     icon: <Images size={24} />,
-    label: <Link href='/admin/gallery'>Gallery</Link>,
+    label: <Link href='/admin/gallery'>Library</Link>,
   },
   {
     key: "settings",
@@ -128,7 +133,6 @@ const Sidebar = ({ collapsed, setCollapsed }: TSidebarType) => {
   const user = useAppSelector((state) => state.auth.user);
   const router = useRouter();
   const onClick: MenuProps["onClick"] = (e) => {
-    console.log("click ", e);
     setCurrent(e.key);
     if (e.key === "logout") {
       //localStorage.removeItem("user");

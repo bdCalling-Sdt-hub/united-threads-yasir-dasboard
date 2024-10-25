@@ -5,7 +5,7 @@ import { TCategory } from "@/types/categoryTypes";
 import { TResponse } from "@/types/global";
 import { TProduct } from "@/types/productType";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Button, Empty, Segmented, Spin } from "antd";
+import { Button, Empty, Pagination, Segmented, Spin } from "antd";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
@@ -26,9 +26,12 @@ const ProductsContainer = () => {
   ]);
   const [visibleCategories, setVisibleCategories] = useState(allCategories.slice(0, 6));
 
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(8); // Default limit
+
   useEffect(() => {
     if (!categoriesLoading && result?.data?.length) {
-      // Add categories from API and ensure 'ALL' is only added once
       const categoryOptions = result.data.map((category) => ({
         label: category.name,
         value: category._id,
@@ -54,15 +57,21 @@ const ProductsContainer = () => {
     });
   };
 
-  // Fetch products based on the selected category (or all if selectedCategory is 'ALL')
+  //{
+  //  category: selectedCategory === "ALL" ? null : selectedCategory,
+  //  page,
+  //  limit: pageSize,
+  //}
+
+  // Fetch products based on the selected category, page, and pageSize
   const { data: productData, isLoading: productIsLoading } = useGetProductsQuery([
-    {
-      label: "category",
-      value: selectedCategory,
-    },
+    { label: "category", value: selectedCategory === "ALL" ? "" : selectedCategory },
+    { label: "page", value: page.toString() },
+    { label: "limit", value: pageSize.toString() },
   ]);
 
   const products: TProduct[] = productData?.data || [];
+  const totalProducts = productData?.total || 0;
 
   return (
     <>
@@ -93,7 +102,10 @@ const ProductsContainer = () => {
             <Segmented
               options={visibleCategories}
               value={selectedCategory}
-              onChange={(value) => setSelectedCategory(value as string)}
+              onChange={(value) => {
+                setSelectedCategory(value as string);
+                setPage(1); // Reset to first page on category change
+              }}
               block
               className='w-full'
             />
@@ -102,6 +114,7 @@ const ProductsContainer = () => {
             </Button>
           </div>
         </div>
+
         {productIsLoading ? (
           <div className='w-full flex justify-center h-44 items-center'>
             <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
@@ -111,11 +124,29 @@ const ProductsContainer = () => {
             <Empty />
           </div>
         ) : (
-          <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
-            {products?.map((product) => (
-              <ProductCard key={product?._id} product={product} />
-            ))}
-          </div>
+          <>
+            <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-6'>
+              {products.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+            </div>
+            <div className='w-full flex justify-center'>
+              <Pagination
+                current={page}
+                pageSize={pageSize}
+                total={totalProducts}
+                onChange={(newPage, newPageSize) => {
+                  setPage(newPage);
+                  if (newPageSize !== pageSize) {
+                    setPageSize(newPageSize || 8);
+                  }
+                }}
+                showSizeChanger
+                pageSizeOptions={["8", "16", "24", "32"]}
+                className='mt-6 text-center'
+              />
+            </div>
+          </>
         )}
       </div>
       <AddCetagoryModal open={open} setOpen={setOpen} />

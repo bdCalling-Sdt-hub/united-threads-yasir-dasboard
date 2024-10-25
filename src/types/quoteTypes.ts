@@ -26,6 +26,7 @@ export type TQuote = {
   houseNo?: string;
   area?: string;
   comment?: string;
+  salesCount: number;
   createdAt?: Date;
   updatedAt?: Date;
 };

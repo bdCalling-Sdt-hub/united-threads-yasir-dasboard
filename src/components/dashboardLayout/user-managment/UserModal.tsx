@@ -22,8 +22,6 @@ const UserModal = ({ open, setOpen, userId }: TPropsType) => {
   const result = data as TResponse<TUser>;
   const user = result?.data;
 
-  console.log({ user });
-
   return (
     <Modal
       style={{ minWidth: "max-content" }}

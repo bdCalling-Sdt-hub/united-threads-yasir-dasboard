@@ -1,19 +1,17 @@
 "use client";
-//import { TQuoteProduct } from "@/types/type";
-import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
+import { useGetQuoteCategoriesQuery } from "@/redux/api/quoteCategoryApi";
 import { useGetQuoteProductsQuery } from "@/redux/api/quoteProductApi";
 import { TCategory } from "@/types/categoryTypes";
 import { TResponse } from "@/types/global";
 import { TQuoteProduct } from "@/types/quoteProductTypes";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Button, Empty, Segmented, Spin } from "antd";
+import { Button, Empty, Pagination, Segmented, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { FaChevronLeft } from "react-icons/fa6";
 import AddCategoryModal from "./AddQuoteCategoryModal";
 import QuoteProductCard from "./QuoteProductCard";
 import AddQuoteProduct from "./AddQuoteProduct";
-import { useGetQuoteCategoriesQuery } from "@/redux/api/quoteCategoryApi";
 
 const QuoteProductContainer = () => {
   const [open, setOpen] = useState(false);
@@ -29,9 +27,12 @@ const QuoteProductContainer = () => {
   ]);
   const [visibleCategories, setVisibleCategories] = useState(allCategories.slice(0, 6));
 
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(8); // Default limit
+
   useEffect(() => {
     if (!categoriesLoading && result?.data?.length) {
-      // Add categories from API and ensure 'ALL' is only added once
       const categoryOptions = result.data.map((category) => ({
         label: category.name,
         value: category._id,
@@ -57,15 +58,16 @@ const QuoteProductContainer = () => {
     });
   };
 
-  // Fetch products based on the selected category (or all if selectedCategory is 'ALL')
+  // Fetch quote products based on the selected category, page, and pageSize
   const { data: productData, isLoading: productIsLoading } = useGetQuoteProductsQuery([
-    {
-      label: "category",
-      value: selectedCategory,
-    },
+    { label: "category", value: selectedCategory === "ALL" ? "" : selectedCategory },
+    { label: "page", value: page.toString() },
+    { label: "limit", value: pageSize.toString() },
   ]);
 
-  const products = (productData as TResponse<TQuoteProduct[]>)?.data || [];
+  const products: TQuoteProduct[] = productData?.data || [];
+  const totalProducts = productData?.total || 0;
+
   return (
     <>
       <div className='space-y-6'>
@@ -95,7 +97,10 @@ const QuoteProductContainer = () => {
             <Segmented
               options={visibleCategories}
               value={selectedCategory}
-              onChange={(value) => setSelectedCategory(value as string)}
+              onChange={(value) => {
+                setSelectedCategory(value as string);
+                setPage(1); // Reset to first page on category change
+              }}
               block
               className='w-full'
             />
@@ -104,6 +109,7 @@ const QuoteProductContainer = () => {
             </Button>
           </div>
         </div>
+
         {productIsLoading ? (
           <div className='w-full flex justify-center h-44 items-center'>
             <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
@@ -113,11 +119,29 @@ const QuoteProductContainer = () => {
             <Empty />
           </div>
         ) : (
-          <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full border'>
-            {products?.map((product) => (
-              <QuoteProductCard key={product?._id} product={product} />
-            ))}
-          </div>
+          <>
+            <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full'>
+              {products.map((product) => (
+                <QuoteProductCard key={product._id} product={product} />
+              ))}
+            </div>
+            <div className='w-full flex justify-center'>
+              <Pagination
+                current={page}
+                pageSize={pageSize}
+                total={totalProducts}
+                onChange={(newPage, newPageSize) => {
+                  setPage(newPage);
+                  if (newPageSize !== pageSize) {
+                    setPageSize(newPageSize || 8);
+                  }
+                }}
+                showSizeChanger
+                pageSizeOptions={["8", "16", "24", "32"]}
+                className='mt-6 text-center'
+              />
+            </div>
+          </>
         )}
       </div>
       <AddCategoryModal open={open} setOpen={setOpen}></AddCategoryModal>

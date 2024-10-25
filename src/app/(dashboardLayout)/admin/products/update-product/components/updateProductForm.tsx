@@ -29,7 +29,7 @@ export const addProductValidation = z.object({
   shortDescription: z.string().optional(),
   category: z.string().optional(),
   stock: z.string().optional(),
-  price: z.number().optional(),
+  price: z.string().optional(),
   size: z.array(productSizeEnum).optional(),
 });
 
@@ -42,7 +42,9 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
   const [longDescError, setLongDescError] = useState("");
   const editor = useRef(null);
 
-  const { data: p } = useGetSingleProductQuery({ productId: params.id });
+  const { data: p, isLoading: isProductLoading } = useGetSingleProductQuery({
+    productId: params.id,
+  });
   const product = p as TResponse<TProduct>;
 
   // Size options
@@ -97,16 +99,18 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
   const [secondaryImages, setSecondaryImages] = useState<any[]>([]);
 
   const handleSecondaryImageChange = ({ fileList: newFileList }: any) => {
-    if (newFileList.length <= 4) {
+    //const filtered = secondaryImages.filter((img) => !newFileList.includes(img));
+
+    if (newFileList.length <= 3) {
       setSecondaryImages(newFileList);
     } else {
-      ErrorResponse({ message: "You can only upload up to 4 secondary images." });
+      ErrorResponse({ message: "You can only upload up to 3 secondary images." });
     }
   };
 
   const beforeSecondaryImageUpload = () => {
-    if (secondaryImages.length >= 4) {
-      ErrorResponse({ message: "You can only upload up to 4 secondary images." });
+    if (secondaryImages.length >= 3) {
+      ErrorResponse({ message: "You can only upload up to 3 secondary images." });
       return false;
     }
     return true;
@@ -166,10 +170,10 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
   const defaultValues = {
     name: product?.data?.name || "",
     shortDescription: product?.data?.shortDescription || "",
-    price: product?.data?.price || "",
-    quantity: product?.data?.stock || "",
-    size: product?.data?.size || [],
+    price: product?.data?.price ? product?.data?.price.toString() : "",
+    stock: product?.data?.stock ? product?.data?.stock.toString() : "",
     category: product?.data?.category || "",
+    size: product?.data?.size || [],
   };
 
   useEffect(() => {
@@ -208,9 +212,17 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
     }
   }, [product]);
 
+  //useEffect(() => {
+  //  if (secondaryImages.length === 0) {
+  //    setSecondaryImages([]); // Ensure that secondaryImages is empty if no images are left
+  //  }
+
+  //  console.log(secondaryImages, "secondaryImages");
+  //}, [secondaryImages]);
+
   return (
     <div>
-      {isLoading ? (
+      {isLoading || isProductLoading ? (
         <Spin />
       ) : (
         <>
@@ -252,7 +264,6 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
 
                 <ESelect
                   name='category'
-                  defaultValue={product?.data?.category}
                   options={
                     categories?.data?.length
                       ? categories.data.map((category: TCategory) => ({
@@ -306,7 +317,7 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
                   name='size'
                   mode='multiple'
                   options={sizeOptions}
-                  defaultValue={product?.data?.size || []}
+                  defaultValue={product?.data?.size?.map((size: string) => size) || []}
                   placeholder='Enter size (press enter to add more)'
                   size='large'
                 />
@@ -351,39 +362,45 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
             </Col>
 
             {/* Primary Image Uploader */}
-            <Col span={8} className='flex flex-col gap-4 border'>
+            <Col span={8} className='flex flex-col gap-4 w-full'>
               <div>
                 <p className='mb-2 required-indicator text-lg'>Upload Primary Image</p>
-                <Upload
-                  onChange={handlePrimaryImageChange}
-                  beforeUpload={beforePrimaryImageUpload}
-                  fileList={primaryImage}
-                  listType='picture'
-                  maxCount={1}
-                >
-                  <div className='border text-18 font-500 text-primary border-primary rounded flex flex-col items-center px-[200px] py-[20px] cursor-pointer'>
-                    <UploadOutlined />
-                    <button>Upload</button>
-                  </div>
-                </Upload>
+                <div className='flex justify-center'>
+                  <Upload
+                    onChange={handlePrimaryImageChange}
+                    beforeUpload={beforePrimaryImageUpload}
+                    fileList={primaryImage}
+                    listType='picture'
+                    maxCount={1}
+                    className='w-full'
+                  >
+                    <div className='border w-full font-500 text-primary border-primary rounded flex flex-col items-center px-[200px] py-[20px] cursor-pointer'>
+                      <UploadOutlined />
+                      <button>Upload</button>
+                    </div>
+                  </Upload>
+                </div>
               </div>
 
               {/* Secondary Images Uploader */}
               <div>
-                <p className='mb-2 required-indicator text-lg'>Upload Images (Max 4)</p>
-                <Upload
-                  onChange={handleSecondaryImageChange}
-                  beforeUpload={beforeSecondaryImageUpload}
-                  fileList={secondaryImages}
-                  listType='picture'
-                  maxCount={4}
-                  multiple
-                >
-                  <div className='border text-18 font-500 text-primary border-primary rounded flex flex-col items-center px-[200px] py-[20px] cursor-pointer'>
-                    <UploadOutlined />
-                    <button>Upload</button>
-                  </div>
-                </Upload>
+                <p className='mb-2 required-indicator text-lg'>Upload Images (Max 3)</p>
+                <div className='flex justify-between'>
+                  <Upload
+                    onChange={handleSecondaryImageChange}
+                    beforeUpload={beforeSecondaryImageUpload}
+                    fileList={secondaryImages}
+                    listType='picture'
+                    maxCount={3}
+                    multiple
+                    className='w-full'
+                  >
+                    <div className='border font-500 text-primary border-primary rounded flex flex-col items-center px-[200px] py-[20px] cursor-pointer'>
+                      <UploadOutlined />
+                      <button>Upload</button>
+                    </div>
+                  </Upload>
+                </div>
               </div>
             </Col>
           </Row>

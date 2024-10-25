@@ -17,7 +17,6 @@ const EaringOverviewChart = () => {
   const result = data as TResponse<{ name: string; totalRevenue: number }[]>;
 
   const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
     setSelectedYear(value);
   };
 

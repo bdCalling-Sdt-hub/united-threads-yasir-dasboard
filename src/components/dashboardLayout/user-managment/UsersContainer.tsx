@@ -45,8 +45,6 @@ const UserMangementContainer = () => {
 
   const result = data as TResponse<TUser[]>;
 
-  console.log(result, "result");
-
   const columns: TableProps<TUser>["columns"] = [
     //{
     //  title: "Serial",

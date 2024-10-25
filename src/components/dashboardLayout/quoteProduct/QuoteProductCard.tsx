@@ -105,7 +105,7 @@ const QuoteProductCard = ({ product }: { product: TQuoteProduct }) => {
         <div className='flex justify-between items-center font-semibold'>
           <p>Sales Count</p>
           <p className='flex items-center gap-2'>
-            <FaArrowUp size={16} /> {product?.orderCount}
+            <FaArrowUp size={16} /> {product?.salesCount || 0}
           </p>
         </div>
         {/*<div className='border-t'></div>*/}

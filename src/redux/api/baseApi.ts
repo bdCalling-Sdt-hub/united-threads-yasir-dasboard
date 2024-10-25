@@ -73,7 +73,8 @@ export const baseApi = createApi({
     "QuoteProduct",
     "Quote",
     "QuoteCategory",
-    "LIBRARY"
+    "LIBRARY",
+    "NOTIFICATION",
   ],
   endpoints: () => ({}),
 });

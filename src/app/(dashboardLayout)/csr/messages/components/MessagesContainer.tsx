@@ -27,6 +27,7 @@ import ReceiverMsgCard from "@/components/dashboardLayout/csr/message/[user]/Rec
 import { TChatList } from "@/types/messageTypes";
 import { TMessage } from "@/types/messageType";
 import moment from "moment";
+import { useGetProfileQuery } from "@/redux/api/userApi";
 // import type { GetProps } from "antd";
 // const { Search } = Input;
 
@@ -55,6 +56,8 @@ const MessagesContainer = () => {
 
   const [image, setImage] = useState(null);
   const [imgPreview, setImgPreview] = useState<string | null>(null);
+
+  const { data: profile } = useGetProfileQuery([]);
 
   // const [searchError, setSearchError] = useState<string>("");
 
@@ -88,7 +91,7 @@ const MessagesContainer = () => {
     }
 
     if (socket && userId) {
-      socket.emit("my-chat-list", { userId: userId });
+      socket.emit("my-chat-list", { userId });
     }
 
     return () => {
@@ -137,7 +140,6 @@ const MessagesContainer = () => {
   useEffect(() => {
     if (socket) {
       socket.on("online-users", (data) => {
-        console.log(data, "from message container");
         setActiveUsers(data?.data || []);
       });
 
@@ -203,7 +205,6 @@ const MessagesContainer = () => {
 
       // Generate image previews
       const filePreviews = selectedFiles.map((file) => URL.createObjectURL(file));
-      console.log(filePreviews, "filePreviews");
       setImgPreviews(filePreviews);
     }
   };
@@ -364,13 +365,13 @@ const MessagesContainer = () => {
         {/* left */}
         <div
           ref={chatBoxRef}
-          className='border-opacity-[40%] pr-6 lg:w-[30%] lg:border-r lg:border-gray-300 scroll-hide'
+          className='border-opacity-[40%] pr-6 lg:w-[22%] lg:border-r lg:border-gray-300 scroll-hide'
         >
           <div className='border-t-black flex items-end gap-x-5 border-b border-opacity-[40%] py-3 text-black'>
             <h4 className='text-2xl font-bold'>Messages</h4>
           </div>
 
-          <div className='mx-auto mt-4 w-[95%]'>
+          <div className='mx-auto mt-4 w-full'>
             {/* TODO: Add a search field */}
             {/* <Search
               placeholder="Search user"
@@ -417,10 +418,10 @@ const MessagesContainer = () => {
                 <div>
                   <div className='flex items-center justify-between border-b border-opacity-[40%] pb-2 w-full'>
                     <div className='flex items-center gap-x-5 w-full'>
-                      {selectedUser?.image ? (
+                      {selectedUser?.user?.profilePicture ? (
                         <Image
-                          src={selectedUser?.image}
-                          alt={selectedUser?.name + " image"}
+                          src={selectedUser?.user?.profilePicture}
+                          alt={selectedUser?.user?.firstName + " image"}
                           height={50}
                           width={50}
                           className='size-[50px] rounded-full'
@@ -506,8 +507,14 @@ const MessagesContainer = () => {
                             } items-start gap-x-4`}
                           >
                             <Image
-                              src={msg.sender === userId ? userImg2 : userImg}
+                              src={
+                                msg.sender === userId
+                                  ? profile?.data?.profilePicture || userImg
+                                  : selectedUser?.user?.profilePicture
+                              }
                               alt="user's image"
+                              height={50}
+                              width={50}
                               className='h-[50px] w-[50px] rounded-full'
                             />
                             <div className='max-w-[50%] overflow-hidden'>
@@ -655,8 +662,6 @@ const UserCard = ({
   const userData = { ...chat?.participants[0], chatId: chat.chatId };
   const isActive: boolean = !!activeUsers?.includes(userData?._id);
 
-  console.log({ userData });
-
   return (
     <div
       role='button'
@@ -693,12 +698,12 @@ const UserCard = ({
           <h4 className='text-lg font-medium text-primary-black capitalize'>
             {userData?.user?.firstName}
           </h4>
-          {selectedUser?._id !== userData?._id && (
-            //<p className='text-secondary-2 text-xs text-gray-500'>{timeAgo(message?.createdAt)}</p>
-            <p className='text-secondary-2 text-xs text-gray-500'>
-              {moment(message?.createdAt).fromNow()}
-            </p>
-          )}
+          {/*{selectedUser?._id !== userData?._id && (*/}
+          {/*//<p className='text-secondary-2 text-xs text-gray-500'>{timeAgo(message?.createdAt)}</p>*/}
+          <p className='text-secondary-2 text-xs text-gray-500'>
+            {moment(message?.createdAt).fromNow()}
+          </p>
+          {/*)}*/}
         </div>
 
         {!message?.seen &&

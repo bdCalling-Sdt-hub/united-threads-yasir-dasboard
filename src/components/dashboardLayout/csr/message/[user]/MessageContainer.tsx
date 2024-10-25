@@ -58,7 +58,6 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
   useEffect(() => {
     if (socket) {
       socket.on("online-users", (data) => {
-        console.log(data, "from message container");
         setActiveUsers(data?.data || []);
       });
 

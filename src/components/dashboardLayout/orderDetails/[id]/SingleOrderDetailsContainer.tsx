@@ -56,7 +56,6 @@ const SingleOrderDetailsContainer = ({ id }: { id: string }) => {
   const [updateOrder] = useUpdateOrderMutation();
 
   const handleChange = async (value: string) => {
-    console.log(`selected ${value}`);
 
     try {
       const res = await updateOrder({

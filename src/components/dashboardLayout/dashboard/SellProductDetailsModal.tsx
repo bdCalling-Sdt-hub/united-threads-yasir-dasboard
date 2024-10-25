@@ -16,7 +16,6 @@ const SellProductDetailsModal = ({ open, setOpen, orderId }: TPropsType) => {
 
   const result = data as TResponse<TOrder>;
   const order = result?.data;
-  console.log({ order });
   return (
     <>
       <Modal

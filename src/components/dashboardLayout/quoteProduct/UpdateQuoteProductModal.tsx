@@ -91,7 +91,6 @@ const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) =>
       colorsPreferences: colors.length ? colors.map((clr) => clr.hex) : [],
       category: data.category,
       size: data.size,
-      stock: Number(data.stock),
     };
     formData.append("data", JSON.stringify(payload));
     formData.append("frontSide", frontSideImage[0]?.originFileObj);
@@ -187,6 +186,7 @@ const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) =>
                 }
                 placeholder='Select Category'
                 size='large'
+                defaultValue={defaultValues?.category}
               />
 
               {/* Select Colors */}

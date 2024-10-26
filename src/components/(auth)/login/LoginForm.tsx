@@ -50,7 +50,7 @@ const LoginForm = () => {
         setError(res.message as string);
       }
     } catch (error: any) {
-      setError(error.message || "Something went wrong");
+      setError(error?.data?.message || "Something went wrong");
     }
   };
 

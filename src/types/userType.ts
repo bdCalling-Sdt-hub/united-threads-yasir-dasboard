@@ -12,6 +12,7 @@ export type TUser = {
     isVerified: boolean;
     _id: string;
   };
+  isMessageBlock?: boolean;
   createdAt: string;
   updatedAt: string;
 };

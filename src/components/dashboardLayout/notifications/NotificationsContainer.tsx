@@ -6,7 +6,7 @@ import {
 import { useAppSelector } from "@/redux/hooks";
 import { TResponse } from "@/types/global";
 import { TNotification } from "@/types/notificationTypes";
-import { Divider, Pagination } from "antd";
+import { Button, Divider, Empty, Pagination, Tooltip } from "antd";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { MdOutlineNotificationsNone } from "react-icons/md";
@@ -39,29 +39,42 @@ const NotificationsContainer = () => {
 
   const notifications = data as TResponse<TNotification[]>;
 
-  useEffect(() => {
-    if (data) {
-      seenNotifications(null);
-    }
-  }, [data, seenNotifications]);
+  //useEffect(() => {
+  //  if (data) {
+  //    seenNotifications(null);
+  //  }
+  //}, [data, seenNotifications]);
 
   return (
     <div>
       <div className='min-h-[80vh] bg-[#434344] text-[#F8FAFC] p-7'>
-        <h1 className='text-2xl text-mainColor font-medium'>Notifications</h1>
+        <div className='flex items-center justify-between'>
+          <h1 className='text-2xl text-mainColor font-medium'>Notifications</h1>
+          <Tooltip title='After mark as read all notifications will be disappear'>
+            <Button onClick={() => seenNotifications(null)}>Mark all as read</Button>
+          </Tooltip>
+        </div>
         <Divider></Divider>
         <div className='mt-9 grid grid-cols-1 gap-8'>
-          {notifications?.data?.map((notification, inx) => (
-            <div key={inx} className='flex gap-4 items-center'>
-              <div className='bg-[#FFFFFF] p-2 rounded'>
-                <MdOutlineNotificationsNone size={24} color='#8ABA51' />
+          {notifications?.data?.length ? (
+            notifications?.data?.map((notification, inx) => (
+              <div key={inx} className='flex gap-4 items-center'>
+                <div className='bg-[#FFFFFF] p-2 rounded'>
+                  <MdOutlineNotificationsNone size={24} color='#8ABA51' />
+                </div>
+                <div>
+                  <h4 className='text-lg font-medium'>{notification.message}</h4>
+                  <p className='text-[#8ABA51]'>{moment(notification.createdAt).fromNow()}</p>
+                </div>
               </div>
-              <div>
-                <h4 className='text-lg font-medium'>{notification.message}</h4>
-                <p className='text-[#8ABA51]'>{moment(notification.createdAt).fromNow()}</p>
-              </div>
+            ))
+          ) : (
+            <div className='text-center'>
+              <h4 className='text-lg font-medium'>
+                <Empty />
+              </h4>
             </div>
-          ))}
+          )}
         </div>
       </div>
       {/* pagination */}

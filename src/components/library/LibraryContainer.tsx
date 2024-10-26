@@ -27,7 +27,7 @@ const LibraryContainer = () => {
 
   // Pagination state
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(1);
+  const [pageSize, setPageSize] = useState(8);
   // Fetch libraries based on page and pageSize
   const { data, isLoading: productIsLoading } = useGetLibrariesQuery([
     { label: "page", value: page.toString() },
@@ -105,12 +105,12 @@ const LibraryCard = ({ library }: { library: TLibrary }) => {
 
   return (
     <div className='relative overflow-hidden rounded-lg shadow-lg bg-white p-6'>
-      <div>
+      <div className='flex justify-center'>
         {library.image ? (
           <Image
             src={library.image}
             alt={library.name || "Library image"}
-            className='max-h-[400px] w-auto'
+            className='max-h-[250px] w-auto'
             width={300}
             height={300}
           />

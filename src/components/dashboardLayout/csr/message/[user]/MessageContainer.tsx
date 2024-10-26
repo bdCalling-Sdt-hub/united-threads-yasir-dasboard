@@ -148,6 +148,7 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
 
   useEffect(() => {
     if (socket && receiverId && messages.length > 0 && chatId) {
+      console.log({ chatId });
       // Emit the seen event
       socket.emit("seen", { chatId });
     }
@@ -259,7 +260,7 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
       socket.on(`block::${receiverId}`, (data) => {
         setUserDetails((prevDetails: any) => ({
           ...prevDetails,
-          isActive: false, // Update the isActive state to false when user is blocked
+          isMessageBlock: true, // Update the isActive state to false when user is blocked
         }));
       });
 
@@ -267,7 +268,7 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
       socket.on(`unblock::${receiverId}`, (data) => {
         setUserDetails((prevDetails: any) => ({
           ...prevDetails,
-          isActive: true, // Update the isActive state to true when user is unblocked
+          isMessageBlock: false, // Update the isActive state to true when user is unblocked
         }));
       });
 
@@ -336,7 +337,7 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
                   </div>
                 </div>
               </div>
-              {!userDetails?.isActive ? (
+              {userDetails?.isMessageBlock ? (
                 <button
                   onClick={() => {
                     socket?.emit("unblock", { receiverId });
@@ -440,7 +441,7 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
                 <div className='flex w-full items-center gap-x-6'>
                   <label htmlFor='file'>
                     <input
-                      disabled={!socket || !userDetails?.isActive}
+                      disabled={!socket || userDetails?.isMessageBlock}
                       type='file'
                       multiple // Allow multiple file selection
                       onChange={handleFileChange}
@@ -462,14 +463,14 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
                           {typing?.firstName} {typing?.lastName} is typing...
                         </p>
                       )}
-                      {!userDetails?.isActive && (
+                      {userDetails?.isMessageBlock && (
                         <p className='text-sm text-gray-500 absolute text-center w-full -top-7'>
                           {userDetails?.firstName} {userDetails?.lastName} is blocked
                         </p>
                       )}
 
                       <input
-                        disabled={!socket || !userDetails?.isActive}
+                        disabled={!socket || userDetails?.isMessageBlock}
                         onFocus={() => handleFocus(true)}
                         placeholder='Type a message'
                         type='text'
@@ -483,7 +484,7 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
                       />
                     </div>
                     <Button
-                      disabled={!socket || !userDetails?.isActive}
+                      disabled={!socket || userDetails?.isMessageBlock}
                       htmlType='submit'
                       className='border-2 border-black/50 bg-transparent py-5'
                     >

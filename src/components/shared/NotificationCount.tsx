@@ -4,6 +4,7 @@ import { useGetNotificationsQuery } from "@/redux/api/notificationApi";
 import { useAppSelector } from "@/redux/hooks";
 import { TChatList, TResponse } from "@/types/global";
 import { TNotification } from "@/types/notificationTypes";
+import { MessageSquareText } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { GoBell } from "react-icons/go";
@@ -75,24 +76,28 @@ const NotificationCount = () => {
   const notificationLength = notifications?.data?.length;
 
   return (
-    <>
-      {unreadMessageCount ? (
-        <Link
-          href={`${lastMessageSender ? "/csr/message/" + lastMessageSender : "/csr/quote-details"}`}
-        >
-          <div
-            role='button'
-            className='relative aspect-square size-12 rounded-full bg-info flex-item-center'
+    <div className='flex items-center gap-x-4'>
+      <>
+        {user?.role === "CSR" && (
+          <Link
+            href={`${
+              lastMessageSender ? "/csr/message/" + lastMessageSender : "/csr/quote-details"
+            }`}
           >
-            <GoBell size={20} />
-            {unreadMessageCount > 0 && (
-              <span className='absolute top-1.5 right-1.5 size-[18px] bg-warning text-primaryWhite rounded-full text-sm flex-item-center'>
-                {unreadMessageCount}
-              </span>
-            )}
-          </div>
-        </Link>
-      ) : (
+            <div
+              role='button'
+              className='relative aspect-square size-12 rounded-full bg-info flex-item-center'
+            >
+              <MessageSquareText size={20} />
+              {unreadMessageCount > 0 && (
+                <span className='absolute top-1.5 right-1.5 size-[18px] bg-warning text-primaryWhite rounded-full text-sm flex-item-center'>
+                  {unreadMessageCount}
+                </span>
+              )}
+            </div>
+          </Link>
+        )}
+
         <>
           <Link href={`${user?.role === "ADMIN" ? "/admin/notifications" : "/csr/notifications"}`}>
             <div
@@ -108,8 +113,8 @@ const NotificationCount = () => {
             </div>
           </Link>
         </>
-      )}
-    </>
+      </>
+    </div>
   );
 };
 

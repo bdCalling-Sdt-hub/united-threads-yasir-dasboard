@@ -66,7 +66,7 @@ const QuoteProductContainer = () => {
   ]);
 
   const products: TQuoteProduct[] = productData?.data || [];
-  const totalProducts = productData?.total || 0;
+  const totalProducts = productData?.meta?.total || 0;
 
   return (
     <>

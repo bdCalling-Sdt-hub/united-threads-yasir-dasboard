@@ -71,7 +71,7 @@ const ProductsContainer = () => {
   ]);
 
   const products: TProduct[] = productData?.data || [];
-  const totalProducts = productData?.total || 0;
+  const totalProducts = productData?.meta?.total || 0;
 
   return (
     <>

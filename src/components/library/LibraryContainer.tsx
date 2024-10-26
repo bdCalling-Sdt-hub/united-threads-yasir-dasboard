@@ -1,15 +1,10 @@
 "use client";
-import {
-  useCreateLibraryMutation,
-  useDeleteLibraryMutation,
-  useGetLibrariesQuery,
-} from "@/redux/api/libraryApi";
+import { useDeleteLibraryMutation, useGetLibrariesQuery } from "@/redux/api/libraryApi";
 import { TResponse } from "@/types/global";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Button, Empty, Popconfirm, PopconfirmProps, Spin } from "antd";
+import { Button, Empty, Popconfirm, PopconfirmProps, Spin, Pagination } from "antd";
 import { Trash2 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { toast } from "sonner";
@@ -30,8 +25,17 @@ type TLibrary = {
 const LibraryContainer = () => {
   const [open, setOpen] = useState(false);
 
-  const { data, isLoading: productIsLoading } = useGetLibrariesQuery([]);
-  const libraries = (data as TResponse<TLibrary[]>)?.data;
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(1);
+  // Fetch libraries based on page and pageSize
+  const { data, isLoading: productIsLoading } = useGetLibrariesQuery([
+    { label: "page", value: page.toString() },
+    { label: "limit", value: pageSize.toString() },
+  ]);
+
+  const libraries = (data as TResponse<TLibrary[]>) || [];
+  const totalLibraries = libraries?.meta?.total || 0;
 
   return (
     <>
@@ -45,21 +49,39 @@ const LibraryContainer = () => {
             Add New Library
           </Button>
         </div>
-        <h1 className='text-2xl font-bold w-full'>Your Libraries</h1>
+
         {productIsLoading ? (
           <div className='w-full flex justify-center h-44 items-center'>
             <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
           </div>
-        ) : !libraries?.length ? (
+        ) : !libraries?.data?.length ? (
           <div className='flex justify-center w-full h-44 items-center'>
             <Empty />
           </div>
         ) : (
-          <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-6'>
-            {libraries?.map((library) => (
-              <LibraryCard key={library._id} library={library} />
-            ))}
-          </div>
+          <>
+            <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-6'>
+              {libraries?.data?.map((library) => (
+                <LibraryCard key={library._id} library={library} />
+              ))}
+            </div>
+            <div className='w-full flex justify-center'>
+              <Pagination
+                current={page}
+                pageSize={pageSize}
+                total={totalLibraries}
+                onChange={(newPage, newPageSize) => {
+                  setPage(newPage);
+                  if (newPageSize !== pageSize) {
+                    setPageSize(newPageSize || 8);
+                  }
+                }}
+                showSizeChanger
+                pageSizeOptions={["8", "16", "24", "32"]}
+                className='mt-6 text-center'
+              />
+            </div>
+          </>
         )}
       </div>
       <AddLibraryModal open={open} setOpen={setOpen} />
@@ -102,7 +124,6 @@ const LibraryCard = ({ library }: { library: TLibrary }) => {
         title='Delete this library'
         description='Are you sure to delete this library?'
         onConfirm={confirm}
-        //onCancel={cancel}
         okText='Yes'
         cancelText='No'
       >

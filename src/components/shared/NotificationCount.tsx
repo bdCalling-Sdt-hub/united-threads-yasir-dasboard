@@ -76,7 +76,7 @@ const NotificationCount = () => {
 
   return (
     <>
-      {user?.role ? (
+      {unreadMessageCount ? (
         <Link
           href={`${lastMessageSender ? "/csr/message/" + lastMessageSender : "/csr/quote-details"}`}
         >

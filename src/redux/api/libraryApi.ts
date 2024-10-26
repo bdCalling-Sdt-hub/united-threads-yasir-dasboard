@@ -13,11 +13,19 @@ const libraryApi = baseApi.injectEndpoints({
       invalidatesTags: ["LIBRARY"],
     }),
     getLibraries: builder.query({
-      query: () => ({
-        url: "/library/libraries",
-        method: "GET",
-      }),
-
+      query: (query: { label: string; value: string }[] | []) => {
+        const params = new URLSearchParams();
+        if (query.length) {
+          query.forEach((item) => {
+            params.append(item.label, item.value);
+          });
+        }
+        return {
+          url: "/library/libraries",
+          method: "GET",
+          params: params,
+        };
+      },
       providesTags: ["LIBRARY"],
     }),
 

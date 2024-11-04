@@ -2,12 +2,11 @@
 //@ts-ignore
 import * as simpleColorConverter from "simple-color-converter";
 
-export default function generatePantoneColor(hexColor: string) {
+export default function generatePantoneColor(hexColor?: string) {
   // Default Pantone Color Object
   let pantoneColorObject = {
     pantone: "Unknown",
     hex: "000000",
-    distance: "16", // Default distance
   };
 
   if (hexColor) {
@@ -26,15 +25,10 @@ export default function generatePantoneColor(hexColor: string) {
           to: "hex6",
         });
 
-        // Select a random distance (16, 32, 48, etc.)
-        const distances = [16, 32, 48, 64, 80, 96];
-        const selectedDistanceIndex = Math.floor(Math.random() * distances.length);
-
         // Set the Pantone Color Object with Hex and Pantone values
         pantoneColorObject = {
           pantone: pantoneColor?.color || "Unknown",
           hex: pantoneToHex?.color || "000000",
-          distance: distances[selectedDistanceIndex].toString(),
         };
       }
     } catch (error) {
@@ -45,3 +39,25 @@ export default function generatePantoneColor(hexColor: string) {
   // Return Pantone Color Object
   return pantoneColorObject;
 }
+
+
+export const convertPantoneToHex = (pantoneColor?: string) => {
+  let hexColor = "000000"; // Default to black if conversion fails
+
+  try {
+    // Convert Pantone to Hex
+    const pantoneToHex = new simpleColorConverter({
+      pantone: `pantone ${pantoneColor}`,
+      to: "hex6",
+    });
+
+    // Set the hex color if the conversion is successful
+    if (pantoneToHex) {
+      hexColor = pantoneToHex.color || "000000";
+    }
+  } catch (error) {
+    console.error("Pantone to Hex conversion error:", error);
+  }
+
+  return hexColor;
+};

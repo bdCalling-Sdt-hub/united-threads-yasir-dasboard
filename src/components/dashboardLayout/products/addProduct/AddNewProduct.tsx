@@ -10,14 +10,34 @@ import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
 import { useAddProductMutation } from "@/redux/api/productApi";
 import { TCategory } from "@/types/categoryTypes";
 import { TResponse } from "@/types/global";
-import { Button, Col, ColorPicker, Popover, Row, Spin, Tooltip, Upload } from "antd";
+import {
+  InfoCircleOutlined,
+  PlusOutlined,
+  PlusSquareFilled,
+  UploadOutlined,
+} from "@ant-design/icons";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Button,
+  Col,
+  ColorPicker,
+  Input,
+  InputRef,
+  Popover,
+  Row,
+  Spin,
+  Tag,
+  theme,
+  Tooltip,
+  Upload,
+} from "antd";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useRef, useState, useEffect, Suspense } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
-import { PlusSquareFilled, UploadOutlined, InfoCircleOutlined } from "@ant-design/icons";
-import { zodResolver } from "@hookform/resolvers/zod";
-import dynamic from "next/dynamic";
+
+import { convertPantoneToHex } from "@/lib/utils/convertHexToPanton";
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
 // Define product size enum in zod
@@ -34,9 +54,14 @@ const addProductValidation = z.object({
 });
 
 const AddNewProduct = () => {
+  const { token } = theme.useToken();
+  const [pentonColors, setPentonColors] = useState<string[]>([]);
+  const [inputVisible, setInputVisible] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const inputRef = useRef<InputRef>(null);
+
   const router = useRouter();
   const [addProduct] = useAddProductMutation();
-
   // Jodit Editor value
   const [longDescription, setLongDescription] = useState("");
   const [longDescError, setLongDescError] = useState("");
@@ -124,10 +149,27 @@ const AddNewProduct = () => {
       return;
     }
 
+    const colorsPreferences = pentonColors.length
+      ? [
+          // Convert pentonColors to hex
+          ...pentonColors.map((pantone) => {
+            const convertedColor = convertPantoneToHex(pantone);
+            console.log({ convertedColor });
+            if (convertedColor) {
+              return "#" + convertedColor || "#000000";
+            } else {
+              return pantone;
+            }
+          }),
+          // Include existing hex colors
+          //...colors.map((clr) => clr.hex),
+        ]
+      : [];
+
     const updatedData = {
       ...data,
       price: Number(data?.price),
-      colorsPreferences: colors?.length ? colors.map((clr) => clr.hex) : [],
+      colorsPreferences,
       size: data.size || [],
       shortDescription: data?.shortDescription,
       stock: Number(data?.stock),
@@ -151,16 +193,66 @@ const AddNewProduct = () => {
 
     try {
       await addProduct(formData).unwrap();
-
       toast.success("Product added successfully", {
         id: toastId,
         duration: 2000,
       });
-
       router.push("/admin/products");
     } catch (error) {
       ErrorResponse(error, toastId);
     }
+  };
+
+  useEffect(() => {
+    if (inputVisible) {
+      inputRef.current?.focus();
+    }
+  }, [inputVisible]);
+
+  const handleClose = (removedTag: string) => {
+    const newTags = pentonColors.filter((tag) => tag !== removedTag);
+    console.log(newTags);
+    setPentonColors(newTags);
+  };
+
+  const showInput = () => {
+    setInputVisible(true);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleInputConfirm = () => {
+    if (inputValue && pentonColors?.indexOf(inputValue) === -1) {
+      setPentonColors([...pentonColors, inputValue]);
+    }
+    setInputVisible(false);
+    setInputValue("");
+  };
+
+  const forMap = (tag: string) => {
+    return (
+      <span key={tag} style={{ display: "inline-block" }}>
+        <Tag
+          closable
+          onClose={(e) => {
+            e.preventDefault();
+            handleClose(tag);
+          }}
+          color={`#${convertPantoneToHex(tag)}`}
+        >
+          {tag}
+        </Tag>
+      </span>
+    );
+  };
+
+  const tagChild = pentonColors.map(forMap);
+
+  const tagPlusStyle: React.CSSProperties = {
+    background: token.colorBgContainer,
+    borderStyle: "dashed",
   };
 
   return (
@@ -258,38 +350,82 @@ const AddNewProduct = () => {
               size='large'
             />
 
-            {/* Select colors */}
-            <div>
-              <label htmlFor='colors'>Select Colors (Optional)</label>
+            <div className='grid grid-cols-1 gap-x-4'>
+              {/* Select colors */}
+              {/*<div>
+                <label htmlFor='colors'>Select Colors (Optional)</label>
 
-              <div className='flex items-center gap-x-4 mt-2'>
-                {colors.map((color) => (
-                  <button type='button' key={color?.key}>
-                    <ColorPicker
-                      defaultValue={color?.hex}
-                      showText
-                      allowClear
-                      onChange={(value) =>
-                        handleColor({
-                          key: color?.key,
-                          hex: `#${value.toHex()}`,
-                        })
-                      }
-                    />
-                  </button>
-                ))}
+                <div className='flex items-center gap-x-4 mt-2'>
+                  {colors.map((color) => (
+                    <div role='button' key={color?.key}>
+                      <div className='flex gap-2'>
+                        <div>
+                          <ColorPicker
+                            defaultValue={color?.hex}
+                            showText
+                            allowClear
+                            onChange={(value) =>
+                              handleColor({
+                                key: color?.key,
+                                hex: `#${value.toHex()}`,
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
 
-                {/* Add color button */}
-                <Tooltip title='Add Color'>
-                  <button type='button' onClick={handleAddNewColor}>
-                    <PlusSquareFilled
-                      style={{
-                        color: "gray",
-                        fontSize: "22px",
+                  <Tooltip title='Add Color'>
+                    <button type='button' onClick={handleAddNewColor}>
+                      <PlusSquareFilled
+                        style={{
+                          color: "gray",
+                          fontSize: "22px",
+                        }}
+                      />
+                    </button>
+                  </Tooltip>
+                </div>
+              </div>*/}
+              {/* input penton code */}
+              <div>
+                <label htmlFor='colors'>Select Penton Code (Optional) </label>
+
+                <>
+                  <div style={{ marginBottom: 16 }}>
+                    {/*<TweenOneGroup
+                      appear={false}
+                      enter={{ scale: 0.8, opacity: 0, type: "from", duration: 100 }}
+                      leave={{ opacity: 0, width: 0, scale: 0, duration: 200 }}
+                      onEnd={(e) => {
+                        if (e.type === "appear" || e.type === "enter") {
+                          (e.target as any).style = "display: inline-block";
+                        }
                       }}
+                    >
+                      {tagChild}
+                    </TweenOneGroup>*/}
+                    {tagChild}
+                  </div>
+                  {inputVisible ? (
+                    <Input
+                      ref={inputRef}
+                      type='text'
+                      size='small'
+                      style={{ width: 150 }} // Adjust width for better visibility
+                      value={inputValue}
+                      onChange={handleInputChange}
+                      onBlur={handleInputConfirm}
+                      onPressEnter={handleInputConfirm}
+                      placeholder='Enter Penton Code' // Add placeholder for better UX
                     />
-                  </button>
-                </Tooltip>
+                  ) : (
+                    <Tag onClick={showInput} style={tagPlusStyle}>
+                      <PlusOutlined /> Add Penton Code
+                    </Tag>
+                  )}
+                </>
               </div>
             </div>
 

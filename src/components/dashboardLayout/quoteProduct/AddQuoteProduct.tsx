@@ -1,15 +1,16 @@
 import EForm from "@/components/Form/FormProvider";
 import EInput from "@/components/Form/ResInput";
 import ESelect from "@/components/Form/ResSelect";
+import { convertPantoneToHex } from "@/lib/utils/convertHexToPanton";
 import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
 import { useGetQuoteCategoriesQuery } from "@/redux/api/quoteCategoryApi";
 import { useAddQuoteProductMutation } from "@/redux/api/quoteProductApi";
 import { TCategory } from "@/types/categoryTypes";
 import { TResponse } from "@/types/global";
-import { PlusSquareFilled } from "@ant-design/icons";
+import { PlusOutlined, PlusSquareFilled } from "@ant-design/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, ColorPicker, Modal, Tooltip, Upload } from "antd";
-import { useState } from "react";
+import { Button, ColorPicker, Input, InputRef, Modal, Tag, theme, Tooltip, Upload } from "antd";
+import { useEffect, useRef, useState } from "react";
 import { PiUploadLight } from "react-icons/pi";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -27,7 +28,13 @@ type TPropsType = {
 };
 
 const AddQuoteProduct = ({ open, setOpen }: TPropsType) => {
-  const [colors, setColors] = useState<any[]>([]);
+  const { token } = theme.useToken();
+  const [pentonColors, setPentonColors] = useState<string[]>([]);
+  const [inputVisible, setInputVisible] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const inputRef = useRef<InputRef>(null);
+
+  //const [colors, setColors] = useState<any[]>([]);
   const [frontSideImage, setFrontSideImage] = useState<any[]>([]);
   const [backSideImage, setBackSideImage] = useState<any[]>([]);
   const [additionalImages, setAdditionalImages] = useState<any[]>([]);
@@ -42,21 +49,21 @@ const AddQuoteProduct = ({ open, setOpen }: TPropsType) => {
   const categories = categoryRes as TResponse<TCategory[]>;
 
   // Handle color selection
-  const handleColor = (colorObj: any) => {
-    const { key } = colorObj;
-    const exist = colors.find((clr) => clr.key === key);
+  //const handleColor = (colorObj: any) => {
+  //  const { key } = colorObj;
+  //  const exist = colors.find((clr) => clr.key === key);
 
-    if (exist) {
-      const rest = colors.filter((clr) => clr.key !== exist.key);
-      setColors([...rest, colorObj]);
-    } else {
-      setColors([...colors, colorObj]);
-    }
-  };
+  //  if (exist) {
+  //    const rest = colors.filter((clr) => clr.key !== exist.key);
+  //    setColors([...rest, colorObj]);
+  //  } else {
+  //    setColors([...colors, colorObj]);
+  //  }
+  //};
 
-  const handleAddNewColor = () => {
-    setColors([...colors, { key: colors.length + 1, hex: "#ffffff" }]);
-  };
+  //const handleAddNewColor = () => {
+  //  setColors([...colors, { key: colors.length + 1, hex: "#ffffff" }]);
+  //};
 
   const [addQuoteProduct, { isLoading }] = useAddQuoteProductMutation();
 
@@ -80,10 +87,29 @@ const AddQuoteProduct = ({ open, setOpen }: TPropsType) => {
       return;
     }
 
+    const colorsPreferences = pentonColors.length
+      ? [
+          // Convert pentonColors to hex
+          ...pentonColors.map((pantone) => {
+            const convertedColor = convertPantoneToHex(pantone);
+            console.log({ convertedColor });
+            if (convertedColor) {
+              return "#" + convertedColor || "#000000";
+            } else {
+              return pantone;
+            }
+          }),
+          // Include existing hex colors
+          //...colors.map((clr) => clr.hex),
+        ]
+      : [];
+
+    console.log({ colorsPreferences });
+
     const formData = new FormData();
     const payload = {
       name: data.name,
-      colorsPreferences: colors?.length ? colors.map((clr) => clr.hex) : [],
+      colorsPreferences,
       category: data.category,
       size: data.size,
     };
@@ -99,7 +125,7 @@ const AddQuoteProduct = ({ open, setOpen }: TPropsType) => {
       setOpen(false);
       if (res?.data?.success) {
         toast.success(res.message);
-        setColors([]);
+        //setColors([]);
         setFrontSideImage([]);
         setBackSideImage([]);
         setAdditionalImages([]);
@@ -110,6 +136,56 @@ const AddQuoteProduct = ({ open, setOpen }: TPropsType) => {
     } catch (error: any) {
       toast.error(error?.data?.message || "Something went wrong");
     }
+  };
+
+  useEffect(() => {
+    if (inputVisible) {
+      inputRef.current?.focus();
+    }
+  }, [inputVisible]);
+
+  const handleClose = (removedTag: string) => {
+    const newTags = pentonColors.filter((tag) => tag !== removedTag);
+    console.log(newTags);
+    setPentonColors(newTags);
+  };
+
+  const showInput = () => {
+    setInputVisible(true);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleInputConfirm = () => {
+    if (inputValue && pentonColors?.indexOf(inputValue) === -1) {
+      setPentonColors([...pentonColors, inputValue]);
+    }
+    setInputVisible(false);
+    setInputValue("");
+  };
+
+  const forMap = (tag: string) => (
+    <span key={tag} style={{ display: "inline-block" }}>
+      <Tag
+        closable
+        onClose={(e) => {
+          e.preventDefault();
+          handleClose(tag);
+        }}
+        color={`#${convertPantoneToHex(tag)}`}
+      >
+        {tag}
+      </Tag>
+    </span>
+  );
+
+  const tagChild = pentonColors.map(forMap);
+
+  const tagPlusStyle: React.CSSProperties = {
+    background: token.colorBgContainer,
+    borderStyle: "dashed",
   };
 
   return (
@@ -151,40 +227,82 @@ const AddQuoteProduct = ({ open, setOpen }: TPropsType) => {
               size='large'
             />
 
-            {/* Select Colors */}
-            <div>
-              <label htmlFor='colors' className='text-lg'>
-                Select Colors (Optional)
-              </label>
+            <div className='grid grid-cols-1 gap-x-4 mb-2'>
+              {/* Select colors */}
+              {/*<div>
+                <label htmlFor='colors'>Select Colors (Optional)</label>
 
-              <div className='flex items-center gap-x-4 my-2'>
-                {colors.map((color) => (
-                  <button type='button' key={color?.key}>
-                    <ColorPicker
-                      defaultValue={color?.hex}
-                      showText
-                      allowClear
-                      onChange={(value) =>
-                        handleColor({
-                          key: color?.key,
-                          hex: `#${value.toHex()}`,
-                        })
-                      }
-                    />
-                  </button>
-                ))}
+                <div className='flex items-center gap-x-4 mt-2'>
+                  {colors.map((color) => (
+                    <div role='button' key={color?.key}>
+                      <div className='flex gap-2'>
+                        <div>
+                          <ColorPicker
+                            defaultValue={color?.hex}
+                            showText
+                            allowClear
+                            onChange={(value) =>
+                              handleColor({
+                                key: color?.key,
+                                hex: `#${value.toHex()}`,
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
 
-                {/* Add color button */}
-                <Tooltip title='Add Color'>
-                  <button type='button' onClick={handleAddNewColor}>
-                    <PlusSquareFilled
-                      style={{
-                        color: "gray",
-                        fontSize: "22px",
+                  <Tooltip title='Add Color'>
+                    <button type='button' onClick={handleAddNewColor}>
+                      <PlusSquareFilled
+                        style={{
+                          color: "gray",
+                          fontSize: "22px",
+                        }}
+                      />
+                    </button>
+                  </Tooltip>
+                </div>
+              </div>*/}
+              {/* input penton code */}
+              <div>
+                <label htmlFor='colors'>Select Penton Code (Optional) </label>
+
+                <>
+                  <div style={{ marginBottom: 16 }}>
+                    {/*<TweenOneGroup
+                      appear={false}
+                      enter={{ scale: 0.8, opacity: 0, type: "from", duration: 100 }}
+                      leave={{ opacity: 0, width: 0, scale: 0, duration: 200 }}
+                      onEnd={(e) => {
+                        if (e.type === "appear" || e.type === "enter") {
+                          (e.target as any).style = "display: inline-block";
+                        }
                       }}
+                    >
+                      {tagChild}
+                    </TweenOneGroup>*/}
+                    {tagChild}
+                  </div>
+                  {inputVisible ? (
+                    <Input
+                      ref={inputRef}
+                      type='text'
+                      size='small'
+                      style={{ width: 150 }} // Adjust width for better visibility
+                      value={inputValue}
+                      onChange={handleInputChange}
+                      onBlur={handleInputConfirm}
+                      onPressEnter={handleInputConfirm}
+                      placeholder='Enter Penton Code' // Add placeholder for better UX
                     />
-                  </button>
-                </Tooltip>
+                  ) : (
+                    <Tag onClick={showInput} style={tagPlusStyle}>
+                      <PlusOutlined /> Add Penton Code
+                    </Tag>
+                  )}
+                </>
               </div>
             </div>
 

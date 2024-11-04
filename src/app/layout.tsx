@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 //import "sweetalert2/src/sweetalert2.scss";
-import localFont from "next/font/local";
 import Providers from "@/lib/Providers/Providers";
+import localFont from "next/font/local";
 import { Toaster } from "sonner";
-import { poppins } from "./fonts";
 
 export const metadata: Metadata = {
   title: {

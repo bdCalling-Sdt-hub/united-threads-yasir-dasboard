@@ -35,7 +35,7 @@ const NotificationCount = () => {
         setChatList(data?.data || []);
       });
     }
-
+ 
     return () => {
       if (socket) {
         socket.off(`chat-list::${user?._id}`, (data) => {
@@ -80,9 +80,7 @@ const NotificationCount = () => {
       <>
         {user?.role === "CSR" && (
           <Link
-            href={`${
-              lastMessageSender ? "/csr/message/" + lastMessageSender : "/csr/quote-details"
-            }`}
+            href={`${lastMessageSender ? "/csr/message/" + lastMessageSender : "/csr/messages"}`}
           >
             <div
               role='button'

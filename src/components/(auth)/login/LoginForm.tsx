@@ -48,6 +48,7 @@ const LoginForm = () => {
         }
       } else {
         setError(res.message as string);
+        setLoading(false);
       }
     } catch (error: any) {
       setError(error?.data?.message || "Something went wrong");
@@ -66,7 +67,7 @@ const LoginForm = () => {
     >
       <Form
         name='basic'
-        initialValues={{ remember: true, email: "admin@gmail.com", password: "123456" }}
+        initialValues={{ remember: true }}
         onFinish={onFinish}
         //onFinishFailed={onFinishFailed}
         autoComplete='off'

@@ -20,7 +20,7 @@ const Tag = ({ status }: { status: TOrderStatus }) => {
         Delivered
       </span>
     );
-  } else {
+  } else if (status === "CANCELED") {
     return (
       <span className='inline-block px-2 py-1 text-sm font-semibold text-red-700 bg-red-100 rounded border border-red-400'>
         Canceled

@@ -8,10 +8,11 @@ import { useGetOrdersQuery } from "@/redux/api/orderApi";
 import { TOrder } from "@/redux/api/orderType";
 import { TResponse } from "@/types/global";
 import moment from "moment";
+import OrderDetailsModal from "@/components/shared/OrderDetailsModal";
 
 const EarningContainer = () => {
   const [open, setOpen] = useState(false);
-  const [orderId, setOrderId] = useState("");
+  const [orderId, setOrderId] = useState<string | null>(null);
   const [limit, setLimit] = useState(1000000000000000);
   //type TDataType = {
   //  key: number;
@@ -77,7 +78,7 @@ const EarningContainer = () => {
             size={20}
             onClick={() => {
               setOpen(true);
-              setOrderId(record._id);
+              setOrderId(record?._id);
               [];
             }}
           />
@@ -128,7 +129,8 @@ const EarningContainer = () => {
         loading={isLoading}
         pagination={{ pageSize: 10, responsive: true }}
       ></Table>
-      <EaringDetaisModal orderId={orderId} open={open} setOpen={setOpen}></EaringDetaisModal>
+      {/*<EaringDetaisModal orderId={orderId} open={open} setOpen={setOpen}></EaringDetaisModal>*/}
+      <OrderDetailsModal open={orderId} setOpen={setOrderId} />
     </div>
   );
 };

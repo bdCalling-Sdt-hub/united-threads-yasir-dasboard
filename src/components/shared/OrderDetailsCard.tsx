@@ -3,11 +3,11 @@ import userPlaceholder from "@/assets/image/user.png";
 import { useState } from "react";
 import Image from "next/image";
 import moment from "moment";
-import { CalendarDays, MapPin, Package, CreditCard } from "lucide-react";
+import { CalendarDays, MapPin, Package, CreditCard, FilePenLine } from "lucide-react";
 import { TUser } from "@/types/userType";
 import { TOrder } from "@/redux/api/orderType";
 import Tag from "./Tag";
-import { Dropdown, MenuProps, Space } from "antd";
+import { Dropdown, Flex, MenuProps, Space } from "antd";
 import { useUpdateOrderMutation } from "@/redux/api/orderApi";
 import { toast } from "sonner";
 import { ORDER_STATUS } from "@/constant";
@@ -111,9 +111,9 @@ export default function OrderDetails({ user, order }: { user: TUser; order: TOrd
             <p className='font-semibold'>Order Status</p>
             <Dropdown menu={{ items }} trigger={["click"]}>
               <a onClick={(e) => e.preventDefault()}>
-                <Space>
-                  <Tag status={order?.status} />
-                </Space>
+                <Flex align='end' gap={2}>
+                  <Tag status={order?.status} /> <FilePenLine className='h-5 w-5' />
+                </Flex>
               </a>
             </Dropdown>
           </div>

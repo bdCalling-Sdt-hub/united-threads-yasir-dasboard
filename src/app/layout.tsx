@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "@/lib/Providers/Providers";
 import localFont from "next/font/local";
 import { Toaster } from "sonner";
+import NextTopLoader from "nextjs-toploader";
 
 export const metadata: Metadata = {
   title: {
@@ -30,6 +31,7 @@ export default function RootLayout({
     <html lang='en'>
       <body className={`${uncutSans.className}  antialiased bg-[#232323]`}>
         <Providers>
+          <NextTopLoader color='#334A55' />
           <Toaster />
           {children}
         </Providers>

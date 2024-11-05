@@ -70,6 +70,7 @@ const AboutUsEditor = () => {
         value={value}
         onChange={setValue}
         placeholder='Start writing ......'
+        className=''
       />
       <Button
         size='large'

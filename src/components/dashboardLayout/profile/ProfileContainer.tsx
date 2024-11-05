@@ -3,7 +3,7 @@
 import { Skeleton, Tabs, Upload, UploadFile } from "antd";
 import Image from "next/image";
 import { CiEdit } from "react-icons/ci";
-import userImg from "@/assets/image/userImage.png";
+import userImg from "@/assets/image/user.png";
 import EditProfileForm from "./EditProfileForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 import { useGetProfileQuery, useUpdateAdminProfileMutation } from "@/redux/api/userApi";

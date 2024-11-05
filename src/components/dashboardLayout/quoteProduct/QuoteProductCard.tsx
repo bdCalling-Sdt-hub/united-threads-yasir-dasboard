@@ -10,7 +10,7 @@ import { FaArrowUp } from "react-icons/fa6";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { toast } from "sonner";
 import UpdateQuoteProductModal from "./UpdateQuoteProductModal";
-import generatePantoneColor from "@/lib/utils/convertHexToPanton";
+import generatePantoneColor, { convertPantoneToHex } from "@/lib/utils/convertHexToPanton";
 
 const QuoteProductCard = ({ product }: { product: TQuoteProduct }) => {
   const [deleteProduct] = useDeleteQuoteProductMutation();
@@ -95,8 +95,8 @@ const QuoteProductCard = ({ product }: { product: TQuoteProduct }) => {
         <h3 className='text-lg font-semibold'>Colors Preferences</h3>
         <div className='flex items-center gap-x-3'>
           {product?.colorsPreferences?.map((s) => (
-            <Tag key={s} className='min-w-12 text-center' color={s}>
-              {generatePantoneColor(s).pantone}
+            <Tag key={s} className='min-w-12 text-center' color={`#${convertPantoneToHex(s)}`}>
+              {s}
             </Tag>
           ))}
         </div>

@@ -149,27 +149,24 @@ const AddNewProduct = () => {
       return;
     }
 
-    const colorsPreferences = pentonColors.length
-      ? [
-          // Convert pentonColors to hex
-          ...pentonColors.map((pantone) => {
-            const convertedColor = convertPantoneToHex(pantone);
-            console.log({ convertedColor });
-            if (convertedColor) {
-              return "#" + convertedColor || "#000000";
-            } else {
-              return pantone;
-            }
-          }),
-          // Include existing hex colors
-          //...colors.map((clr) => clr.hex),
-        ]
-      : [];
+    //const colorsPreferences = pentonColors.length
+    //  ? [
+    //      // Convert pentonColors to hex
+    //      ...pentonColors.map((pantone) => {
+    //        const convertedColor = convertPantoneToHex(pantone);
+    //        if (convertedColor) {
+    //          return "#" + convertedColor || "#000000";
+    //        } else {
+    //          return pantone;
+    //        }
+    //      }),
+    //    ]
+    //  : [];
 
     const updatedData = {
       ...data,
       price: Number(data?.price),
-      colorsPreferences,
+      colorsPreferences: pentonColors,
       size: data.size || [],
       shortDescription: data?.shortDescription,
       stock: Number(data?.stock),
@@ -390,7 +387,7 @@ const AddNewProduct = () => {
               </div>*/}
               {/* input penton code */}
               <div>
-                <label htmlFor='colors'>Select Penton Code (Optional) </label>
+                <label htmlFor='colors'>Select Pantone Code (Optional) </label>
 
                 <>
                   <div style={{ marginBottom: 16 }}>
@@ -418,11 +415,11 @@ const AddNewProduct = () => {
                       onChange={handleInputChange}
                       onBlur={handleInputConfirm}
                       onPressEnter={handleInputConfirm}
-                      placeholder='Enter Penton Code' // Add placeholder for better UX
+                      placeholder='Enter Pantone Code' // Add placeholder for better UX
                     />
                   ) : (
                     <Tag onClick={showInput} style={tagPlusStyle}>
-                      <PlusOutlined /> Add Penton Code
+                      <PlusOutlined /> Add Pantone Code
                     </Tag>
                   )}
                 </>

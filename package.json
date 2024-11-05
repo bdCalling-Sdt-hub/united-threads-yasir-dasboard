@@ -27,6 +27,7 @@
     "lucide-react": "^0.441.0",
     "moment": "^2.30.1",
     "next": "14.2.8",
+    "nextjs-toploader": "^3.7.15",
     "rc-tween-one": "^3.0.6",
     "react": "^18",
     "react-countup": "^6.5.3",

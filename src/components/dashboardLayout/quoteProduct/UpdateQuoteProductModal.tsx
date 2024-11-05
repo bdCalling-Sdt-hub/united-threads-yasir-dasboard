@@ -2,15 +2,27 @@
 import EForm from "@/components/Form/FormProvider";
 import EInput from "@/components/Form/ResInput";
 import ESelect from "@/components/Form/ResSelect";
+import { convertPantoneToHex } from "@/lib/utils/convertHexToPanton";
 import { useGetQuoteCategoriesQuery } from "@/redux/api/quoteCategoryApi";
 import { useUpdateQuoteProductMutation } from "@/redux/api/quoteProductApi";
 import { TCategory } from "@/types/categoryTypes";
 import { TResponse } from "@/types/global";
 import { TQuoteProduct } from "@/types/quoteProductTypes";
-import { PlusSquareFilled } from "@ant-design/icons";
+import { PlusOutlined, PlusSquareFilled } from "@ant-design/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, ColorPicker, Modal, Spin, Tooltip, Upload } from "antd";
-import { useEffect, useState } from "react";
+import {
+  Button,
+  ColorPicker,
+  Input,
+  InputRef,
+  Modal,
+  Spin,
+  Tag,
+  theme,
+  Tooltip,
+  Upload,
+} from "antd";
+import { useEffect, useRef, useState } from "react";
 import { PiUploadLight } from "react-icons/pi";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -29,6 +41,11 @@ type TPropsType = {
 };
 
 const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) => {
+  const { token } = theme.useToken();
+  const [pentonColors, setPentonColors] = useState<string[]>([]);
+  const [inputVisible, setInputVisible] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const inputRef = useRef<InputRef>(null);
   const [colors, setColors] = useState<any[]>([]);
   const [frontSideImage, setFrontSideImage] = useState<any[]>([]);
   const [backSideImage, setBackSideImage] = useState<any[]>([]);
@@ -88,7 +105,7 @@ const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) =>
     const formData = new FormData();
     const payload = {
       name: data.name,
-      colorsPreferences: colors.length ? colors.map((clr) => clr.hex) : [],
+      colorsPreferences: pentonColors || [],
       category: data.category,
       size: data.size,
     };
@@ -123,12 +140,7 @@ const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) =>
   useEffect(() => {
     if (quoteProduct) {
       // Populate colors, images, and default values
-      setColors(
-        quoteProduct.colorsPreferences.map((clr, index) => ({
-          key: index + 1,
-          hex: clr,
-        })),
-      );
+      setPentonColors(quoteProduct.colorsPreferences.map((clr, index) => clr));
       setFrontSideImage([{ uid: "-1", url: quoteProduct.frontSide }]); // Ensure uid is unique
       setBackSideImage([{ uid: "-1", url: quoteProduct.backSide }]); // Ensure uid is unique
       setAdditionalImages(quoteProduct.images || []);
@@ -140,6 +152,56 @@ const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) =>
       });
     }
   }, [quoteProduct]);
+
+  useEffect(() => {
+    if (inputVisible) {
+      inputRef.current?.focus();
+    }
+  }, [inputVisible]);
+
+  const handleClose = (removedTag: string) => {
+    const newTags = pentonColors.filter((tag) => tag !== removedTag);
+    console.log(newTags);
+    setPentonColors(newTags);
+  };
+
+  const showInput = () => {
+    setInputVisible(true);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleInputConfirm = () => {
+    if (inputValue && pentonColors?.indexOf(inputValue) === -1) {
+      setPentonColors([...pentonColors, inputValue]);
+    }
+    setInputVisible(false);
+    setInputValue("");
+  };
+
+  const forMap = (tag: string) => (
+    <span key={tag} style={{ display: "inline-block" }}>
+      <Tag
+        closable
+        onClose={(e) => {
+          e.preventDefault();
+          handleClose(tag);
+        }}
+        color={`#${convertPantoneToHex(tag)}`}
+      >
+        {tag}
+      </Tag>
+    </span>
+  );
+
+  const tagChild = pentonColors.map(forMap);
+
+  const tagPlusStyle: React.CSSProperties = {
+    background: token.colorBgContainer,
+    borderStyle: "dashed",
+  };
 
   return (
     <Modal
@@ -190,7 +252,7 @@ const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) =>
               />
 
               {/* Select Colors */}
-              <div>
+              {/*<div>
                 <label htmlFor='colors' className='text-lg'>
                   Select Colors (Optional)
                 </label>
@@ -212,7 +274,6 @@ const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) =>
                     </button>
                   ))}
 
-                  {/* Add color button */}
                   <Tooltip title='Add Color'>
                     <button type='button' onClick={handleAddNewColor}>
                       <PlusSquareFilled
@@ -224,6 +285,45 @@ const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) =>
                     </button>
                   </Tooltip>
                 </div>
+                </div>
+                */}
+              <div>
+                <label htmlFor='colors'>Select Pantone Code (Optional) </label>
+
+                <>
+                  <div style={{ marginBottom: 16 }}>
+                    {/*<TweenOneGroup
+                      appear={false}
+                      enter={{ scale: 0.8, opacity: 0, type: "from", duration: 100 }}
+                      leave={{ opacity: 0, width: 0, scale: 0, duration: 200 }}
+                      onEnd={(e) => {
+                        if (e.type === "appear" || e.type === "enter") {
+                          (e.target as any).style = "display: inline-block";
+                        }
+                      }}
+                    >
+                      {tagChild}
+                    </TweenOneGroup>*/}
+                    {tagChild}
+                  </div>
+                  {inputVisible ? (
+                    <Input
+                      ref={inputRef}
+                      type='text'
+                      size='small'
+                      style={{ width: 150 }} // Adjust width for better visibility
+                      value={inputValue}
+                      onChange={handleInputChange}
+                      onBlur={handleInputConfirm}
+                      onPressEnter={handleInputConfirm}
+                      placeholder='Enter Pantone Code' // Add placeholder for better UX
+                    />
+                  ) : (
+                    <Tag onClick={showInput} style={tagPlusStyle}>
+                      <PlusOutlined /> Add Pantone Code
+                    </Tag>
+                  )}
+                </>
               </div>
 
               {/* Size */}

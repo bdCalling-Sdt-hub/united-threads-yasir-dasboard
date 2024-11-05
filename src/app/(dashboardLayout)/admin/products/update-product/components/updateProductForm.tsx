@@ -6,14 +6,33 @@ import EInput from "@/components/Form/ResInput";
 import ESelect from "@/components/Form/ResSelect";
 import ETextArea from "@/components/Form/ResTextarea";
 import ErrorResponse from "@/components/shared/ErrorResponse";
+import { convertPantoneToHex } from "@/lib/utils/convertHexToPanton";
 import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
 import { useGetSingleProductQuery, useUpdateProductMutation } from "@/redux/api/productApi";
 import { TCategory } from "@/types/categoryTypes";
 import { TResponse } from "@/types/global";
 import { TProduct } from "@/types/productType";
-import { InfoCircleOutlined, PlusSquareFilled, UploadOutlined } from "@ant-design/icons";
+import {
+  InfoCircleOutlined,
+  PlusOutlined,
+  PlusSquareFilled,
+  UploadOutlined,
+} from "@ant-design/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Col, ColorPicker, Popover, Row, Spin, Tooltip, Upload } from "antd";
+import {
+  Button,
+  Col,
+  ColorPicker,
+  Input,
+  InputRef,
+  Popover,
+  Row,
+  Spin,
+  Tag,
+  theme,
+  Tooltip,
+  Upload,
+} from "antd";
 import JoditEditor from "jodit-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -34,6 +53,12 @@ export const addProductValidation = z.object({
 });
 
 const UpdateProductForm = ({ params }: { params: { id: string } }) => {
+  const { token } = theme.useToken();
+  const [pentonColors, setPentonColors] = useState<string[]>([]);
+  const [inputVisible, setInputVisible] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const inputRef = useRef<InputRef>(null);
+
   const router = useRouter();
   const [updateProduct] = useUpdateProductMutation();
 
@@ -129,7 +154,7 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
       ...data,
       stock: data?.stock ? Number(data?.stock) : 0,
       price: data?.price ? Number(data?.price) : 0,
-      colorsPreferences: colors?.length ? colors.map((clr) => clr.hex) : [],
+      colorsPreferences: pentonColors || [],
       size: data.size || [],
       shortDescription: data?.shortDescription,
       description: longDescription,
@@ -179,12 +204,7 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
   useEffect(() => {
     if (product) {
       setLongDescription(product?.data?.description || "");
-      setColors(
-        product?.data?.colorsPreferences?.map((clr, index) => ({
-          key: index + 1,
-          hex: clr,
-        })) || [],
-      );
+      setPentonColors(product?.data?.colorsPreferences?.map((clr, index) => clr) || []);
 
       // Ensure `primaryImage` has a valid URL string
       if (product?.data?.primaryImage && typeof product.data.primaryImage === "string") {
@@ -219,6 +239,58 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
 
   //  console.log(secondaryImages, "secondaryImages");
   //}, [secondaryImages]);
+
+  useEffect(() => {
+    if (inputVisible) {
+      inputRef.current?.focus();
+    }
+  }, [inputVisible]);
+
+  const handleClose = (removedTag: string) => {
+    const newTags = pentonColors.filter((tag) => tag !== removedTag);
+    console.log(newTags);
+    setPentonColors(newTags);
+  };
+
+  const showInput = () => {
+    setInputVisible(true);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleInputConfirm = () => {
+    if (inputValue && pentonColors?.indexOf(inputValue) === -1) {
+      setPentonColors([...pentonColors, inputValue]);
+    }
+    setInputVisible(false);
+    setInputValue("");
+  };
+
+  const forMap = (tag: string) => {
+    return (
+      <span key={tag} style={{ display: "inline-block" }}>
+        <Tag
+          closable
+          onClose={(e) => {
+            e.preventDefault();
+            handleClose(tag);
+          }}
+          color={`#${convertPantoneToHex(tag)}`}
+        >
+          {tag}
+        </Tag>
+      </span>
+    );
+  };
+
+  const tagChild = pentonColors.map(forMap);
+
+  const tagPlusStyle: React.CSSProperties = {
+    background: token.colorBgContainer,
+    borderStyle: "dashed",
+  };
 
   return (
     <div>
@@ -323,7 +395,7 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
                 />
 
                 {/* Select colors */}
-                <div>
+                {/*<div>
                   <label htmlFor='colors'>Select Colors (Optional)</label>
 
                   <div className='flex items-center gap-x-4 mt-2'>
@@ -343,7 +415,6 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
                       </button>
                     ))}
 
-                    {/* Add color button */}
                     <Tooltip title='Add Color'>
                       <button type='button' onClick={handleAddNewColor}>
                         <PlusSquareFilled
@@ -355,6 +426,44 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
                       </button>
                     </Tooltip>
                   </div>
+                </div>*/}
+
+                <div>
+                  <label htmlFor='colors'>Select Penton Code (Optional) </label>
+                  <>
+                    <div style={{ marginBottom: 16 }}>
+                      {/*<TweenOneGroup
+                      appear={false}
+                      enter={{ scale: 0.8, opacity: 0, type: "from", duration: 100 }}
+                      leave={{ opacity: 0, width: 0, scale: 0, duration: 200 }}
+                      onEnd={(e) => {
+                        if (e.type === "appear" || e.type === "enter") {
+                          (e.target as any).style = "display: inline-block";
+                        }
+                      }}
+                    >
+                      {tagChild}
+                    </TweenOneGroup>*/}
+                      {tagChild}
+                    </div>
+                    {inputVisible ? (
+                      <Input
+                        ref={inputRef}
+                        type='text'
+                        size='small'
+                        style={{ width: 150 }} // Adjust width for better visibility
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        onBlur={handleInputConfirm}
+                        onPressEnter={handleInputConfirm}
+                        placeholder='Enter Pantone Code' // Add placeholder for better UX
+                      />
+                    ) : (
+                      <Tag onClick={showInput} style={tagPlusStyle}>
+                        <PlusOutlined /> Add Penton Code
+                      </Tag>
+                    )}
+                  </>
                 </div>
 
                 <button className='hidden' type='submit' id='formSubmitBtn'></button>

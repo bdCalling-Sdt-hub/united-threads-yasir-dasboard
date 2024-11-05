@@ -335,6 +335,9 @@ const AddQuoteProduct = ({ open, setOpen }: TPropsType) => {
                 <div className='border text-18 font-500 text-primary border-primary rounded flex flex-col items-center px-[200px] py-[20px] cursor-pointer'>
                   <PiUploadLight size={40} />
                   <p>Upload Front Side Image</p>
+                  <p className='text-sm'>
+                    (Image must be black with a white background for better results)
+                  </p>
                 </div>
               </Upload>
             </div>
@@ -351,13 +354,16 @@ const AddQuoteProduct = ({ open, setOpen }: TPropsType) => {
               >
                 <div className='border text-18 font-500 text-primary border-primary rounded flex flex-col items-center px-[200px] py-[20px] cursor-pointer'>
                   <PiUploadLight size={40} />
-                  <p>Upload Back Side Image</p>
+                  <p>Upload Back Side Image </p>
+                  <p className='text-sm'>
+                    (Image must be black with a white background for better results)
+                  </p>
                 </div>
               </Upload>
             </div>
 
             {/* Additional Images Upload */}
-            <div className='mt-4'>
+            {/*<div className='mt-4'>
               <p className='text-lg mb-2'>Upload Additional Images</p>
               <Upload
                 name='images'
@@ -372,7 +378,7 @@ const AddQuoteProduct = ({ open, setOpen }: TPropsType) => {
                   <p>Upload Additional Images</p>
                 </div>
               </Upload>
-            </div>
+            </div>*/}
 
             {/* Submit Button */}
             <Button

@@ -1,14 +1,13 @@
 "use client";
-import { Table, TableProps } from "antd";
-import { useEffect, useState } from "react";
-import { FaArrowRightArrowLeft } from "react-icons/fa6";
-import { IoEyeOutline } from "react-icons/io5";
-import EaringDetaisModal from "./EarningDetailsModal";
+import OrderDetailsModal from "@/components/shared/OrderDetailsModal";
 import { useGetOrdersQuery } from "@/redux/api/orderApi";
 import { TOrder } from "@/redux/api/orderType";
 import { TResponse } from "@/types/global";
+import { Table, TableProps } from "antd";
 import moment from "moment";
-import OrderDetailsModal from "@/components/shared/OrderDetailsModal";
+import { useEffect, useState } from "react";
+import { FaArrowRightArrowLeft } from "react-icons/fa6";
+import { IoEyeOutline } from "react-icons/io5";
 
 const EarningContainer = () => {
   const [open, setOpen] = useState(false);

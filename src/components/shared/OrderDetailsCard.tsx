@@ -12,6 +12,7 @@ import { useUpdateOrderMutation } from "@/redux/api/orderApi";
 import { toast } from "sonner";
 import { ORDER_STATUS } from "@/constant";
 import { useRouter } from "next/navigation";
+import { convertPantoneToHex } from "@/lib/utils/convertHexToPanton";
 
 export default function OrderDetails({ user, order }: { user: TUser; order: TOrder }) {
   const [imageError, setImageError] = useState(false);
@@ -85,7 +86,7 @@ export default function OrderDetails({ user, order }: { user: TUser; order: TOrd
           </div>
           <div>
             <p className='font-semibold'>Size</p>
-            <p className='text-sm text-gray-500'>{order?.quote?.size || order?.product?.size}</p>
+            <p className='text-sm text-gray-500'>{order?.size || order?.size}</p>
           </div>
           {order?.quote?.pantoneColor && (
             <div>
@@ -99,7 +100,9 @@ export default function OrderDetails({ user, order }: { user: TUser; order: TOrd
               <div
                 className='w-6 h-6 rounded-full mr-2'
                 style={{
-                  backgroundColor: order?.quote?.hexColor || order?.product?.colorsPreferences[0],
+                  backgroundColor: `#${convertPantoneToHex(
+                    order?.quote?.hexColor || order?.product?.colorsPreferences[0] || "000",
+                  )}`,
                 }}
               ></div>
               <span className='text-sm text-gray-500'>

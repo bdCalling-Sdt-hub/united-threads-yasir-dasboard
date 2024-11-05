@@ -12,6 +12,7 @@ export type TOrder = {
   quantity: number;
   amount: number;
   status: TOrderStatus;
+  size: string;
   orderType: TOrderType;
   paymentStatus: TPaymentStatus;
   duoAmount: number;
@@ -128,7 +129,7 @@ export type TStripeCheckoutSession = {
   shipping_cost?: null;
   shipping_details?: null;
   shipping_options: any[];
-  status: "complete";
+  status: TOrderStatus;
   submit_type?: null;
   subscription?: null;
   success_url: string;

@@ -42,7 +42,7 @@ export default function RootLayout({
       </head>
       <body className={`${uncutSans.className}  antialiased bg-[#232323]`}>
         <Providers>
-          <NextTopLoader color='#334A55' />
+          <NextTopLoader color='#F8FAFC' />
           <Toaster />
           {children}
         </Providers>

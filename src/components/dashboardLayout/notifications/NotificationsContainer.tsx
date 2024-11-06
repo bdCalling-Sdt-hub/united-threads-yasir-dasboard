@@ -24,13 +24,7 @@ const NotificationsContainer = () => {
 
   const [seenNotifications] = useSeenNotificationsMutation();
 
-  const query = [
-    { label: "limit", value: "100000000000000" },
-    {
-      label: "seen",
-      value: "false",
-    },
-  ];
+  const query = [{ label: "limit", value: "100000000000000" }];
 
   const user = useAppSelector((state) => state.auth.user);
   const { data } = useGetNotificationsQuery(query, {
@@ -58,7 +52,12 @@ const NotificationsContainer = () => {
         <div className='mt-9 grid grid-cols-1 gap-8'>
           {notifications?.data?.length ? (
             notifications?.data?.map((notification, inx) => (
-              <div key={inx} className='flex gap-4 items-center'>
+              <div
+                key={inx}
+                className={`flex gap-4 items-center p-3 rounded ${
+                  notification.seen ? "" : "bg-black/10"
+                } `}
+              >
                 <div className='bg-[#FFFFFF] p-2 rounded'>
                   <MdOutlineNotificationsNone size={24} color='#8ABA51' />
                 </div>

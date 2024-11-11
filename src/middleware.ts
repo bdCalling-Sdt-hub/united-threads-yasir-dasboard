@@ -10,10 +10,12 @@ export function middleware(request: NextRequest) {
   const cookiesStore = cookies();
   const accessToken = cookiesStore.get("token")?.value;
 
+  console.log({ accessToken });
+
   if (accessToken) {
-    if (authRoutes.includes(request.nextUrl.pathname)) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
+    //if (authRoutes.includes(request.nextUrl.pathname)) {
+    //  return NextResponse.redirect(new URL("/", request.url));
+    //}
 
     try {
       const user = jwtDecode<TUser>(accessToken);
@@ -58,5 +60,12 @@ export function middleware(request: NextRequest) {
 // Config for which routes the middleware should apply
 export const config = {
   //matcher: ["/:path*"],
-  matcher: ["/csr/:path*", "/admin/:path*"], // Define which routes to match
+  matcher: [
+    "/csr/:path*",
+    "/admin/:path*",
+    //"/login",
+    //"/verifyEmail",
+    //"/forgetPassword",
+    //"/setNewPass",
+  ], // Define which routes to match
 };

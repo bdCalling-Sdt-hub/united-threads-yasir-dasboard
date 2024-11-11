@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-
+import cookie from "js-cookie";
 export type TUser = {
   email: string;
   role: "ADMIN" | "CSR" | "CUSTOMER";
@@ -31,10 +31,11 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
+      cookie.remove("token");
+      cookie.remove("refreshToken");
     },
   },
 });
-
 
 export const { setUser, logout } = authSlice.actions;
 

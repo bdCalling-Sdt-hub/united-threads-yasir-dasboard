@@ -1,6 +1,7 @@
 "use client";
 import logoImage from "@/assets//image/logo.png";
-import { useAppSelector } from "@/redux/hooks";
+import { logout } from "@/redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logoutUser } from "@/services/logout";
 import { Button, Menu, MenuProps } from "antd";
 import Sider from "antd/es/layout/Sider";
@@ -124,7 +125,7 @@ const nvaLinkCSR: MenuItem[] = [
   {
     key: "logout",
     icon: <CiLogout strokeWidth={0.8} size={24} />,
-    label: <Link href={"/login"}>Logout</Link>,
+    label: "Logout",
   },
 ];
 
@@ -132,11 +133,16 @@ const Sidebar = ({ collapsed, setCollapsed }: TSidebarType) => {
   const [current, setCurrent] = useState("dashboard");
   const user = useAppSelector((state) => state.auth.user);
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const onClick: MenuProps["onClick"] = (e) => {
-    setCurrent(e.key);
+    console.log("clic");
     if (e.key === "logout") {
-      //localStorage.removeItem("user");
+      dispatch(logout());
+      console.log(logout);
+      //router.push("/login");
       logoutUser(router);
+
+      // Success_model({ title: "Logout successful" });
     }
   };
 

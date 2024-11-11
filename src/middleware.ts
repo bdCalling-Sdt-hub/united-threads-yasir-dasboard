@@ -10,8 +10,6 @@ export function middleware(request: NextRequest) {
   const cookiesStore = cookies();
   const accessToken = cookiesStore.get("token")?.value;
 
-  console.log({ accessToken });
-
   if (accessToken) {
     //if (authRoutes.includes(request.nextUrl.pathname)) {
     //  return NextResponse.redirect(new URL("/", request.url));

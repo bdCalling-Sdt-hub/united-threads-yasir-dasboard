@@ -420,7 +420,7 @@ const MessagesContainer = () => {
                     <div className='flex items-center gap-x-5 w-full'>
                       {selectedUser?.user?.profilePicture ? (
                         <Image
-                          src={selectedUser?.user?.profilePicture}
+                          src={selectedUser?.user?.profilePicture || ""}
                           alt={selectedUser?.user?.firstName + " image"}
                           height={50}
                           width={50}
@@ -510,7 +510,7 @@ const MessagesContainer = () => {
                               src={
                                 msg.sender === userId
                                   ? profile?.data?.profilePicture || userImg
-                                  : selectedUser?.user?.profilePicture
+                                  : selectedUser?.user?.profilePicture || userImg
                               }
                               alt="user's image"
                               height={50}
@@ -571,7 +571,7 @@ const MessagesContainer = () => {
                             imgPreviews.map((file, index) => (
                               <Image
                                 key={index}
-                                src={file}
+                                src={file || ""}
                                 alt='image preview'
                                 height={250}
                                 width={250}
@@ -674,7 +674,7 @@ const UserCard = ({
         {userData?.user?.profilePicture ? (
           <div className='relative'>
             <Image
-              src={userData?.user?.profilePicture}
+              src={userData?.user?.profilePicture || ""}
               alt={userData?.user?.firstName}
               width={50}
               height={50}

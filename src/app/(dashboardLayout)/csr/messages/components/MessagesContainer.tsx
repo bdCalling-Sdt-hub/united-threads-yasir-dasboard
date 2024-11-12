@@ -428,7 +428,7 @@ const MessagesContainer = () => {
                         />
                       ) : (
                         <div className='size-[50px] rounded-full bg-primaryBlack flex justify-center items-center text-lg font-medium text-white uppercase'>
-                          {selectedUser?.name?.slice(0, 1)}
+                          {selectedUser?.user?.firstName?.slice(0, 1)}
                         </div>
                       )}
 
@@ -506,17 +506,33 @@ const MessagesContainer = () => {
                               msg.sender === userId ? "flex-row-reverse" : "flex-row"
                             } items-start gap-x-4`}
                           >
-                            <Image
-                              src={
-                                msg.sender === userId
-                                  ? profile?.data?.profilePicture || userImg
-                                  : selectedUser?.user?.profilePicture || userImg
-                              }
-                              alt="user's image"
-                              height={50}
-                              width={50}
-                              className='h-[50px] w-[50px] rounded-full'
-                            />
+                            {msg.sender === userId ? (
+                              profile?.data?.profilePicture ? (
+                                <Image
+                                  src={profile?.data?.profilePicture}
+                                  alt="user's image"
+                                  height={50}
+                                  width={50}
+                                  className='h-[50px] w-[50px] rounded-full'
+                                />
+                              ) : (
+                                <div className='size-[50px] rounded-full bg-primaryBlack flex justify-center items-center text-lg font-medium text-white uppercase'>
+                                  {profile?.data?.firstName?.slice(0, 1)}
+                                </div>
+                              )
+                            ) : selectedUser?.user?.profilePicture ? (
+                              <Image
+                                src={selectedUser?.user?.profilePicture}
+                                alt="user's image"
+                                height={50}
+                                width={50}
+                                className='h-[50px] w-[50px] rounded-full'
+                              />
+                            ) : (
+                              <div className='size-[50px] rounded-full bg-primaryBlack flex justify-center items-center text-lg font-medium text-white uppercase'>
+                                {selectedUser?.user?.firstName?.slice(0, 1)}
+                              </div>
+                            )}
                             <div className='max-w-[50%] overflow-hidden'>
                               {msg.sender === userId ? (
                                 <OwnerMsgCard

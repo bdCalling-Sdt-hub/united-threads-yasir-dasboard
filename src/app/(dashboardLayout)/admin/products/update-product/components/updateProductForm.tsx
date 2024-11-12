@@ -12,27 +12,9 @@ import { useGetSingleProductQuery, useUpdateProductMutation } from "@/redux/api/
 import { TCategory } from "@/types/categoryTypes";
 import { TResponse } from "@/types/global";
 import { TProduct } from "@/types/productType";
-import {
-  InfoCircleOutlined,
-  PlusOutlined,
-  PlusSquareFilled,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { InfoCircleOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Button,
-  Col,
-  ColorPicker,
-  Input,
-  InputRef,
-  Popover,
-  Row,
-  Spin,
-  Tag,
-  theme,
-  Tooltip,
-  Upload,
-} from "antd";
+import { Button, Col, Input, InputRef, Popover, Row, Spin, Tag, theme, Upload } from "antd";
 import JoditEditor from "jodit-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -200,6 +182,7 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
     category: product?.data?.category || "",
     size: product?.data?.size || [],
   };
+  console.log(defaultValues, "default values");
 
   useEffect(() => {
     if (product) {
@@ -345,6 +328,7 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
                       : []
                   }
                   size='large'
+                  defaultValue={product?.data?.category}
                   label='Select Product Category'
                   placeholder='Select category'
                 />
@@ -429,7 +413,7 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
                 </div>*/}
 
                 <div>
-                  <label htmlFor='colors'>Select Penton Code (Optional) </label>
+                  <label htmlFor='colors'>Select Pantone Code (Optional) </label>
                   <>
                     <div style={{ marginBottom: 16 }}>
                       {/*<TweenOneGroup
@@ -460,7 +444,7 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
                       />
                     ) : (
                       <Tag onClick={showInput} style={tagPlusStyle}>
-                        <PlusOutlined /> Add Penton Code
+                        <PlusOutlined /> Add Pantone Code
                       </Tag>
                     )}
                   </>
@@ -474,16 +458,15 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
             <Col span={8} className='flex flex-col gap-4 w-full'>
               <div>
                 <p className='mb-2 required-indicator text-lg'>Upload Primary Image</p>
-                <div className='flex justify-center'>
+                <div className='flex justify-start'>
                   <Upload
                     onChange={handlePrimaryImageChange}
                     beforeUpload={beforePrimaryImageUpload}
                     fileList={primaryImage}
                     listType='picture'
                     maxCount={1}
-                    className='w-full'
                   >
-                    <div className='border w-full font-500 text-primary border-primary rounded flex flex-col items-center px-[200px] py-[20px] cursor-pointer'>
+                    <div className='border font-500 text-primary border-primary rounded flex flex-col items-center px-[200px] py-[20px] cursor-pointer'>
                       <UploadOutlined />
                       <button>Upload</button>
                     </div>
@@ -494,7 +477,7 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
               {/* Secondary Images Uploader */}
               <div>
                 <p className='mb-2 required-indicator text-lg'>Upload Images (Max 3)</p>
-                <div className='flex justify-between'>
+                <div className='flex justify-start'>
                   <Upload
                     onChange={handleSecondaryImageChange}
                     beforeUpload={beforeSecondaryImageUpload}
@@ -502,7 +485,6 @@ const UpdateProductForm = ({ params }: { params: { id: string } }) => {
                     listType='picture'
                     maxCount={3}
                     multiple
-                    className='w-full'
                   >
                     <div className='border font-500 text-primary border-primary rounded flex flex-col items-center px-[200px] py-[20px] cursor-pointer'>
                       <UploadOutlined />

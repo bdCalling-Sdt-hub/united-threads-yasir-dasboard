@@ -305,7 +305,7 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
                       src={
                         userDetails && userDetails?.profilePicture
                           ? userDetails?.profilePicture
-                          : userImg2
+                          : userImg
                       }
                       width={50}
                       height={50}

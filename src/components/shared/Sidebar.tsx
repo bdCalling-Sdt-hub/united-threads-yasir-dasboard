@@ -47,12 +47,12 @@ const adminNavLink: MenuItem[] = [
   {
     key: "products",
     icon: <LuClipboardList size={24} />,
-    label: <Link href='/admin/products'>Shop Produts</Link>,
+    label: <Link href='/admin/products'>Shop Products</Link>,
   },
   {
     key: "quotes",
     icon: <Images size={24} />,
-    label: <Link href='/admin/quote-product'>Quote Product</Link>,
+    label: <Link href='/admin/quote-product'>Quote Products</Link>,
   },
   {
     key: "orders",
@@ -135,14 +135,10 @@ const Sidebar = ({ collapsed, setCollapsed }: TSidebarType) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const onClick: MenuProps["onClick"] = (e) => {
-    console.log("clic");
     if (e.key === "logout") {
       dispatch(logout());
       console.log(logout);
-      //router.push("/login");
       logoutUser(router);
-
-      // Success_model({ title: "Logout successful" });
     }
   };
 

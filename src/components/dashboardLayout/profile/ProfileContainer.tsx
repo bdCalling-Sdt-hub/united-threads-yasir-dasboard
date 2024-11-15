@@ -34,13 +34,11 @@ const ProfileContainer = () => {
     try {
       const res = await updateProfile(formData).unwrap();
       if (res.success) {
-        toast.success(res.message);
+        toast.success(res.message, { id: toastId });
       }
     } catch (error: any) {
       console.log(error);
       setError(error?.data?.message || "Something went wrong");
-    } finally {
-      toast.dismiss(toastId);
     }
   };
 
@@ -71,7 +69,7 @@ const ProfileContainer = () => {
                   alt='user'
                   width={100}
                   height={100}
-                  className='rounded-full border-4 border-white absolute'
+                  className='rounded-full aspect-square h-[100px] w-auto object-cover border-4 border-white absolute'
                 />
                 <Upload
                   showUploadList={false}

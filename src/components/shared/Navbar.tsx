@@ -55,7 +55,7 @@ const Navbar = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollapsed:
                   alt='admin profile'
                   width={48}
                   height={48}
-                  className='rounded-full aspect-square'
+                  className='rounded-full object-cover h-[48px] w-auto aspect-square'
                 />
                 <h4 className='text-base font-medium text-info aspect-square '>
                   {result?.firstName}

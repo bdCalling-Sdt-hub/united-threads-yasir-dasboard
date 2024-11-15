@@ -89,7 +89,7 @@ const EditProfileForm = () => {
             </Form.Item>
 
             <Form.Item label='Email' name='email'>
-              <Input size='large' />
+              <Input size='large' disabled className='disabled:text-gray-400' />
             </Form.Item>
 
             <Form.Item label='Contact no' name='contact'>

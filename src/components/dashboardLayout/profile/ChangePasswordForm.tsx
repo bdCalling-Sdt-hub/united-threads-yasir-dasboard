@@ -30,8 +30,6 @@ const ChangePasswordForm = () => {
       if (res.success) {
         toast.success(res.message);
         form.resetFields();
-      } else {
-        setError(res.data.message);
       }
     } catch (error: any) {
       console.log(error);

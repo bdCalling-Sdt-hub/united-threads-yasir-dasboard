@@ -104,7 +104,7 @@ const ProductsContainer = () => {
               value={selectedCategory}
               onChange={(value) => {
                 setSelectedCategory(value as string);
-                setPage(1); // Reset to first page on category change
+                setPage(1);
               }}
               block
               className='w-full'

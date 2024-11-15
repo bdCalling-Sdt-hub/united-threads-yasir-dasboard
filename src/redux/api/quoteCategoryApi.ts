@@ -23,7 +23,7 @@ const categoryApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: ["Category"],
+      invalidatesTags: ["QuoteCategory"],
     }),
     deleteQuoteCategory: builder.mutation({
       query: ({ categoryId }) => ({

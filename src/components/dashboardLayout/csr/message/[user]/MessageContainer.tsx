@@ -6,6 +6,8 @@ import { useSocket } from "@/lib/Providers/SocketProvider";
 import { useUploadFileMutation } from "@/redux/api/messageApi";
 import { selectUser } from "@/redux/features/auth/authSlice";
 import { useAppSelector } from "@/redux/hooks";
+import { TUser } from "@/types/userType";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Button, Divider, Popconfirm } from "antd";
 import {
   ArrowLeft,
@@ -17,14 +19,12 @@ import {
   XCircle,
 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import OwnerMsgCard from "./OwnerMsgCarda";
 import ReceiverMsgCard from "./ReceiverMsgCard";
-import { TUser } from "@/types/userType";
-import { QuestionCircleOutlined } from "@ant-design/icons";
-import { useRouter } from "next/navigation";
 
 // Define the type for form data
 type MessageFormData = {

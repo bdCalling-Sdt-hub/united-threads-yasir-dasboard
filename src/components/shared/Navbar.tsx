@@ -1,30 +1,23 @@
 "use client";
 import userImag from "@/assets/image/user.png";
-import { usePathname } from "next/navigation";
-import NotificationCount from "./NotificationCount";
 import { useGetProfileQuery } from "@/redux/api/userApi";
-import { TUser } from "@/types/userType";
+import { useAppSelector } from "@/redux/hooks";
 import { TResponse } from "@/types/global";
+import { TUser } from "@/types/userType";
 import { Button, Skeleton } from "antd";
-import { RxCross2 } from "react-icons/rx";
-import { IoMenu } from "react-icons/io5";
-import Link from "next/link";
 import SkeletonAvatar from "antd/es/skeleton/Avatar";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { useSocket } from "@/lib/Providers/SocketProvider";
-import { useAppSelector } from "@/redux/hooks";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { IoMenu } from "react-icons/io5";
+import { RxCross2 } from "react-icons/rx";
+import NotificationCount from "./NotificationCount";
 
 const Navbar = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollapsed: any }) => {
- 
-  const { socket, socketLoading } = useSocket();
-  const user = useAppSelector((state) => state.auth.user);
   const pathname = usePathname();
   const { data, isLoading } = useGetProfileQuery([]);
   const result = (data as TResponse<TUser>)?.data;
   const navbarTitle = pathname.split("/")[1];
-
-
 
   return (
     <nav className='flex items-center justify-between py-4 pr-[68px]'>
@@ -64,7 +57,9 @@ const Navbar = ({ collapsed, setCollapsed }: { collapsed: boolean; setCollapsed:
                   height={48}
                   className='rounded-full'
                 />
-                <h4 className='text-base font-medium text-info '>{result?.firstName}</h4>
+                <h4 className='text-base font-medium text-info aspect-square '>
+                  {result?.firstName}
+                </h4>
               </>
             )}
           </div>

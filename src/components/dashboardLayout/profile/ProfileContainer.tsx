@@ -53,7 +53,7 @@ const ProfileContainer = () => {
               <div className='group relative'>
                 <Skeleton.Avatar active size={100} shape='circle' />
                 <Upload>
-                  <div className='bg-white text-black text-lg p-2 rounded-full flex items-center justify-center absolute bottom-5 right-0 transition-all duration-300 ease-in-out'>
+                  <div className='bg-white text-black text-lg p-2 rounded-full aspect-square flex items-center justify-center absolute bottom-5 right-0 transition-all duration-300 ease-in-out'>
                     <CiEdit />
                   </div>
                 </Upload>

@@ -21,7 +21,7 @@ const mainTheme: ThemeConfig = {
       itemColor: "rgb(248,250,252)",
       itemBg: "",
       itemBorderRadius: 4,
-      itemHoverColor: "rgb(35,35,35)",
+      itemHoverColor: "#a1a1aa",
       itemHoverBg: "rgb(248,250,252)",
       itemActiveBg: "rgb(248,250,252)",
       itemSelectedBg: "rgb(255,255,255)",

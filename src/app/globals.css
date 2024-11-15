@@ -42,6 +42,9 @@ body {
   margin-left: 4px;
   margin-right: 4px;
 }
+.ant-menu-title-content {
+  transition: none !important;
+}
 
 .ant-menu-item-selected {
   background-color: #fff !important;

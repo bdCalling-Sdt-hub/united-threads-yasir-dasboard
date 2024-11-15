@@ -10,27 +10,9 @@ import { useGetCategoriesQuery } from "@/redux/api/categoryApi";
 import { useAddProductMutation } from "@/redux/api/productApi";
 import { TCategory } from "@/types/categoryTypes";
 import { TResponse } from "@/types/global";
-import {
-  InfoCircleOutlined,
-  PlusOutlined,
-  PlusSquareFilled,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { InfoCircleOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Button,
-  Col,
-  ColorPicker,
-  Input,
-  InputRef,
-  Popover,
-  Row,
-  Spin,
-  Tag,
-  theme,
-  Tooltip,
-  Upload,
-} from "antd";
+import { Button, Col, Input, InputRef, Popover, Row, Spin, Tag, theme, Upload } from "antd";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";

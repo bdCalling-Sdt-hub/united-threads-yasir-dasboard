@@ -83,7 +83,7 @@ const AddCategoryModal = ({ open, setOpen }: TPropsType) => {
             </Form.Item>
 
             <div className='mb-4'>
-              <p className='mb-2 required-indicator text-lg'>Upload Primary Image</p>
+              <p className='mb-2 required-indicator text-lg'>Upload Category Image</p>
               <Upload
                 onChange={handlePrimaryImageChange}
                 beforeUpload={beforePrimaryImageUpload}

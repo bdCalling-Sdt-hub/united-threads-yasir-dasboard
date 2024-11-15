@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import userImg from "@/assets/image/messageUser.png";
-import userImg2 from "@/assets/image/user.png";
-import Image from "next/image";
+import { Popconfirm, Spin } from "antd";
 import {
   ArrowLeftFromLine,
   CircleOff,
@@ -12,22 +10,22 @@ import {
   Send,
   X,
 } from "lucide-react";
-import { Popconfirm, Spin } from "antd";
+import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
-import clsx from "clsx";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useSocket } from "@/lib/Providers/SocketProvider";
-import { useAppSelector } from "@/redux/hooks";
-import { selectUser } from "@/redux/features/auth/authSlice";
-import { useUploadFileMutation } from "@/redux/api/messageApi";
-import { toast } from "sonner";
 import OwnerMsgCard from "@/components/dashboardLayout/csr/message/[user]/OwnerMsgCarda";
 import ReceiverMsgCard from "@/components/dashboardLayout/csr/message/[user]/ReceiverMsgCard";
-import { TChatList } from "@/types/messageTypes";
-import { TMessage } from "@/types/messageType";
-import moment from "moment";
+import { useSocket } from "@/lib/Providers/SocketProvider";
+import { useUploadFileMutation } from "@/redux/api/messageApi";
 import { useGetProfileQuery } from "@/redux/api/userApi";
+import { selectUser } from "@/redux/features/auth/authSlice";
+import { useAppSelector } from "@/redux/hooks";
+import { TMessage } from "@/types/messageType";
+import { TChatList } from "@/types/messageTypes";
+import clsx from "clsx";
+import moment from "moment";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 // import type { GetProps } from "antd";
 // const { Search } = Input;
 

@@ -3,22 +3,19 @@ import logoImage from "@/assets//image/logo.png";
 import { logout } from "@/redux/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logoutUser } from "@/services/logout";
-import { Button, Menu, MenuProps } from "antd";
+import { Menu, MenuProps } from "antd";
 import Sider from "antd/es/layout/Sider";
 import MenuItem from "antd/es/menu/MenuItem";
-import { Images } from "lucide-react";
+import { Images, Shapes } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { AiOutlineBarChart } from "react-icons/ai";
 import { CiBadgeDollar, CiLogout } from "react-icons/ci";
 import { GoChecklist } from "react-icons/go";
 import { HiOutlineCircleStack } from "react-icons/hi2";
 import { LuClipboardList } from "react-icons/lu";
-import { MdManageHistory } from "react-icons/md";
 import { PiUsersThreeThin } from "react-icons/pi";
-import { RiContactsBookUploadLine } from "react-icons/ri";
 import { SlBookOpen } from "react-icons/sl";
 import { TbChecklist, TbListDetails, TbSettingsCheck } from "react-icons/tb";
 type MenuItem = Required<MenuProps>["items"][number];
@@ -30,7 +27,7 @@ type TSidebarType = {
 
 const adminNavLink: MenuItem[] = [
   {
-    key: "dashboard",
+    key: "admin",
     label: <Link href='/admin'>Dashboard</Link>,
     icon: <AiOutlineBarChart size={24} />,
   },
@@ -45,12 +42,17 @@ const adminNavLink: MenuItem[] = [
     label: <Link href='/admin/earnings'>Earnings</Link>,
   },
   {
+    key: "categories",
+    icon: <Shapes strokeWidth={1} size={24} />,
+    label: <Link href='/admin/categories'>Categories</Link>,
+  },
+  {
     key: "products",
     icon: <LuClipboardList size={24} />,
     label: <Link href='/admin/products'>Shop Products</Link>,
   },
   {
-    key: "quotes",
+    key: "quote-product",
     icon: <Images size={24} />,
     label: <Link href='/admin/quote-product'>Quote Products</Link>,
   },
@@ -77,7 +79,7 @@ const adminNavLink: MenuItem[] = [
   //  ],
   //},
   {
-    key: "library",
+    key: "gallery",
     icon: <Images size={24} />,
     label: <Link href='/admin/gallery'>Library</Link>,
   },
@@ -112,7 +114,7 @@ const adminNavLink: MenuItem[] = [
 
 const nvaLinkCSR: MenuItem[] = [
   {
-    key: "quoteDetails",
+    key: "quote-details",
     label: <Link href='/csr/quote-details'>Quote Details</Link>,
     icon: <TbChecklist size={24} />,
   },
@@ -130,7 +132,7 @@ const nvaLinkCSR: MenuItem[] = [
 ];
 
 const Sidebar = ({ collapsed, setCollapsed }: TSidebarType) => {
-  const [current, setCurrent] = useState("dashboard");
+  //const [current, setCurrent] = useState("dashboard");
   const user = useAppSelector((state) => state.auth.user);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -156,8 +158,7 @@ const Sidebar = ({ collapsed, setCollapsed }: TSidebarType) => {
         </div>
         <Menu
           onClick={onClick}
-          defaultOpenKeys={["dashboard"]}
-          selectedKeys={[current]}
+          defaultSelectedKeys={["admin"]}
           mode='inline'
           items={user?.role === "ADMIN" ? adminNavLink : user?.role === "CSR" ? nvaLinkCSR : []}
         />

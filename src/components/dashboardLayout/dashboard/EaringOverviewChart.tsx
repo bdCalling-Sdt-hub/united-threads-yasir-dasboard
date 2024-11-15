@@ -20,6 +20,15 @@ const EaringOverviewChart = () => {
     setSelectedYear(value);
   };
 
+  const currentYear = new Date().getFullYear();
+  const startYear = 2024;
+
+  // Ensure we start from 2024, and include the current year + next 3 years
+  const yearsArray = Array.from(
+    { length: currentYear - startYear + 1 },
+    (_, index) => startYear + index,
+  );
+
   return (
     <div className='bg-primaryBlack  rounded-lg p-8 w-1/2'>
       <div className='text-primaryWhite flex justify-between items-center mb-10'>
@@ -35,12 +44,10 @@ const EaringOverviewChart = () => {
           value={selectedYear}
           style={{ width: 120 }}
           onChange={handleChange}
-          options={[
-            { value: "2024", label: "2024" },
-            { value: "2025", label: "2025" },
-            { value: "2026", label: "2026" },
-            { value: "2027", label: "2027" },
-          ]}
+          options={yearsArray.map((year) => ({
+            value: year.toString(),
+            label: year.toString(),
+          }))}
         />
       </div>
       <ResponsiveContainer width='100%' height={300}>

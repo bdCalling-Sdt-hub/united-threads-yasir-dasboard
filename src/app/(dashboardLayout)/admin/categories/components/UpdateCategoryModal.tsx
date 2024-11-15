@@ -1,4 +1,4 @@
-import ErrorResponse from "@/components/shared/ErrorResponse";
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useUpdateCategoryMutation } from "@/redux/api/categoryApi";
 import { useUpdateQuoteCategoryMutation } from "@/redux/api/quoteCategoryApi";
 import { TCategory } from "@/types/categoryTypes";
@@ -20,9 +20,7 @@ type FieldType = {
 };
 
 const UpdateCategoryModal = ({ category, setCategory, isQuoteCategory }: TPropsType) => {
-  const [fileList, setFileList] = useState<
-    { uid: string; name: string; status: string; url: string }[]
-  >([]);
+  const [fileList, setFileList] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [form] = Form.useForm();
   const [updateCategory, { isLoading }] = useUpdateCategoryMutation();
@@ -80,7 +78,7 @@ const UpdateCategoryModal = ({ category, setCategory, isQuoteCategory }: TPropsT
         ],
       });
     }
-  }, [category, form]);
+  }, [category]);
 
   return (
     <Modal
@@ -126,9 +124,7 @@ const UpdateCategoryModal = ({ category, setCategory, isQuoteCategory }: TPropsT
                   name='image'
                   listType='picture'
                   maxCount={1}
-                  //@ts-ignore
                   fileList={fileList}
-                  //@ts-ignore
                   onChange={(info) => setFileList(info.fileList)}
                 >
                   <Button icon={<UploadOutlined />}>Upload Image</Button>

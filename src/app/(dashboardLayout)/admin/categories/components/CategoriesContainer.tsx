@@ -78,7 +78,7 @@ export default function CategoriesPage() {
               className='flex items-center !bg-transparent border-primaryBlack text-primaryBlack'
               onClick={() => setSelectedCategory({ isQuoteCategory, category })}
             >
-              <Pencil className='w-4 h-4 mr-2' />
+              <Pencil className='w-4 h-4 mr-1' />
               Edit
             </Button>
             <Popconfirm
@@ -93,7 +93,7 @@ export default function CategoriesPage() {
                 className='flex items-center bg-red-600 hover:text-white hover:bg-red-700'
                 //onClick={() => handleDelete(category._id, isQuoteCategory)}
               >
-                <Trash2 className='w-4 h-4 mr-2' />
+                <Trash2 className='w-4 h-4 mr-1' />
                 Delete
               </Button>
             </Popconfirm>

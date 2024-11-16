@@ -167,6 +167,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
 
                     <Form.Item label='Size' name='size'>
                       <Select
+                        disabled={quote.isAccepted}
                         size='large'
                         placeholder='Please Select a size'
                         options={[
@@ -182,6 +183,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                     <div className='flex items-start gap-x-3'>
                       <Form.Item name='color' className=''>
                         <ColorPicker
+                          disabled={quote.isAccepted}
                           size='large'
                           onChange={(value, css) => handleColorChange(css)}
                           value={selectedColor.toString()}
@@ -195,6 +197,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
 
                     <Form.Item label='Quantity' name='quantity'>
                       <InputNumber
+                        disabled={quote.isAccepted}
                         size='large'
                         style={{ width: "100%" }}
                         placeholder='Please input quantity'
@@ -203,6 +206,8 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
 
                     <Form.Item label='Price' name='price' rules={[{ required: true }]}>
                       <InputNumber
+                        disabled={quote.isAccepted}
+                        defaultValue={quote?.price}
                         size='large'
                         style={{ width: "100%" }}
                         placeholder='Please input price'
@@ -210,7 +215,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                     </Form.Item>
 
                     <Form.Item label='Materials Preference' name='materialPreference'>
-                      <TextArea rows={4} placeholder='Write here...' />
+                      <TextArea disabled={quote.isAccepted} rows={4} placeholder='Write here...' />
                     </Form.Item>
                   </div>
 
@@ -262,10 +267,15 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                     </div>
                     <div>
                       <Form.Item label='Comment (Optional)' name='comment'>
-                        <TextArea rows={4} placeholder='Write comment for Retailer...' />
+                        <TextArea
+                          disabled={quote.isAccepted}
+                          defaultValue={quote?.comment}
+                          rows={4}
+                          placeholder='Write comment for Retailer...'
+                        />
                       </Form.Item>
-                      <Button htmlType='submit' block size='large'>
-                        Quote Accept
+                      <Button disabled={quote.isAccepted} htmlType='submit' block size='large'>
+                        {quote.isAccepted ? "Accepted" : "Quote Accept"}
                       </Button>
                     </div>
                   </div>

@@ -94,7 +94,7 @@ export default function OrderDetails({ user, order }: { user: TUser; order: TOrd
               <p className='text-sm text-gray-500'>{order?.quote?.pantoneColor}</p>
             </div>
           )}
-          <div>
+          {/*<div>
             <p className='font-semibold'>Hex Color</p>
             <div className='flex items-center mt-1'>
               <div
@@ -109,7 +109,7 @@ export default function OrderDetails({ user, order }: { user: TUser; order: TOrd
                 {order?.quote?.hexColor || order?.product?.colorsPreferences[0]}
               </span>
             </div>
-          </div>
+          </div>*/}
           <div className='space-y-1'>
             <p className='font-semibold'>Order Status</p>
             <Dropdown menu={{ items }} trigger={["click"]}>

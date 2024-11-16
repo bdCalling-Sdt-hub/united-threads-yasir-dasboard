@@ -1,9 +1,10 @@
 "use client";
 import Tag from "@/components/shared/Tag";
+import { convertPantoneToHex } from "@/lib/utils/convertHexToPanton";
 import { useGetQuotesQuery } from "@/redux/api/quoteApi";
 import { TResponse } from "@/types/global";
 import { TQuote } from "@/types/quoteTypes";
-import { Button, Segmented, Table, TableProps } from "antd";
+import { Segmented, Table, TableProps } from "antd";
 import moment from "moment";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -46,7 +47,7 @@ const QuoteListTable = ({ date }: { date?: string | null }) => {
           <div className='flex items-center gap-x-2'>
             <span
               className='size-4 inline-block rounded-full'
-              style={{ backgroundColor: value.slice(0, 1) === "#" ? value : `#${value}` }}
+              style={{ backgroundColor: "#" + convertPantoneToHex(record.pantoneColor) }}
             ></span>
             <span style={{ color: value }}>{record.pantoneColor}</span>
           </div>

@@ -458,7 +458,7 @@ const MessageContainer = ({ receiverId }: { receiverId: string }) => {
                     className='flex w-full items-stretch gap-x-4'
                   >
                     <div className='w-full flex flex-col justify-center relative'>
-                      {typing && (
+                      {typing && typing?.firstName && (
                         <p className='text-sm text-gray-500 absolute -top-6'>
                           {typing?.firstName} {typing?.lastName} is typing...
                         </p>

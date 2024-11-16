@@ -93,7 +93,7 @@ export default function CategoriesPage() {
                 className='flex items-center bg-red-600 hover:text-white hover:bg-red-700'
                 //onClick={() => handleDelete(category._id, isQuoteCategory)}
               >
-                <Trash2 className='w-4 h-4 mr-1' />
+                <Trash2 className='w-4 h-4' />
                 Delete
               </Button>
             </Popconfirm>

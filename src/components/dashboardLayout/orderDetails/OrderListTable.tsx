@@ -4,9 +4,8 @@ import { ORDER_STATUS } from "@/constant";
 import { useGetOrdersQuery } from "@/redux/api/orderApi";
 import { TOrder } from "@/redux/api/orderType";
 import { TResponse } from "@/types/global";
-import { Dropdown, MenuProps, Space, Table, TableProps } from "antd";
+import { Table, TableProps } from "antd";
 import moment from "moment";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 import Tag from "../../shared/Tag";
@@ -14,19 +13,11 @@ import Tag from "../../shared/Tag";
 const OrderListTable = () => {
   const [limit, setLimit] = useState(10000000000);
   //const [orderId, setOrderId] = useState("");
-  const { data, isLoading } = useGetOrdersQuery(
-    [
-      { label: "sort", value: "-createdAt" },
-      { label: "limit", value: limit.toString() },
-      { label: "paymentStatus", value: "PAID" },
-    ],
-    {},
-  );
-
+  const { data, isLoading } = useGetOrdersQuery([
+    { label: "sort", value: "-createdAt" },
+    { label: "limit", value: limit.toString() },
+  ]);
   const result = data as TResponse<TOrder[]>;
-
-  console.log(result, "result");
-
   const columns: TableProps<TOrder>["columns"] = [
     {
       title: "Order ID",

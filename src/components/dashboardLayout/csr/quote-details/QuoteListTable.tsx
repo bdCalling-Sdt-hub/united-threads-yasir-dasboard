@@ -1,20 +1,22 @@
 "use client";
+import Tag from "@/components/shared/Tag";
 import { useGetQuotesQuery } from "@/redux/api/quoteApi";
 import { TResponse } from "@/types/global";
 import { TQuote } from "@/types/quoteTypes";
-import { Table, TableProps } from "antd";
+import { Button, Segmented, Table, TableProps } from "antd";
 import moment from "moment";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { IoEyeOutline } from "react-icons/io5";
 
 const QuoteListTable = ({ date }: { date?: string | null }) => {
+  const [quoteStatus, setQuoteStatus] = useState("pending");
   const [limit, setLimit] = useState(10000000000);
 
   const query = [
     { label: "sort", value: "-createdAt" },
     { label: "limit", value: limit.toString() },
-    { label: "quoteStatus", value: "pending" },
+    { label: "quoteStatus", value: quoteStatus },
   ];
 
   if (date && typeof date === "string") {
@@ -55,6 +57,28 @@ const QuoteListTable = ({ date }: { date?: string | null }) => {
       title: "Quantity",
       dataIndex: "quantity",
     },
+    {
+      title: "Quote Status",
+      dataIndex: "quoteStatus",
+      render: (value) => {
+        return (
+          <div>
+            <Tag status={value === "pending" ? "PENDING" : "APPROVED"} />
+          </div>
+        );
+      },
+    },
+    {
+      title: "Payment Status",
+      dataIndex: "_id",
+      render: (value) => {
+        return (
+          <span className='inline-block px-2 py-1 text-sm font-semibold text-red-700 bg-red-100 rounded border border-red-400'>
+            Unpaid
+          </span>
+        );
+      },
+    },
     //{
     //  title: "Total",
     //  dataIndex: "price",
@@ -86,6 +110,16 @@ const QuoteListTable = ({ date }: { date?: string | null }) => {
 
   return (
     <div>
+      <>
+        <Segmented
+          onChange={setQuoteStatus}
+          className='mb-4'
+          options={[
+            { label: "Pending", value: "pending" },
+            { label: "Approved", value: "processing" },
+          ]}
+        />
+      </>
       <Table
         columns={columns}
         loading={isLoading}

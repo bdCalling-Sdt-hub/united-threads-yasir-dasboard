@@ -1,18 +1,17 @@
 "use client";
 import userPlaceholder from "@/assets/image/user.png";
-import { useState } from "react";
-import Image from "next/image";
-import moment from "moment";
-import { CalendarDays, MapPin, Package, CreditCard, FilePenLine } from "lucide-react";
-import { TUser } from "@/types/userType";
-import { TOrder } from "@/redux/api/orderType";
-import Tag from "./Tag";
-import { Dropdown, Flex, MenuProps, Space } from "antd";
-import { useUpdateOrderMutation } from "@/redux/api/orderApi";
-import { toast } from "sonner";
 import { ORDER_STATUS } from "@/constant";
+import { useUpdateOrderMutation } from "@/redux/api/orderApi";
+import { TOrder } from "@/redux/api/orderType";
+import { TUser } from "@/types/userType";
+import { Dropdown, Flex, MenuProps } from "antd";
+import { CalendarDays, FilePenLine, MapPin } from "lucide-react";
+import moment from "moment";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { convertPantoneToHex } from "@/lib/utils/convertHexToPanton";
+import { useState } from "react";
+import { toast } from "sonner";
+import Tag from "./Tag";
 
 export default function OrderDetails({ user, order }: { user: TUser; order: TOrder }) {
   const [imageError, setImageError] = useState(false);

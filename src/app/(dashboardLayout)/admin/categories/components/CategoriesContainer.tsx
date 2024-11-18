@@ -12,9 +12,14 @@ import { TCategory } from "@/types/categoryTypes";
 import { TResponse } from "@/types/global";
 import { Button, message, Popconfirm, PopconfirmProps, Spin } from "antd";
 import UpdateCategoryModal from "./UpdateCategoryModal";
+import { CiCirclePlus } from "react-icons/ci";
+import AddQuoteCategoryModal from "@/components/dashboardLayout/quoteProduct/AddQuoteCategoryModal";
+import AddCetagoryModal from "@/components/dashboardLayout/products/AddCetagoryModal";
 
 // CategoriesPage Component
 export default function CategoriesPage() {
+  const [openAddQuoteCategory, setOpenAddQuoteCategory] = useState(false);
+  const [openAddCategory, setOpenAddCategory] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<{
     isQuoteCategory: boolean;
     category: TCategory | null;
@@ -106,13 +111,40 @@ export default function CategoriesPage() {
   return (
     <div className='container mx-auto px-4 py-8'>
       <section className='mb-12'>
-        <h2 className='text-2xl font-bold mb-6'>Product Categories</h2>
+        <div className='flex justify-between items-center border-b mb-4'>
+          <h2 className='text-2xl font-bold mb-6 w-full'>Product Categories</h2>
+
+          <Button
+            className='bg-[#232323] text-[#fff] uppercase'
+            size='large'
+            icon={<CiCirclePlus size={20} color='#fff' />}
+            onClick={() => setOpenAddCategory(true)}
+          >
+            Add Shop Category
+          </Button>
+        </div>
         <CategoryGrid categories={productCategories.data} isQuoteCategory={false} />
       </section>
       <section>
-        <h2 className='text-2xl font-bold mb-6'>Quote Categories</h2>
+        <div className='flex justify-between items-center border-b mb-4'>
+          <h2 className='text-2xl font-bold mb-6'>Quote Categories</h2>
+          <Button
+            className='bg-[#232323] text-[#fff] uppercase'
+            size='large'
+            icon={<CiCirclePlus size={20} color='#fff' />}
+            onClick={() => setOpenAddQuoteCategory(true)}
+          >
+            Add Quote Category
+          </Button>
+        </div>
         <CategoryGrid categories={quoteCategories.data} isQuoteCategory={true} />
       </section>
+
+      <AddQuoteCategoryModal
+        open={openAddQuoteCategory}
+        setOpen={setOpenAddQuoteCategory}
+      ></AddQuoteCategoryModal>
+      <AddCetagoryModal open={openAddCategory} setOpen={setOpenAddCategory} />
       <UpdateCategoryModal
         category={selectedCategory && selectedCategory?.category}
         setCategory={setSelectedCategory}

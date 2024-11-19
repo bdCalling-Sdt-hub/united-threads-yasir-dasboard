@@ -12,7 +12,7 @@ import { IoEyeOutline } from "react-icons/io5";
 
 const QuoteListTable = ({ date }: { date?: string | null }) => {
   const [quoteStatus, setQuoteStatus] = useState("pending");
-  const [limit, setLimit] = useState(10000000000);
+  const [limit, setLimit] = useState(999999999999999);
 
   const query = [
     { label: "sort", value: "-createdAt" },

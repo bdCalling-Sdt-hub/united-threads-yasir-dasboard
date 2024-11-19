@@ -75,13 +75,28 @@ export default function OrderDetails({ user, order }: { user: TUser; order: TOrd
             <p className='font-semibold'>Order Type</p>
             <p className='text-sm text-gray-500'>{order?.orderType}</p>
           </div>
-          <div>
+          {/*<div>
             <p className='font-semibold'>Quantity</p>
             <p className='text-sm text-gray-500'>{order?.quantity}</p>
           </div>
           <div>
             <p className='font-semibold'>Total Amount</p>
             <p className='text-sm text-gray-500'>${order?.amount}</p>
+          </div>*/}
+          <div>
+            <div className='grid grid-cols-2 text-lg font-semibold'>
+              <h2>Size</h2>
+              <h2>Quantity</h2>
+            </div>
+            <div>
+              {order.sizesAndQuantities?.map((item) => (
+                <div key={item.size} className='grid grid-cols-3'>
+                  <p>{item.size}</p>
+                  <p>-</p>
+                  <p>{item.quantity}</p>
+                </div>
+              ))}
+            </div>
           </div>
           <div>
             <p className='font-semibold'>Size</p>

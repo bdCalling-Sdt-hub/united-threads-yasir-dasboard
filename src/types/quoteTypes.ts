@@ -12,10 +12,11 @@ export type TQuote = {
   category: TCategory;
   hexColor: string;
   colorsPreferences: string[];
-  size: string;
+  size?: string;
   isDeleted: boolean;
   images: any[];
-  quantity: number;
+  quantity?: number;
+  sizesAndQuantities?: TSizeAndQuantity[];
   materialPreferences: string;
   quoteStatus?: TQuoteStatus;
   isAccepted?: boolean;
@@ -29,6 +30,11 @@ export type TQuote = {
   salesCount: number;
   createdAt?: Date;
   updatedAt?: Date;
+};
+
+export type TSizeAndQuantity = {
+  size: string;
+  quantity: number;
 };
 
 export type TQuoteStatus = "pending" | "processing" | "completed" | "canceled";

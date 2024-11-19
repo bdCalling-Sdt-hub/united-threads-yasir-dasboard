@@ -89,11 +89,18 @@ const EarningContainer = () => {
   let todayEaring = 0;
   result?.data?.forEach((item) => {
     if (moment(item?.createdAt).isSame(moment(), "day")) {
-      todayEaring += item.amount;
+      if (item?.paymentStatus === "PAID") {
+        todayEaring += item?.amount;
+      }
     }
   });
 
-  const totalEaring = result?.data?.reduce((acc, item) => acc + item.amount, 0);
+  const totalEaring = result?.data?.reduce((acc, item) => {
+    if (item?.paymentStatus === "PAID") {
+      return acc + item?.amount;
+    }
+    return acc;
+  }, 0);
 
   useEffect(() => {
     if (result?.meta?.total) {

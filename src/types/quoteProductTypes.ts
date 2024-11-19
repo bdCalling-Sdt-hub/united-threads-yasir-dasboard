@@ -7,15 +7,21 @@ export type TQuoteProduct = {
   backSide: string;
   pantoneColor: string;
   category: TCategory;
+  sizesAndQuantities: TSizeAndQuantity[];
   hexColor: string;
   colorsPreferences: string[];
   stock: number;
-  size: string[];
+  size?: string[];
   isDeleted: boolean;
   images: TImage[];
   createdAt: string;
   updatedAt: string;
   salesCount: number;
+};
+
+export type TSizeAndQuantity = {
+  size: string;
+  quantity: number;
 };
 
 export type TImage = {

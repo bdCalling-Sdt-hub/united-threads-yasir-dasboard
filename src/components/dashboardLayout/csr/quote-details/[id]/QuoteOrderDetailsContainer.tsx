@@ -19,6 +19,9 @@ import { useGetSingleQuoteQuery, useUpdateQuoteMutation } from "@/redux/api/quot
 import { TResponse } from "@/types/global";
 import { TQuote } from "@/types/quoteTypes";
 import { ScrollText } from "lucide-react";
+import { useForm } from "react-hook-form";
+import SizeSelectComponent from "./components/SizeSelectComponent";
+import { TSizeAndQuantity } from "@/types/quoteProductTypes";
 
 type FieldType = {
   category: string;
@@ -34,7 +37,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
   const { data, isLoading } = useGetSingleQuoteQuery({ quoteId: id });
   const quote = (data as TResponse<TQuote>)?.data;
   const user = quote?.user;
-
+  const [sizeAndQuantities, setSizeAndQuantities] = useState<TSizeAndQuantity[]>([]);
   const [pantoneColor, setPantoneColor] = useState("");
   const [selectedColor, setSelectedColor] = useState<string>(quote?.hexColor || "#000000"); // Initial color
 
@@ -77,6 +80,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
             quoteStatus: "processing",
             hexColor: selectedColor,
             materialPreferences: values.materialPreference,
+            sizesAndQuantities: sizeAndQuantities,
             price: values.price,
             quantity: values.quantity,
             size: values.size,
@@ -165,7 +169,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                       <Select size='large' disabled />
                     </Form.Item>
 
-                    <Form.Item label='Size' name='size'>
+                    {/*<Form.Item label='Size' name='size'>
                       <Select
                         disabled={quote.isAccepted}
                         size='large'
@@ -178,7 +182,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                           { value: "XXL", label: "XXL" },
                         ]}
                       />
-                    </Form.Item>
+                    </Form.Item>*/}
 
                     <div className='flex items-start gap-x-3'>
                       <Form.Item name='color' className=''>
@@ -195,14 +199,19 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                       </div>
                     </div>
 
-                    <Form.Item label='Quantity' name='quantity'>
+                    {/*<Form.Item label='Quantity' name='quantity'>
                       <InputNumber
                         disabled={quote.isAccepted}
                         size='large'
                         style={{ width: "100%" }}
                         placeholder='Please input quantity'
                       />
-                    </Form.Item>
+                    </Form.Item>*/}
+                    <SizeSelectComponent
+                      //setValue={setValue}
+                      setSizesAndQuantities={setSizeAndQuantities}
+                      defaultValues={quote?.sizesAndQuantities}
+                    />
 
                     <Form.Item label='Price' name='price' rules={[{ required: true }]}>
                       <InputNumber

@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
-import { Pencil, Trash2 } from "lucide-react";
+import AddCetagoryModal from "@/components/dashboardLayout/products/AddCetagoryModal";
+import AddQuoteCategoryModal from "@/components/dashboardLayout/quoteProduct/AddQuoteCategoryModal";
 import { useDeleteCategoryMutation, useGetCategoriesQuery } from "@/redux/api/categoryApi";
 import {
   useDeleteQuoteCategoryMutation,
@@ -10,11 +9,12 @@ import {
 } from "@/redux/api/quoteCategoryApi";
 import { TCategory } from "@/types/categoryTypes";
 import { TResponse } from "@/types/global";
-import { Button, message, Popconfirm, PopconfirmProps, Spin } from "antd";
-import UpdateCategoryModal from "./UpdateCategoryModal";
+import { Button, Popconfirm, Spin } from "antd";
+import { Pencil, Trash2 } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
-import AddQuoteCategoryModal from "@/components/dashboardLayout/quoteProduct/AddQuoteCategoryModal";
-import AddCetagoryModal from "@/components/dashboardLayout/products/AddCetagoryModal";
+import UpdateCategoryModal from "./UpdateCategoryModal";
 
 // CategoriesPage Component
 export default function CategoriesPage() {

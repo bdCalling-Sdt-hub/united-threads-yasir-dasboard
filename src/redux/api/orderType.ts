@@ -15,6 +15,7 @@ export type TOrder = {
   size: string;
   orderType: TOrderType;
   paymentStatus: TPaymentStatus;
+  sizesAndQuantities?: TSizeAndQuantity[];
   duoAmount: number;
   country: string;
   state?: string;
@@ -23,6 +24,10 @@ export type TOrder = {
   createdAt: string;
   updatedAt: string;
   __v: number;
+};
+export type TSizeAndQuantity = {
+  size: string;
+  quantity: number;
 };
 
 export type TPayment = {

@@ -87,7 +87,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
             pantoneColor: pantoneColor,
             comment: values.comment,
           };
-
+          //return;
           const formData = new FormData();
           formData.append("data", JSON.stringify(payload));
 
@@ -125,6 +125,8 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
   useEffect(() => {
     setPantoneColor(quote?.pantoneColor || "#000000");
   }, [quote?.pantoneColor]);
+
+  console.log({ sizeAndQuantities });
 
   return (
     <>

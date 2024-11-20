@@ -46,7 +46,9 @@ const SizeSelectComponent: React.FC<SizeSelectComponentProps> = ({
     );
     setSizeAndQuantities(updatedSizes);
     setSizesAndQuantities(
-      updatedSizes.map((item) => ({ size: item.size, quantity: item.quantity || 0 })),
+      updatedSizes
+        .filter((item) => item.selected)
+        .map((item) => ({ size: item.size, quantity: item.quantity || 0 })),
     );
   };
 
@@ -58,9 +60,13 @@ const SizeSelectComponent: React.FC<SizeSelectComponentProps> = ({
     );
     setSizeAndQuantities(updatedSizes);
     setSizesAndQuantities(
-      updatedSizes.map((item) => ({ size: item.size, quantity: item.quantity || 0 })),
+      updatedSizes
+        .filter((item) => item.selected)
+        .map((item) => ({ size: item.size, quantity: item.quantity || 0 })),
     );
   };
+
+  console.log(sizeAndQuantities);
 
   return (
     <div>

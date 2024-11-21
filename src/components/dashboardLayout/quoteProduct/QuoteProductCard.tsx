@@ -93,7 +93,7 @@ const QuoteProductCard = ({ product }: { product: TQuoteProduct }) => {
       </div>
       <div className='space-y-2'>
         <h3 className='text-lg font-semibold'>Colors Preferences</h3>
-        <div className='flex items-center gap-x-3'>
+        <div className='flex items-center flex-wrap'>
           {product?.colorsPreferences?.map((s) => (
             <Tag key={s} className='min-w-12 text-center' color={`#${convertPantoneToHex(s)}`}>
               {s}

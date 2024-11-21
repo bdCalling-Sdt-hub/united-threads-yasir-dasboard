@@ -21,7 +21,7 @@ const AddCategoryModal = ({ open, setOpen }: TPropsType) => {
   const [primaryImage, setPrimaryImage] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [form] = Form.useForm();
-  const [addCategory] = useAddQuoteCategoryMutation();
+  const [addCategory, { isLoading }] = useAddQuoteCategoryMutation();
 
   const beforePrimaryImageUpload = () => {
     if (primaryImage.length >= 1) {
@@ -99,7 +99,7 @@ const AddCategoryModal = ({ open, setOpen }: TPropsType) => {
             </div>
 
             {error && <p className='text-red-500 pb-2'>{error}</p>}
-            <Button htmlType='submit' block size='large'>
+            <Button loading={isLoading} htmlType='submit' block size='large'>
               Add Quote Category
             </Button>
           </Form>

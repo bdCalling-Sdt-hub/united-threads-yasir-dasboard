@@ -1,66 +1,33 @@
 "use client";
+import CustomSegment from "@/components/shared/CustomSegment";
 import { useGetQuoteCategoriesQuery } from "@/redux/api/quoteCategoryApi";
 import { useGetQuoteProductsQuery } from "@/redux/api/quoteProductApi";
 import { TCategory } from "@/types/categoryTypes";
 import { TResponse } from "@/types/global";
 import { TQuoteProduct } from "@/types/quoteProductTypes";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Button, Empty, Pagination, Segmented, Spin } from "antd";
-import { useEffect, useState } from "react";
+import { Button, Empty, Pagination, Spin } from "antd";
+import { useState } from "react";
 import { CiCirclePlus } from "react-icons/ci";
-import { FaChevronLeft } from "react-icons/fa6";
 import AddCategoryModal from "./AddQuoteCategoryModal";
-import QuoteProductCard from "./QuoteProductCard";
 import AddQuoteProduct from "./AddQuoteProduct";
+import QuoteProductCard from "./QuoteProductCard";
 
 const QuoteProductContainer = () => {
   const [open, setOpen] = useState(false);
   const [openAddProduct, setOpenAddProduct] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
+  const [selectedCategory, setSelectedCategory] = useState<TCategory | null | undefined>(null);
 
   const { data: categoryData, isLoading: categoriesLoading } = useGetQuoteCategoriesQuery({});
   const result = categoryData as TResponse<TCategory[]>;
-
-  // State for categories and visible categories
-  const [allCategories, setAllCategories] = useState<{ label: string; value: string }[]>([
-    { label: "ALL", value: "ALL" },
-  ]);
-  const [visibleCategories, setVisibleCategories] = useState(allCategories.slice(0, 6));
 
   // Pagination state
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(8); // Default limit
 
-  useEffect(() => {
-    if (!categoriesLoading && result?.data?.length) {
-      const categoryOptions = result.data.map((category) => ({
-        label: category.name,
-        value: category._id,
-      }));
-
-      setAllCategories([{ label: "ALL", value: "ALL" }, ...categoryOptions]);
-      setVisibleCategories([{ label: "ALL", value: "ALL" }, ...categoryOptions].slice(0, 6));
-    }
-  }, [categoryData, result, categoriesLoading]);
-
-  const handleRightClick = () => {
-    setVisibleCategories((prev) => {
-      const nextIndex = (allCategories.indexOf(prev[prev.length - 1]) + 1) % allCategories.length;
-      return [...prev.slice(1), allCategories[nextIndex]];
-    });
-  };
-
-  const handleLeftClick = () => {
-    setVisibleCategories((prev) => {
-      const prevIndex =
-        (allCategories.indexOf(prev[0]) - 1 + allCategories.length) % allCategories.length;
-      return [allCategories[prevIndex], ...prev.slice(0, -1)];
-    });
-  };
-
   // Fetch quote products based on the selected category, page, and pageSize
   const { data: productData, isLoading: productIsLoading } = useGetQuoteProductsQuery([
-    { label: "category", value: selectedCategory === "ALL" ? "" : selectedCategory },
+    { label: "category", value: selectedCategory?.name === "ALL" ? "" : selectedCategory?._id },
     { label: "page", value: page.toString() },
     { label: "limit", value: pageSize.toString() },
   ]);
@@ -91,7 +58,7 @@ const QuoteProductContainer = () => {
             </Button>
           </div>
           <div className='w-full flex items-center gap-x-6'>
-            <Button onClick={handleLeftClick} className='bg-[#232323] text-[#fff] !py-5'>
+            {/*<Button onClick={handleLeftClick} className='bg-[#232323] text-[#fff] !py-5'>
               <FaChevronLeft size={24} />
             </Button>
             <Segmented
@@ -106,7 +73,8 @@ const QuoteProductContainer = () => {
             />
             <Button onClick={handleRightClick} className='bg-[#232323] text-[#fff] !py-5'>
               <FaChevronLeft size={24} className='rotate-180' />
-            </Button>
+            </Button>*/}
+            <CustomSegment items={result?.data} setSelectedCategory={setSelectedCategory} />
           </div>
         </div>
 

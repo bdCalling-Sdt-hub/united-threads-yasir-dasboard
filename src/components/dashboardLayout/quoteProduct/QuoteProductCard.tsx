@@ -83,7 +83,7 @@ const QuoteProductCard = ({ product }: { product: TQuoteProduct }) => {
 
       <div className='space-y-2'>
         <h3 className='text-lg font-semibold'>Sizes</h3>
-        <div className='flex items-center gap-x-3'>
+        <div className='flex items-center gap-4 flex-wrap'>
           {product?.size?.map((s) => (
             <Tag key={s} className='min-w-12 text-center'>
               {s}
@@ -93,7 +93,7 @@ const QuoteProductCard = ({ product }: { product: TQuoteProduct }) => {
       </div>
       <div className='space-y-2'>
         <h3 className='text-lg font-semibold'>Colors Preferences</h3>
-        <div className='flex items-center flex-wrap gap-4'>
+        <div className='flex items-center flex-wrap gap-2'>
           {product?.colorsPreferences?.map((s) => (
             <Tag key={s} className='min-w-12 text-center' color={`#${convertPantoneToHex(s)}`}>
               {s}

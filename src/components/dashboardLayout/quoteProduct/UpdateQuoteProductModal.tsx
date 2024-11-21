@@ -372,7 +372,7 @@ const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) =>
               </div>
 
               {/* Additional Images Upload */}
-              <div className='mt-4'>
+              {/*<div className='mt-4'>
                 <p className='text-lg mb-2'>Upload Additional Images</p>
                 <Upload
                   name='images'
@@ -387,7 +387,7 @@ const UpdateQuoteProductModal = ({ open, setOpen, quoteProduct }: TPropsType) =>
                     <p>Upload Additional Images</p>
                   </div>
                 </Upload>
-              </div>
+              </div>*/}
 
               {/* Submit Button */}
               <Button

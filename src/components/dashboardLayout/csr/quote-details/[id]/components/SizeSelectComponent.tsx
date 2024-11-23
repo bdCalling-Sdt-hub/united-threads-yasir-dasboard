@@ -9,11 +9,14 @@ interface SizeAndQuantity {
   size: string;
   quantity: number | undefined;
   selected: boolean;
+  price?: number;
 }
 
 interface SizeSelectComponentProps {
   defaultValues?: TSizeAndQuantity[];
   setSizesAndQuantities: React.Dispatch<React.SetStateAction<TSizeAndQuantity[]>>;
+  setTotalPrice: React.Dispatch<React.SetStateAction<number>>;
+  disabled: boolean;
   errors?: {
     sizeAndQuantities?: FieldError;
   };
@@ -22,15 +25,18 @@ interface SizeSelectComponentProps {
 const SizeSelectComponent: React.FC<SizeSelectComponentProps> = ({
   defaultValues = [],
   setSizesAndQuantities,
+  setTotalPrice,
+  disabled,
   errors,
 }) => {
   const [sizeAndQuantities, setSizeAndQuantities] = useState<SizeAndQuantity[]>([]);
 
   useEffect(() => {
-    // Initialize state with all checkboxes selected by default, creating new objects
+    // Initialize state with checkboxes selected by default and a price field
     const initialValues = defaultValues.map((item) => ({
       ...item,
-      selected: true, // Ensure a new "selected" property is added
+      selected: true,
+      price: 0, // Default price
     }));
     setSizeAndQuantities(initialValues);
     setSizesAndQuantities(
@@ -40,9 +46,7 @@ const SizeSelectComponent: React.FC<SizeSelectComponentProps> = ({
 
   const handleCheckboxChange = (index: number, checked: boolean) => {
     const updatedSizes = sizeAndQuantities.map((item, idx) =>
-      idx === index
-        ? { ...item, selected: checked } // Create a new object for the modified item
-        : item,
+      idx === index ? { ...item, selected: checked } : item,
     );
     setSizeAndQuantities(updatedSizes);
     setSizesAndQuantities(
@@ -54,9 +58,7 @@ const SizeSelectComponent: React.FC<SizeSelectComponentProps> = ({
 
   const handleQuantityChange = (index: number, value: string) => {
     const updatedSizes = sizeAndQuantities.map((item, idx) =>
-      idx === index
-        ? { ...item, quantity: Number(value) } // Create a new object for the modified item
-        : item,
+      idx === index ? { ...item, quantity: Number(value) } : item,
     );
     setSizeAndQuantities(updatedSizes);
     setSizesAndQuantities(
@@ -66,36 +68,65 @@ const SizeSelectComponent: React.FC<SizeSelectComponentProps> = ({
     );
   };
 
-  console.log(sizeAndQuantities);
+  const handlePriceChange = (index: number, value: string) => {
+    const updatedSizes = sizeAndQuantities.map((item, idx) =>
+      idx === index ? { ...item, price: Number(value) } : item,
+    );
+    setSizeAndQuantities(updatedSizes);
+
+    // Calculate total price for all selected sizes
+    const total = updatedSizes.reduce((sum, item) => {
+      if (item.selected && item.quantity && item.price) {
+        return sum + item.quantity * item.price;
+      }
+      return sum;
+    }, 0);
+
+    setTotalPrice(total);
+  };
 
   return (
     <div>
       <label htmlFor='sizeAndQuantities' className='mb-2 block font-medium'>
-        Select Size and Quantity
+        Select Size, Quantity, and Price
       </label>
 
       <div className='space-y-4'>
         {sizeAndQuantities.map((item, index) => (
-          <div key={item.size} className='flex items-center gap-4'>
+          <div key={item.size} className='grid grid-cols-3 gap-4'>
             {/* Checkbox */}
             <Checkbox
               id={item.size}
               checked={item.selected}
               onChange={(e) => handleCheckboxChange(index, e.target.checked)}
+              className='flex items-center'
+              disabled={disabled}
             >
               {item.size}
             </Checkbox>
 
-            {/* Quantity input (visible only if checkbox is selected) */}
+            {/* Quantity and Price input (visible only if checkbox is selected) */}
             {item.selected && (
-              <Input
-                type='number'
-                min={1}
-                value={item.quantity || ""}
-                onChange={(e) => handleQuantityChange(index, e.target.value)}
-                placeholder={`Enter quantity for ${item.size}`}
-                className='w-1/3'
-              />
+              <>
+                <Input
+                  type='number'
+                  min={1}
+                  value={item.quantity || ""}
+                  onChange={(e) => handleQuantityChange(index, e.target.value)}
+                  placeholder={`Enter quantity for ${item.size}`}
+                  className=''
+                  disabled={disabled}
+                />
+                <Input
+                  type='number'
+                  min={0}
+                  value={item.price || ""}
+                  onChange={(e) => handlePriceChange(index, e.target.value)}
+                  placeholder={`Unit price (${item.size})`}
+                  className='w-auto'
+                  disabled={disabled}
+                />
+              </>
             )}
           </div>
         ))}

@@ -40,7 +40,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
   const [sizeAndQuantities, setSizeAndQuantities] = useState<TSizeAndQuantity[]>([]);
   const [pantoneColor, setPantoneColor] = useState("");
   const [selectedColor, setSelectedColor] = useState<string>(quote?.hexColor || "#000000"); // Initial color
-
+  const [totalPrice, setTotalPrice] = useState<number>(0);
   const [updateQuote] = useUpdateQuoteMutation();
   const router = useRouter();
 
@@ -126,8 +126,6 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
     setPantoneColor(quote?.pantoneColor || "#000000");
   }, [quote?.pantoneColor]);
 
-  console.log({ sizeAndQuantities });
-
   return (
     <>
       {isLoading ? (
@@ -209,13 +207,20 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                         placeholder='Please input quantity'
                       />
                     </Form.Item>*/}
-                    <SizeSelectComponent
-                      //setValue={setValue}
-                      setSizesAndQuantities={setSizeAndQuantities}
-                      defaultValues={quote?.sizesAndQuantities}
-                    />
+                    <div>
+                      <SizeSelectComponent
+                        disabled={!!quote.isAccepted}
+                        setTotalPrice={setTotalPrice}
+                        setSizesAndQuantities={setSizeAndQuantities}
+                        defaultValues={quote?.sizesAndQuantities}
+                      />
+                    </div>
+                    {/* Total price display */}
+                    <div className='my-4 mt-6'>
+                      <p className='font-bold text-xl'>Total Price: ${totalPrice.toFixed(2)}</p>
+                    </div>
 
-                    <Form.Item label='Price' name='price' rules={[{ required: true }]}>
+                    {/*<Form.Item label='Price' name='price' rules={[{ required: true }]}>
                       <InputNumber
                         disabled={quote.isAccepted}
                         defaultValue={quote?.price}
@@ -223,7 +228,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                         style={{ width: "100%" }}
                         placeholder='Please input price'
                       />
-                    </Form.Item>
+                    </Form.Item>*/}
 
                     <Form.Item label='Materials Preference' name='materialPreference'>
                       <TextArea disabled={quote.isAccepted} rows={4} placeholder='Write here...' />

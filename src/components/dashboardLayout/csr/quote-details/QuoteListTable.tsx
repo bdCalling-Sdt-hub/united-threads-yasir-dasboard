@@ -41,23 +41,21 @@ const QuoteListTable = ({ date }: { date?: string | null }) => {
     },
     {
       title: "Pantone Code",
-      dataIndex: "hexColor", // Added pantone color field from TQuote
+      dataIndex: "pantoneColor", // Added pantone color field from TQuote
       render: (value, record) => {
+        const backgroundColor = "#" + convertPantoneToHex(record.pantoneColor);
         return (
           <div className='flex items-center gap-x-2'>
-            <span
-              className='size-4 inline-block rounded-full'
-              style={{ backgroundColor: "#" + convertPantoneToHex(record.pantoneColor) }}
-            ></span>
+            <span className='size-4 inline-block rounded-full' style={{ backgroundColor }}></span>
             <span style={{ color: value }}>{record.pantoneColor}</span>
           </div>
         );
       },
     },
-    {
-      title: "Quantity",
-      dataIndex: "quantity",
-    },
+    //{
+    //  title: "Quantity",
+    //  dataIndex: "quantity",
+    //},
     {
       title: "Quote Status",
       dataIndex: "quoteStatus",

@@ -35,7 +35,7 @@ const NotificationCount = () => {
         setChatList(data?.data || []);
       });
     }
- 
+
     return () => {
       if (socket) {
         socket.off(`chat-list::${user?._id}`, (data) => {
@@ -104,8 +104,8 @@ const NotificationCount = () => {
             >
               <GoBell size={20} />
               {notificationLength > 0 && (
-                <span className='absolute top-1.5 right-1.5 size-[18px] bg-warning text-primaryWhite rounded-full text-sm flex-item-center'>
-                  {notificationLength}
+                <span className='absolute top-1 right-1 size-[16px] p-[10px] bg-warning text-primaryWhite rounded-full text-xs flex items-center justify-center'>
+                  {notificationLength > 9 ? "9+" : notificationLength}
                 </span>
               )}
             </div>

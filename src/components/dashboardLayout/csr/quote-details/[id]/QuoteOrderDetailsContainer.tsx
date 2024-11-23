@@ -81,7 +81,7 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
             hexColor: selectedColor,
             materialPreferences: values.materialPreference,
             sizesAndQuantities: sizeAndQuantities,
-            price: values.price,
+            price: totalPrice,
             quantity: values.quantity,
             size: values.size,
             pantoneColor: pantoneColor,

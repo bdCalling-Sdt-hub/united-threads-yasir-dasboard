@@ -93,7 +93,7 @@ const SizeSelectComponent: React.FC<SizeSelectComponentProps> = ({
 
       <div className='space-y-4'>
         {sizeAndQuantities.map((item, index) => (
-          <div key={item.size} className='grid grid-cols-3 gap-4'>
+          <div key={item.size} className='grid grid-cols-4 gap-4 items-center'>
             {/* Checkbox */}
             <Checkbox
               id={item.size}
@@ -126,6 +126,12 @@ const SizeSelectComponent: React.FC<SizeSelectComponentProps> = ({
                   className='w-auto'
                   disabled={disabled}
                 />
+                <p className='font-semibold'>
+                  {/* sum of quantity * price */}
+                  {item.quantity && item.price
+                    ? `Sub Total: $${(item.quantity * item.price).toFixed(2)}`
+                    : ""}
+                </p>
               </>
             )}
           </div>

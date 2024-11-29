@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
-import { Button, ColorPicker, Form, InputNumber, Select, Skeleton } from "antd";
+import { Button, ColorPicker, Form, Select, Skeleton } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import moment from "moment";
 import Image from "next/image";
@@ -17,11 +17,10 @@ import Swal from "sweetalert2";
 import generatePantoneColor from "@/lib/utils/convertHexToPanton";
 import { useGetSingleQuoteQuery, useUpdateQuoteMutation } from "@/redux/api/quoteApi";
 import { TResponse } from "@/types/global";
+import { TSizeAndQuantity } from "@/types/quoteProductTypes";
 import { TQuote } from "@/types/quoteTypes";
 import { ScrollText } from "lucide-react";
-import { useForm } from "react-hook-form";
 import SizeSelectComponent from "./components/SizeSelectComponent";
-import { TSizeAndQuantity } from "@/types/quoteProductTypes";
 
 type FieldType = {
   category: string;
@@ -216,8 +215,10 @@ const QuoteOrderDetailsContainer = ({ id }: { id: string }) => {
                       />
                     </div>
                     {/* Total price display */}
-                    <div className='my-4 mt-6'>
-                      <p className='font-bold text-xl'>Total Price: ${totalPrice.toFixed(2)}</p>
+                    <div className='my-4 mt-6 text-end'>
+                      <p className='font-bold text-xl'>
+                        Total Price: ${totalPrice ? totalPrice.toFixed(2) : quote.price}
+                      </p>
                     </div>
 
                     {/*<Form.Item label='Price' name='price' rules={[{ required: true }]}>

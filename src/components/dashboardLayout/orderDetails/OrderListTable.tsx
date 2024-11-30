@@ -4,7 +4,7 @@ import { ORDER_STATUS } from "@/constant";
 import { useGetOrdersQuery, useUpdateOrderPaymentStatusMutation } from "@/redux/api/orderApi";
 import { TOrder } from "@/redux/api/orderType";
 import { TResponse } from "@/types/global";
-import { Button, message, Popconfirm, PopconfirmProps, Table, TableProps } from "antd";
+import { Button, message, Popconfirm, PopconfirmProps, Popover, Table, TableProps } from "antd";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { IoEyeOutline } from "react-icons/io5";
@@ -107,7 +107,10 @@ const OrderListTable = () => {
       title: "Action",
       dataIndex: "action",
       render: (value, record) => (
-        <div className='flex items-start gap-3'>
+        <div
+          className='flex items-center justify-between gap-2
+        '
+        >
           {/*<Link href={`/admin/order-details/${record._id}`}>
             <IoEyeOutline size={20} />
           </Link>*/}
@@ -119,22 +122,38 @@ const OrderListTable = () => {
             />
           </>
 
-          <Popconfirm
-            title='Refund the Order'
-            description='Are you sure to refund this order?'
-            onConfirm={() => handleRefund({ orderId: record._id, paymentStatus: "REFUNDED" })}
-            //onCancel={cancel}
-            okText='Yes'
-            cancelText='No'
+          <Popover
+            content={
+              record.status === "DELIVERED"
+                ? "Delivered Order can't be refunded"
+                : record.paymentStatus === "REFUNDED"
+                ? "Order already refunded"
+                : "Click to Refund"
+            }
           >
-            <button
-              disabled={record.status === "DELIVERED"}
-              className='px-2 text-xs py-1 bg-red-500 text-white font-semibold rounded-md flex items-center gap-x-1 disabled:cursor-not-allowed disabled:bg-gray-400 '
+            <Popconfirm
+              title='Refund the Order'
+              description='Are you sure to refund this order?'
+              onConfirm={() => handleRefund({ orderId: record._id, paymentStatus: "REFUNDED" })}
+              //onCancel={cancel}
+              okText='Yes'
+              cancelText='No'
             >
-              Refund
-              <Redo2 size={16} />
-            </button>
-          </Popconfirm>
+              <button
+                //disabled={record.status === "DELIVERED"}
+                className={`px-2 text-xs py-1  text-white font-semibold rounded-md flex items-center gap-x-1 ${
+                  record.status === "DELIVERED"
+                    ? "cursor-not-allowed bg-gray-400"
+                    : record.paymentStatus === "REFUNDED"
+                    ? "cursor-not-allowed bg-gray-400"
+                    : "bg-red-500"
+                }`}
+              >
+                Refund
+                <Redo2 size={16} />
+              </button>
+            </Popconfirm>
+          </Popover>
         </div>
       ),
     },

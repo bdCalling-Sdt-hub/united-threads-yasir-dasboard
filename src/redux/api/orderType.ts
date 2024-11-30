@@ -149,4 +149,4 @@ export type TStripeCheckoutSession = {
 
 export type TOrderStatus = "PENDING" | "SHIPPED" | "DELIVERED" | "CANCELED";
 export type TOrderType = "SHOP" | "QUOTE";
-export type TPaymentStatus = "PAID" | "UNPAID" | "PARTIALLY_PAID";
+export type TPaymentStatus = "PAID" | "UNPAID" | "REFUNDED";

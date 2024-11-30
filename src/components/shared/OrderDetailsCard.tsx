@@ -141,7 +141,7 @@ export default function OrderDetails({ user, order }: { user: TUser; order: TOrd
                 Paid
               </span>
             ) : (
-              <span className='inline-block px-2 py-1 text-sm font-semibold text-red-700 bg-red-100 rounded'>
+              <span className='inline-block px-2 py-1 text-sm font-semibold text-orange-700 bg-orange-100 rounded'>
                 Unpaid
               </span>
             )}

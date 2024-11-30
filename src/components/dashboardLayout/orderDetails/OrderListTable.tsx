@@ -4,7 +4,16 @@ import { ORDER_STATUS } from "@/constant";
 import { useGetOrdersQuery, useUpdateOrderPaymentStatusMutation } from "@/redux/api/orderApi";
 import { TOrder } from "@/redux/api/orderType";
 import { TResponse } from "@/types/global";
-import { Button, message, Popconfirm, PopconfirmProps, Popover, Table, TableProps } from "antd";
+import {
+  Button,
+  message,
+  Modal,
+  Popconfirm,
+  PopconfirmProps,
+  Popover,
+  Table,
+  TableProps,
+} from "antd";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { IoEyeOutline } from "react-icons/io5";
@@ -12,6 +21,7 @@ import Tag from "../../shared/Tag";
 import { FaArrowRightArrowLeft, FaArrowRightLong } from "react-icons/fa6";
 import { Redo2, Undo2 } from "lucide-react";
 import { toast } from "sonner";
+import RefundOption from "./components/RefundOption";
 
 const OrderListTable = () => {
   const [limit, setLimit] = useState(10000000000);
@@ -22,7 +32,6 @@ const OrderListTable = () => {
   ]);
   const result = data as TResponse<TOrder[]>;
 
-  const [updatePaymentStatus, { isLoading: isUpdating }] = useUpdateOrderPaymentStatusMutation();
 
   const columns: TableProps<TOrder>["columns"] = [
     {
@@ -122,38 +131,7 @@ const OrderListTable = () => {
             />
           </>
 
-          <Popover
-            content={
-              record.status === "DELIVERED"
-                ? "Delivered Order can't be refunded"
-                : record.paymentStatus === "REFUNDED"
-                ? "Order already refunded"
-                : "Click to Refund"
-            }
-          >
-            <Popconfirm
-              title='Refund the Order'
-              description='Are you sure to refund this order?'
-              onConfirm={() => handleRefund({ orderId: record._id, paymentStatus: "REFUNDED" })}
-              //onCancel={cancel}
-              okText='Yes'
-              cancelText='No'
-            >
-              <button
-                //disabled={record.status === "DELIVERED"}
-                className={`px-2 text-xs py-1  text-white font-semibold rounded-md flex items-center gap-x-1 ${
-                  record.status === "DELIVERED"
-                    ? "cursor-not-allowed bg-gray-400"
-                    : record.paymentStatus === "REFUNDED"
-                    ? "cursor-not-allowed bg-gray-400"
-                    : "bg-red-500"
-                }`}
-              >
-                Refund
-                <Redo2 size={16} />
-              </button>
-            </Popconfirm>
-          </Popover>
+          <RefundOption record={record} />
         </div>
       ),
     },
@@ -167,23 +145,7 @@ const OrderListTable = () => {
     }
   }, [isLoading, result?.meta?.total]);
 
-  const handleRefund = async ({
-    orderId,
-    paymentStatus,
-  }: {
-    orderId: string;
-    paymentStatus: string;
-  }) => {
-    try {
-      const res = await updatePaymentStatus({ orderId, data: { paymentStatus } }).unwrap();
-      if (res.success) {
-        toast.success(res?.message);
-        //router.refresh();
-      }
-    } catch (error) {
-      toast.error((error as Error).message || "Something went wrong");
-    }
-  };
+
 
   return (
     <div>

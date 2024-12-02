@@ -32,7 +32,6 @@ const OrderListTable = () => {
   ]);
   const result = data as TResponse<TOrder[]>;
 
-
   const columns: TableProps<TOrder>["columns"] = [
     {
       title: "Order ID",
@@ -144,8 +143,6 @@ const OrderListTable = () => {
       setLimit(result?.meta?.total);
     }
   }, [isLoading, result?.meta?.total]);
-
-
 
   return (
     <div>

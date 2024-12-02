@@ -72,10 +72,10 @@ const RefundOption = ({ record }: { record: TOrder }) => {
         size='small'
         style={{ padding: "14px 10px" }}
         className={`text-xs text-white font-semibold rounded-md flex items-center gap-x-1 ${
-          record.paymentStatus === "REFUNDED" ? "cursor-not-allowed bg-gray-400" : "bg-red-500"
+          record.paymentStatus === "REFUNDED" ? "bg-gray-400" : "bg-red-500"
         }`}
         onClick={showModal}
-        disabled={record.status === "DELIVERED" || record.paymentStatus === "REFUNDED"}
+        disabled={record.paymentStatus === "REFUNDED"}
       >
         Refund
         <Redo2 size={16} />

@@ -1,11 +1,13 @@
 "use client";
 import OrderDetailsModal from "@/components/shared/OrderDetailsModal";
+import { useGetUserAndRevenueCountQuery } from "@/redux/api/metaApi";
 import { useGetOrdersQuery } from "@/redux/api/orderApi";
 import { TOrder } from "@/redux/api/orderType";
 import { TResponse } from "@/types/global";
-import { Table, TableProps } from "antd";
+import { Spin, Table, TableProps } from "antd";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import CountUp from "react-countup";
 import { FaArrowRightArrowLeft } from "react-icons/fa6";
 import { IoEyeOutline } from "react-icons/io5";
 
@@ -27,6 +29,14 @@ const EarningContainer = () => {
   //  date: "11 oct 24, 11.10PM",
   //  amount: "$152",
   //}));
+
+  const { data: metaData, isLoading: isLoadingMeta } = useGetUserAndRevenueCountQuery([]);
+
+  const counts = metaData as TResponse<{
+    userCount: number;
+    revenueCount: number;
+    todayRevenue: number;
+  }>;
 
   const { data, isLoading } = useGetOrdersQuery([
     {
@@ -86,27 +96,15 @@ const EarningContainer = () => {
     },
   ];
 
-  let todayEaring = 0;
-  result?.data?.forEach((item) => {
-    if (moment(item?.createdAt).isSame(moment(), "day")) {
-      if (item?.paymentStatus === "PAID") {
-        todayEaring += item?.amount;
-      }
-    }
-  });
-
-  const totalEaring = result?.data?.reduce((acc, item) => {
-    if (item?.paymentStatus === "PAID") {
-      return acc + item?.amount;
-    }
-    return acc;
-  }, 0);
-
   useEffect(() => {
     if (result?.meta?.total) {
       setLimit(result.meta?.total);
     }
   }, [isLoading, result?.meta?.total]);
+
+  if (isLoading || isLoadingMeta) {
+    return <Spin />;
+  }
 
   return (
     <div>
@@ -118,14 +116,20 @@ const EarningContainer = () => {
               <FaArrowRightArrowLeft size={20} color='white' />
               <p className='text-white'>Today’s Earning</p>
             </div>
-            <p className='font-semibold text-base'> ${todayEaring} </p>
+            <p className='font-semibold text-base'>
+              {" "}
+              $<CountUp end={counts?.data?.todayRevenue} duration={2} start={0} />{" "}
+            </p>
           </div>
         </>
         <>
           <div className='flex items-center gap-x-3 p-3 bg-black rounded-lg text-white'>
             <FaArrowRightArrowLeft size={20} color='white' />
             <p className='text-white'>Total Earning</p>
-            <p className='font-semibold text-base'> ${totalEaring} </p>
+            <p className='font-semibold text-base'>
+              {" "}
+              $<CountUp end={counts?.data?.revenueCount} duration={2} start={0} />{" "}
+            </p>
           </div>
         </>
       </div>

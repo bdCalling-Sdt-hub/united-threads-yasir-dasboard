@@ -9,7 +9,12 @@ import { TResponse } from "@/types/global";
 const StatisticBar = () => {
   const { data, isLoading } = useGetUserAndRevenueCountQuery([]);
 
-  const result = data as TResponse<{ userCount: number; revenueCount: number }>;
+  const result = data as TResponse<{
+    userCount: number;
+    revenueCount: number;
+    todayRevenue: number;
+  }>;
+
   return (
     <div className='h-32 flex text-primaryWhite font-roboto'>
       <div className='w-1/2 h-full mr-4 bg-primaryBlack rounded-xl flex gap-6 px-12 items-center '>
@@ -36,7 +41,7 @@ const StatisticBar = () => {
           <h4 className='text-3xl font-bold '>
             {!isLoading ? (
               <>
-                $ <CountUp end={result?.data?.revenueCount / 100} duration={2} start={0} />
+                $ <CountUp end={result?.data?.revenueCount} duration={2} start={0} />
               </>
             ) : (
               <>
